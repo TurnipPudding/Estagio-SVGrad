@@ -3665,3 +3665,4 @@ canvas.configure(yscrollcommand=scrollbar.set)
 # Rodando o loop principal
 root.mainloop()
 
+print("hihiha")
