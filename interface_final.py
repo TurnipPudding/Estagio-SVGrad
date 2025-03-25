@@ -82,7 +82,7 @@ def construcao_planilha_grande():
             if valor == header_name:
                 print(f"Dataframe do {sh} lido com sucesso.")
                 header_row = i+1
-                files.append(padroniza_dataframe(file_name, header_row, ano))
+                # files.append(padroniza_dataframe(file_name, header_row, ano))
                 # print(type(files[sh]))
                 break
     # Em tese, tenho todas as planilhas no files já
