@@ -3607,63 +3607,63 @@ root.mainloop()
 
 # print(type(df))
 
-"""# Testes"""
+# """# Testes"""
 
-proibir_sala = {}
-proibir_sala.update({'a': 1})
-proibir_sala.update({'b': 2})
-proibir_sala.update({'c': 3})
-proibir_sala.update({'d': 4})
+# proibir_sala = {}
+# proibir_sala.update({'a': 1})
+# proibir_sala.update({'b': 2})
+# proibir_sala.update({'c': 3})
+# proibir_sala.update({'d': 4})
 
-print(proibir_sala.keys())
-if 'a' in proibir_sala.keys():
-    value = proibir_sala.get('a')
-    print(value)
+# print(proibir_sala.keys())
+# if 'a' in proibir_sala.keys():
+#     value = proibir_sala.get('a')
+#     print(value)
 
-# Criando a janela principal
-root = tk.Tk()
-root.title("Lista de Checkboxes com Scroll")
+# # Criando a janela principal
+# root = tk.Tk()
+# root.title("Lista de Checkboxes com Scroll")
 
-# Criando um Frame para conter o Canvas e a Scrollbar
-frame_principal = tk.Frame(root)
-frame_principal.pack(fill=tk.BOTH, expand=True)
+# # Criando um Frame para conter o Canvas e a Scrollbar
+# frame_principal = tk.Frame(root)
+# frame_principal.pack(fill=tk.BOTH, expand=True)
 
-# Criando um Canvas dentro do Frame principal
-canvas = tk.Canvas(frame_principal)
-canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+# # Criando um Canvas dentro do Frame principal
+# canvas = tk.Canvas(frame_principal)
+# canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-# Criando uma Scrollbar para o Canvas
-scrollbar = tk.Scrollbar(frame_principal, orient=tk.VERTICAL, command=canvas.yview)
-scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+# # Criando uma Scrollbar para o Canvas
+# scrollbar = tk.Scrollbar(frame_principal, orient=tk.VERTICAL, command=canvas.yview)
+# scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-# Criando um Frame dentro do Canvas para colocar os checkboxes
-frame_checkboxes = tk.Frame(canvas)
+# # Criando um Frame dentro do Canvas para colocar os checkboxes
+# frame_checkboxes = tk.Frame(canvas)
 
-# Adicionando o Frame ao Canvas
-canvas.create_window((0, 0), window=frame_checkboxes, anchor="nw")
+# # Adicionando o Frame ao Canvas
+# canvas.create_window((0, 0), window=frame_checkboxes, anchor="nw")
 
-# Lista de opções para os Checkboxes
-opcoes = [f"Opção {i}" for i in range(1, 31)]  # 30 checkboxes como exemplo
-vars_checkboxes = []  # Lista para armazenar as variáveis dos checkboxes
+# # Lista de opções para os Checkboxes
+# opcoes = [f"Opção {i}" for i in range(1, 31)]  # 30 checkboxes como exemplo
+# vars_checkboxes = []  # Lista para armazenar as variáveis dos checkboxes
 
-# Criando e adicionando os Checkboxes ao Frame
-for opcao in opcoes:
-    var = tk.BooleanVar()
-    checkbox = tk.Checkbutton(frame_checkboxes, text=opcao, variable=var)
-    checkbox.pack(anchor="w")
-    vars_checkboxes.append(var)  # Salvando a variável para futura referência
+# # Criando e adicionando os Checkboxes ao Frame
+# for opcao in opcoes:
+#     var = tk.BooleanVar()
+#     checkbox = tk.Checkbutton(frame_checkboxes, text=opcao, variable=var)
+#     checkbox.pack(anchor="w")
+#     vars_checkboxes.append(var)  # Salvando a variável para futura referência
 
-# Atualizando o tamanho do Frame dentro do Canvas
-def atualizar_scroll(event):
-    canvas.configure(scrollregion=canvas.bbox("all"))
+# # Atualizando o tamanho do Frame dentro do Canvas
+# def atualizar_scroll(event):
+#     canvas.configure(scrollregion=canvas.bbox("all"))
 
-frame_checkboxes.bind("<Configure>", atualizar_scroll)
+# frame_checkboxes.bind("<Configure>", atualizar_scroll)
 
-# Configurando a Scrollbar para controlar o Canvas
-canvas.configure(yscrollcommand=scrollbar.set)
+# # Configurando a Scrollbar para controlar o Canvas
+# canvas.configure(yscrollcommand=scrollbar.set)
 
-# Rodando o loop principal
-root.mainloop()
+# # Rodando o loop principal
+# root.mainloop()
 
-print("hihiha")
-print("again")
+# print("hihiha")
+# print("again")
