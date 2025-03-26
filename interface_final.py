@@ -8,6 +8,9 @@ Original file is located at
 
 ## Imports
 """
+# !pip install pandas
+# !pip install openpyxl
+
 
 import tkinter as tk # Biblioteca Tkinter para fazer a interface.
 # Objetos e classes importantes da biblioteca Tkinter para fazer a interface.
@@ -1241,19 +1244,19 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         # Em caso positivo, deleto essa terminologia.
         nome_arquivo.replace(".xlsx", "")
 
-    # Defino uma variável com o nome completo do arquivo (nome do arquivo + o tipo de arquivo).
-    full_name = nome_arquivo + ".xlsx"
+    # # Defino uma variável com o nome completo do arquivo (nome do arquivo + o tipo de arquivo).
+    # full_name = nome_arquivo + ".xlsx"
 
-    # Defino também um valor i, que simboliza o número de cópias do arquivo de mesmo nome.
-    i = 1
+    # # Defino também um valor i, que simboliza o número de cópias do arquivo de mesmo nome.
+    # i = 1
 
-    # Enquanto existir um arquivo no diretório com o nome do arquivo atual:
-    while os.path.exists(full_name):
-        # Redefino o nome completo do arquivo, considerando como uma possível cópia.
-        full_name = f"{nome_arquivo} ({i}){'.xlsx'}"
+    # # Enquanto existir um arquivo no diretório com o nome do arquivo atual:
+    # while os.path.exists(full_name):
+    #     # Redefino o nome completo do arquivo, considerando como uma possível cópia.
+    #     full_name = f"{nome_arquivo} ({i}){'.xlsx'}"
 
-        # Incremento o sufixo até encontrar um nome disponível.
-        i += 1
+    #     # Incremento o sufixo até encontrar um nome disponível.
+    #     i += 1
 
     # Com o nome disponível encontrado, atualizo o nome do arquivo para a base de dados.
     nome_arquivo = full_name
@@ -1432,11 +1435,11 @@ def base_dados(pior_caso):
             nome.replace(".xlsx", "")
 
         full_name = nome + ".xlsx"
-        i = 1
+        # i = 1
 
-        while os.path.exists(full_name):
-            full_name = f"{nome} ({i}){'.xlsx'}"
-            i += 1
+        # while os.path.exists(full_name):
+        #     full_name = f"{nome} ({i}){'.xlsx'}"
+        #     i += 1
 
         nome = full_name
 
@@ -3038,17 +3041,17 @@ def criar_visualizacao_vazia(file_path, file_path_salas, caminho_arquivo, caminh
     # Como visto anteriormente, esse trecho do código serve para salvar o arquivo sem sobrescrever um outro, alterando
     # o nome fornecido pelo usuário com um valor de "cópia".
     full_name = caminho_arquivo + ".xlsx"
-    i = 1
-    while os.path.exists(full_name):
-        full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-        i += 1
+    # i = 1
+    # while os.path.exists(full_name):
+    #     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
+    #     i += 1
     caminho_arquivo = full_name
 
     full_name = caminho_arquivo1 + ".xlsx"
-    i = 1
-    while os.path.exists(full_name):
-        full_name = f"{caminho_arquivo1} ({i}){'.xlsx'}"
-        i += 1
+    # i = 1
+    # while os.path.exists(full_name):
+    #     full_name = f"{caminho_arquivo1} ({i}){'.xlsx'}"
+    #     i += 1
 
     caminho_arquivo1 = full_name
 

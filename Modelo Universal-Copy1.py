@@ -795,10 +795,10 @@ dataframe = pd.DataFrame(dados_solucao)
 file_path = "Dados da solução do Modelo"
 
 full_name = file_path + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{file_path} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{file_path} ({i}){'.xlsx'}"
+#     i += 1
 
 file_path = full_name
 
@@ -879,10 +879,10 @@ sti_planilha = pd.DataFrame(dados_organizados)
 file_path1 = "Planilha do STI dada pelo Modelo"
 
 full_name = file_path1 + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{file_path1} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{file_path1} ({i}){'.xlsx'}"
+#     i += 1
 
 file_path1 = full_name
 
@@ -899,10 +899,10 @@ for sala in sti_planilha['Sala'].unique():
     caminho_arquivo = f"Planilha do STI dada pelo Modelo - {sala}"
 
     full_name = caminho_arquivo + ".csv"
-    i = 1
-    while os.path.exists(full_name):
-        full_name = f"{caminho_arquivo} ({i}){'.csv'}"
-        i += 1
+    # i = 1
+    # while os.path.exists(full_name):
+    #     full_name = f"{caminho_arquivo} ({i}){'.csv'}"
+    #     i += 1
 
     caminho_arquivo = full_name
     sti_planilha_aux.to_csv(caminho_arquivo, index=False, sep=';', encoding='latin-1')
@@ -1185,10 +1185,10 @@ ajusta_largura(ws)
 caminho_arquivo = f"Visualização completa da Solução"
 
 full_name = caminho_arquivo + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
+#     i += 1
 
 caminho_arquivo = full_name
 wb.save(caminho_arquivo)
@@ -1254,10 +1254,10 @@ wb.remove(wb.active)
 caminho_arquivo = f"Visualização por curso"
 
 full_name = caminho_arquivo + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
+#     i += 1
 
 caminho_arquivo = full_name
 wb.save(caminho_arquivo)
@@ -1337,10 +1337,10 @@ wb.remove(wb.active)
 caminho_arquivo = f"Visualização por departamento"
 
 full_name = caminho_arquivo + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
+#     i += 1
 
 caminho_arquivo = full_name
 wb.save(caminho_arquivo)
@@ -1456,10 +1456,10 @@ ws.cell(row=lenS+3,column=1).value = exec
 caminho_arquivo = f"Distribuição de Cursos"
 
 full_name = caminho_arquivo + ".xlsx"
-i = 1
-while os.path.exists(full_name):
-    full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-    i += 1
+# i = 1
+# while os.path.exists(full_name):
+#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
+#     i += 1
 
 caminho_arquivo = full_name
 wb.save(caminho_arquivo)
