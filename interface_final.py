@@ -1244,8 +1244,8 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         # Em caso positivo, deleto essa terminologia.
         nome_arquivo.replace(".xlsx", "")
 
-    # # Defino uma variável com o nome completo do arquivo (nome do arquivo + o tipo de arquivo).
-    # full_name = nome_arquivo + ".xlsx"
+    # Defino uma variável com o nome completo do arquivo (nome do arquivo + o tipo de arquivo).
+    full_name = nome_arquivo + ".xlsx"
 
     # # Defino também um valor i, que simboliza o número de cópias do arquivo de mesmo nome.
     # i = 1
