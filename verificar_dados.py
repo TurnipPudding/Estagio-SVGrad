@@ -356,6 +356,24 @@ for a in range(lenA):
         sala_fixa.append('0')
 # print(sala_fixa)
 
+
+sala_proibida = {}
+for a in range(lenA):
+    
+    if not pd.isna(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]):
+
+        cell = str(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)])
+        
+        if ',' in cell:
+            sala_proibida.update({a : cell.split(', ')})
+            for sala in cell.split(', '):
+                s = salas[salas['Sala'] == sala].index[0]
+                eta_as[a,s] = 0
+        else:
+            sala_proibida.update({a : cell})
+            s = salas[salas['Sala'] == cell].index[0]
+            eta_as[a,s] = 0
+
 """## Verificação dos Dados
 
 ### Funções Auxiliares
@@ -979,6 +997,7 @@ for grupo in grupos_de_conflitos:
                     print(
                         f"As aulas de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} foram fixadas " \
                         f"em uma sala de laboratório onde elas não cabem."
+                        f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                     )
                     custom_exit()
                 # Verifico se a aula foi fixada em uma sala onde outra aula de conflito também foi fixada.
@@ -1054,6 +1073,7 @@ for grupo in grupos_de_conflitos:
                 print(
                     f"Alguma(s) aula(s) de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} " \
                     f"não pode(m) ser(em) alocada(s) por conta do número de alunos."
+                    f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                 )
                 # print("System exit 2.\n")
                 # sys.exit()
@@ -1081,6 +1101,7 @@ for grupo in grupos_de_conflitos:
                     print(
                         f"As aulas da disciplina {df['Disciplina (código)'][aula % lenT]} foram fixadas " \
                         f"em uma sala onde elas não cabem."
+                        f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                     )
                     custom_exit()
                 # Verifico se a aula foi fixada em uma sala onde outra aula de conflito também foi fixada.
@@ -1156,6 +1177,7 @@ for grupo in grupos_de_conflitos:
                 print(
                     f"Alguma(s) aula(s) da disciplina {df['Disciplina (código)'][aula % lenT]} "
                     f"não pode(m) ser(em) alocada(s) por conta do número de alunos."
+                    f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                 )
                 # print("System exit 3.\n")
                 # sys.exit()
