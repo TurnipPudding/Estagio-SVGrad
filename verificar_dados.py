@@ -574,8 +574,12 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
         aulas_alocadas = 0
         for g in range(len(verificar_aulas)):
             if len(aux_verificar_aulas[g]) > len(aux_verificar_salas[g]) - aulas_alocadas and len(aux_verificar_aulas[g]):
-                print(f"Há muitas aulas com conflito de horário no seguinte grupo, " \
-                f"então uma troca de horários pode ser necessária, ou a diminuição do número de vagas da disciplina.")
+                print(
+                    f"Há muitas aulas com conflito de horário no seguinte grupo, "
+                    f"então uma troca de horários pode ser necessária, ou a diminuição do número de vagas da disciplina."
+                    f"\nVerifique se alguma dessas disciplinas não foi proibida de ser alocada em uma sala específica, "
+                    f"pois a poribição de uma pode afetar a alocação de outra."
+                )
                 print("Em particular, essas disciplinas que parecem estar dando problema:")
                 for aula in verificar_aulas[g]:
                     print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
@@ -796,7 +800,12 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
         aulas_alocadas = 0
         for g in range(len(verificar_aulas)):
             if len(aux_verificar_aulas[g]) > len(aux_verificar_salas[g]) - aulas_alocadas and len(aux_verificar_aulas[g]):
-                print(f"Há muitas aulas com conflito de horário no seguinte grupo, então uma troca de horários pode ser necessária:")
+                print(
+                    f"Há muitas aulas com conflito de horário no seguinte grupo, "
+                    f"então uma troca de horários pode ser necessária, ou a diminuição do número de vagas da disciplina."
+                    f"\nVerifique se alguma dessas disciplinas não foi proibida de ser alocada em uma sala específica, "
+                    f"pois a poribição de uma pode afetar a alocação de outra."
+                )
                 print("Em particular, essas disciplinas que parecem estar dando problema:")
                 for aula in verificar_aulas[g]:
                     print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
