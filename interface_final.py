@@ -533,6 +533,7 @@ def base_dados(pior_caso):
         arquivo_base = tk.StringVar(value="Selecione a planilha dos dados das aulas")
         arquivo_jptr = tk.StringVar(value="Selecione a planilha dos dados do júpiter")
         arquivo_ing = tk.StringVar(value="Selecione a planilha dos dados dos ingressantes")
+        arquivo_esp = tk.StringVar(value="Selecione a planilha com os inscritos das disciplinas com espelho")
     # Caso esteja fazendo a base de pior caso:
     else:
         # Defino as variáveis para salvar os arquivos das bases de dados.
@@ -580,6 +581,11 @@ def base_dados(pior_caso):
             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados dos ingressantes")
             if arquivo:
                 arquivo_ing.set(arquivo)
+        # Defino uma função para selecionar o arquivo com os inscritos das disciplinas com espelho.
+        def selecionar_quatro():
+            arquivo = filedialog.askopenfilename(title="Selecione a planilha com os inscritos das disciplinas com espelho")
+            if arquivo:
+                arquivo_esp.set(arquivo)
 
     # Caso não esteja fazendo a base de pior caso:
     if not pior_caso:
@@ -599,6 +605,11 @@ def base_dados(pior_caso):
         btn_selecionar_ing = tk.Button(frame, textvariable=arquivo_ing, command=selecionar_tres, wraplength=250, width=40)
         btn_selecionar_ing.grid(row=2, column=1, padx=5, pady=5)
 
+        lbl_esp = tk.Label(frame, text="Selecione a planilha com os inscritos das disciplinas com espelho")
+        lbl_esp.grid(row=3, column=0, pady=5)
+        btn_selecionar_esp = tk.Button(frame, textvariable=arquivo_esp, command=selecionar_quatro, wraplength=250, width=40)
+        btn_selecionar_esp.grid(row=3, column=1, padx=5, pady=5)
+
     # Caso esteja fazendo a base de pior caso:
     else:
         # Defino legendas e botões na janela para o usuário definir os arquivos necessários.
@@ -616,7 +627,7 @@ def base_dados(pior_caso):
     lbl_arq = tk.Label(frame, text="Insira o nome para a nova base de dados:")
     lbl_arq.grid(row=3, column=0, sticky="w", pady=5)
     campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
-    campo_arq.grid(row=3, column=1, pady=5)
+    campo_arq.grid(row=4, column=1, pady=5)
 
 
     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
@@ -634,6 +645,9 @@ def base_dados(pior_caso):
                 return
             if not arquivo_ing.get() or arquivo_ing.get() == "Selecione a planilha dos dados dos ingressantes":
                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados dos ingressantes.")
+                return
+            if not arquivo_esp.get() or arquivo_esp.get() == "Selecione a planilha com os inscritos das disciplinas com espelho":
+                messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os inscritos das disciplinas com espelho.")
                 return
 
         # Caso esteja fazendo a base de pior caso:
@@ -669,8 +683,9 @@ def base_dados(pior_caso):
                 file1 = arquivo_base.get()
                 file2 = arquivo_jptr.get()
                 file3 = arquivo_ing.get()
+                file4 = arquivo_esp.get()
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
-                subprocess.run(["python", "jupiter sheet maker.py", file1, file2, file3, nome])
+                subprocess.run(["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome])
 
                 # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
                 messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")

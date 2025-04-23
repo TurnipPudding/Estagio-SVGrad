@@ -32,7 +32,7 @@ for d in range(len(ingressantes['Disciplina (código)'])):
         ingressantes.loc[d, 'Disciplina (código)'] = \
         f"{ingressantes.loc[d, 'Disciplina (código)']}-{int(ingressantes.loc[d, 'Turma'])}"
 
-espelho = pd.read_excel(sys.argv[5])
+espelho = pd.read_excel(sys.argv[4])
 for d in range(len(espelho['Disciplina (código)'])):
     if ' ' in str(espelho.loc[d, 'Disciplina (código)']):
         espelho.loc[d, 'Disciplina (código)'] = str(espelho.loc[d, 'Disciplina (código)']).replace(' ', '')
@@ -183,7 +183,7 @@ for d in range(len(df[sheet_names[5]]['Disciplina (código)'])):
 #                     f"Número de inscritos na disciplina {df[sheet].loc[d, 'Disciplina (código)']} (disciplina de ingressantes): {df[sheet].loc[d, 'Vagas por disciplina']}"
 #                 )
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2024 copia.xlsx'
-full_name = sys.argv[4]
+full_name = sys.argv[5]
 file_path = os.path.join(os.getcwd(), "Saídas da Interface", "Planilhas de Dados", full_name)
 
 # if os.path.exists(file_path):
