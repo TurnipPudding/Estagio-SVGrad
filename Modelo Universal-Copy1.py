@@ -712,6 +712,9 @@ print(f"Valor das salas ocupadas: {ocupacao}.")
 # Com o modelo executado e a solução obtida, vou passar
 # a salvar os dados de maneiras específicas, fazer certas verificações, visualizações e relatórios com os dados obtidos.
 
+# Crio uma variável para conter o diretório da pasta que irá conter os arquivos gerados.
+pasta_dados = os.path.join(os.getcwd(), "Saídas da Interface", "Saídas do Modelo")
+
 # Crio listas para guardar os dados importantes das aulas, como o código da disciplina, o horário da aula, o número de inscritos, etc.
 codigos = []
 horarios = []
@@ -798,9 +801,10 @@ dataframe = pd.DataFrame(dados_solucao)
 # Caminho do novo arquivo Excel a ser criado.
 # Esta planilha é uma visualização técnica de como as aulas foram alocadas, mostrando a disciplina em questão, o horário da aula daquela
 # turma/disciplina. Note que as repetições aparentes das linhas se dá por conta dos diferentes horários das turmas/disciplinas.
-file_path = "Dados da solução do Modelo"
+full_name = "Dados da solução do Modelo.xlsx"
+file_path = os.path.join(pasta_dados, full_name)
 
-full_name = file_path + ".xlsx"
+# full_name = file_path + ".xlsx"
 # i = 1
 # while os.path.exists(full_name):
 #     full_name = f"{file_path} ({i}){'.xlsx'}"
@@ -812,7 +816,7 @@ file_path = full_name
 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
     dataframe.to_excel(writer, sheet_name='Resultados', index=False)
 
-print(f"Novo arquivo '{file_path}' criado e dados salvos com sucesso!")
+print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
 
 """## Conversão de tabela"""
 
@@ -882,37 +886,26 @@ sti_planilha = pd.DataFrame(dados_organizados)
 
 # Caminho do novo arquivo Excel a ser criado.
 # file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
-file_path1 = "Planilha do STI dada pelo Modelo"
+full_name = "Planilha do STI dada pelo Modelo.csv"
+file_path = os.path.join(pasta_dados, full_name)
 
-full_name = file_path1 + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{file_path1} ({i}){'.xlsx'}"
-#     i += 1
-
-file_path1 = full_name
 
 # Crio um novo arquivo Excel e escrevo os dados.
 # with pd.ExcelWriter(file_path1, engine='openpyxl') as writer:
 #     sti_planilha.to_csv(writer, sheet_name='Resultados', index=False, sep=';', encoding='latin-1')
-sti_planilha.to_csv(file_path1, index=False, sep=';', encoding='latin-1')
+sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
 
-print(f"Novo arquivo '{file_path1}' criado e dados salvos com sucesso!")
+print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
 
 for sala in sti_planilha['Sala'].unique():
     sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
     # print(len(df_aux))
-    caminho_arquivo = f"Planilha do STI dada pelo Modelo - {sala}"
+    full_name = f"Planilha do STI dada pelo Modelo - {sala}.csv"
 
-    full_name = caminho_arquivo + ".csv"
-    # i = 1
-    # while os.path.exists(full_name):
-    #     full_name = f"{caminho_arquivo} ({i}){'.csv'}"
-    #     i += 1
+    file_path = os.path.join(pasta_dados, full_name)
 
-    caminho_arquivo = full_name
-    sti_planilha_aux.to_csv(caminho_arquivo, index=False, sep=';', encoding='latin-1')
-    print(f"Novo arquivo '{caminho_arquivo}' criado e dados salvos com sucesso!")
+    sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+    print(f"Novo arquivo '{file_path}' criado e dados salvos com sucesso!")
 
 """## Factibilidade e Verificação"""
 
@@ -930,7 +923,8 @@ for sala in sti_planilha['Sala'].unique():
 # Traço o caminho até a planilha feita para o STI.
 # file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
 # file_path = "sti_planilha - m2.2.xlsx"
-sti_planilha = pd.read_csv(file_path1, on_bad_lines='skip', sep=';', encoding='latin-1')
+sti_planilha = pd.read_csv(os.path.join(pasta_dados, "Planilha do STI dada pelo Modelo.csv"),
+                            on_bad_lines='skip', sep=';', encoding='latin-1')
 
 # Crio uma variável no formato de lista com todas as turmas/disciplinas cujas aulas foram alocadas.
 alocadas = sti_planilha['Disciplina'].tolist()
@@ -953,7 +947,7 @@ for t in disciplinas:
 
 # Leio novamente a planilha contendo a solução do modelo.
 # dfv = pd.read_excel('C:/Users/gabri/Estágio/Códigos/dados_solucao - m1.2.xlsx')
-dfv = pd.read_excel(file_path)
+dfv = pd.read_excel(os.path.join(pasta_dados, "Dados da solução do Modelo.xlsx"))
 
 # Ordena o DataFrame com base na coluna desejada, no caso, 'Sala'.
 dfv = dfv.sort_values(by='Sala')
@@ -1188,17 +1182,12 @@ ajusta_largura(ws)
 
 # Por fim, salva o arquivo.
 # Por fim, salva o arquivo.
-caminho_arquivo = f"Visualização completa da Solução"
+full_name = f"Visualização completa da Solução.xlsx"
 
-full_name = caminho_arquivo + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-#     i += 1
+file_path = os.path.join(pasta_dados, full_name)
 
-caminho_arquivo = full_name
-wb.save(caminho_arquivo)
-print(f"Arquivo '{caminho_arquivo}' salvo com sucesso!")
+wb.save(file_path)
+print(f"Arquivo '{full_name}' salvo com sucesso!")
 print("Número de aulas alocadas:", aulas)
 
 """### Visualização por Curso"""
@@ -1257,17 +1246,12 @@ for c in curriculos:
 wb.remove(wb.active)
 # Por fim, salvo o arquivo.
 # Por fim, salva o arquivo.
-caminho_arquivo = f"Visualização por curso"
+full_name = f"Visualização por curso.xlsx"
 
-full_name = caminho_arquivo + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-#     i += 1
+file_path = os.path.join(pasta_dados, full_name)
 
-caminho_arquivo = full_name
-wb.save(caminho_arquivo)
-print(f"Arquivo '{caminho_arquivo}' salvo com sucesso!")
+wb.save(file_path)
+print(f"Arquivo '{file_path}' salvo com sucesso!")
 
 """### Visualização por Departamento"""
 
@@ -1340,17 +1324,12 @@ for d in departamentos:
 # Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
 wb.remove(wb.active)
 # Por fim, salvo o arquivo.
-caminho_arquivo = f"Visualização por departamento"
+full_name = f"Visualização por departamento.xlsx"
 
-full_name = caminho_arquivo + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-#     i += 1
+file_path = os.path.join(pasta_dados, full_name)
 
-caminho_arquivo = full_name
-wb.save(caminho_arquivo)
-print(f"Arquivo '{caminho_arquivo}' salvo com sucesso!")
+wb.save(file_path)
+print(f"Arquivo '{file_path}' salvo com sucesso!")
 
 """## Planilha de Distribuição"""
 
@@ -1459,292 +1438,10 @@ ws.cell(row=lenS+2,column=1).value = ocupacao
 ws.cell(row=lenS+3,column=1).value = exec
 
 # Por fim, salvo o arquivo.
-caminho_arquivo = f"Distribuição de Cursos"
+full_name = f"Distribuição de Cursos.xlsx"
 
-full_name = caminho_arquivo + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{caminho_arquivo} ({i}){'.xlsx'}"
-#     i += 1
+file_path = os.path.join(pasta_dados, full_name)
 
-caminho_arquivo = full_name
-wb.save(caminho_arquivo)
-print(f"Arquivo '{caminho_arquivo}' salvo com sucesso!")
-
-# """## Zona de testes"""
-
-# from datetime import datetime, timedelta
-# import openpyxl
-# from openpyxl import Workbook
-# from openpyxl.styles import PatternFill, Alignment, Border, Side
-# from openpyxl.utils import get_column_letter
-
-# dfv = pd.read_excel('C:/Users/gabri/Estágio/Códigos/dados_solucao.xlsx')
-
-# # Ordena o DataFrame com base na coluna desejada, por exemplo, 'Coluna'
-# dfv = dfv.sort_values(by='Sala')
-
-# # Cria uma lista dos valores únicos da coluna ordenada
-# salas1 = dfv['Sala'].unique().tolist()
-
-# # print(salas)
-
-# # Cria o workbook e o sheet
-# wb = Workbook()
-# ws = wb.active
-# ws.title = "Horário de Aulas"
-
-# # Configurar horário inicial e final
-# start_time = datetime.strptime("07:00", "%H:%M")
-# end_time = datetime.strptime("23:30", "%H:%M")
-
-# # Gerar lista de horários
-# horarios = []
-# current_time = start_time
-# while current_time <= end_time:
-#     horarios.append(current_time.strftime("%H:%M"))
-#     current_time += timedelta(minutes=30)
-
-# # print(horarios)
-
-# # Lista de horários com saltos de 30 minutos
-# time_slots = [datetime.strptime(f"{hour:02}:{minute:02}", "%H:%M")
-#               for hour in range(24) for minute in (0, 30)]
-
-# # Função para padronizar o horário
-# def padronizar_horario_intranet(horario):
-#     if ' ' in horario:
-#         horario = str(horario).replace(' ', '')
-#     if 'h' in horario:
-#         horario = str(horario).replace('h', ':')
-#     dia, intervalo = horario.split('-')
-#     start, end = intervalo.split('/')
-#     start_dt = datetime.strptime(start, "%H:%M")
-#     end_dt = datetime.strptime(end, "%H:%M")
-#     # horario_dt = datetime.strptime(h, "%H:%M")
-
-#     # Se o horário de início da disciplina é menor que 18, ou seja, 8:10,10:10,14:20 e 16:20, coloco os minutos em 0
-#     if start_dt.hour < 18:
-#         start_dt = start_dt.replace(minute=0)
-#     # Caso contrário, isto é, 18, 19 e 21, mantém normal
-
-#     # Se o horário de fim da disciplina é menor ou igual que 18, ou seja, 9:50, 11:50, 16 e 18
-#     if end_dt.hour <= 18:
-#         if end_dt.minute < 30:
-#             # end_dt.hour = end_dt.hour - 1
-#             # end_dt.minute = 30
-#             end_dt = end_dt.replace(minute=30,hour=end_dt.hour - 1)
-#         elif end_dt.minute > 30:
-#             # end_dt.minute = 30
-#             end_dt = end_dt.replace(minute=30)
-#     else:
-#         if end_dt.minute < 30 and end_dt.minute > 0:
-#             # end_dt.minute = 0
-#             end_dt = end_dt.replace(minute=0)
-#         elif end_dt.minute > 30:
-#             # end_dt.minute = 30
-#             end_dt = end_dt.replace(minute=30)
-#         else:
-#             end_dt = end_dt.replace(minute=30,hour=end_dt.hour - 1)
-#     # start_dt.replace(hour=start_dt.hour, minute=start_dt.minute).s
-#     # end_dt.replace(hour=end_dt.hour, minute=end_dt.minute)
-#     h = str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
-
-
-#     # return str(f'{dia} - {horario_ajustado.strftime("%H:%M")}')
-#     return h
-
-
-# def preencher_planilha(start_row, start_column, end_row, end_column, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
-#     # print(disciplina)
-#     green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
-
-#     # Estilo de borda
-#     thin_border = Border(
-#         left=Side(style="thin"),
-#         right=Side(style="thin"),
-#         top=Side(style="thin"),
-#         bottom=Side(style="thin")
-#     )
-
-# #     sala = "Sala 101"
-#     ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
-#     ws.cell(row=start_row, column=start_column).value = sala
-#     ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
-#     for col in range(1, end_column):
-#         ws.cell(row=start_row, column=col+1).border = thin_border
-
-#     # Preenche o horário e dias da semana
-#     for i, dia in enumerate(dias_semana, start=start):
-#         ws.cell(row=i, column=start_column-1).value = dia
-#         ws.cell(row=i, column=start_column-1).border = thin_border
-
-#     for j, horario in enumerate(horarios, start=start_column):
-#         ws.cell(row=start_row+1, column=j).value = horario
-#         ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
-#         ws.cell(row=start_row+1, column=j).border = thin_border
-
-
-#     for row in range(start, start + len(dias_semana)):
-#         for col in range(start_column, start_column + len(horarios)):
-#             ws.cell(row=row, column=col).border = thin_border
-#     # print(horarios)
-
-#     # Preenchimento das aulas nas planilhas
-#     for h in aula:
-#         # print(h)
-#         dia_h, int_h = h.split(' - ')
-#         start_h, end_h = int_h.split('/')
-#         # print(type(start_h), end_h)
-#         for i, dia in enumerate(dias_semana, start=start):
-#             if ws.cell(row=i, column=start_column-1).value == dia_h:
-#                 # print(i, start_column-1)
-#                 index_start = horarios.index(start_h)
-#                 index_end = horarios.index(end_h)
-#                 # print(index)
-#                 # print(i, index_start+2, index_end+2)
-#                 ws.merge_cells(start_row=i,start_column=index_start+2, end_row=i, end_column=index_end+2)
-#                 merged_cell = ws.cell(row=i,column=index_start+2)
-#                 merged_cell.value = disciplina[aula.index(h)]
-#                 merged_cell.fill = green_fill
-#                 merged_cell.alignment = Alignment(horizontal="center", vertical="center")
-#                 aulas += 1
-#     return aulas
-# sala_colunas = len(horarios)  # Número de colunas para mesclar por sala
-# dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
-
-
-
-
-# start_row = 1
-# start_column = 2
-# end_row = 1
-# end_column = 1 + sala_colunas
-# start = start_row + 2
-# space_between = 3
-
-# aulas = 0
-# # Itera sobre cada valor único
-# for valor in salas1:
-#     # Filtra o DataFrame para as linhas onde 'Coluna' é igual ao valor atual
-#     df_filtrado = dfv[dfv['Sala'] == valor]
-# #     print(df_filtrado['Horário'])
-#     sala = valor
-#     aux = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x))
-#     aula = aux.tolist()
-#     disciplina = df_filtrado['Disciplina'].tolist()
-#     aulas = preencher_planilha(start_row, start_column, end_row, end_column, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-
-#     # Atualizo meus dados de criação
-#     start_row = start_row + 2 + len(dias_semana) + space_between
-#     end_row = start_row
-#     start = start_row + 2
-
-
-# # Ajusta a largura das colunas com base no conteúdo
-# for col in ws.columns:
-#     max_length = 0
-#     if type(col[0]) == openpyxl.cell.cell.MergedCell:
-#         column = col[1].column_letter  # Obtém a letra da coluna
-#     else:
-#         column = col[0].column_letter
-
-#     for cell in col:
-#         try:
-#             if len(str(cell.value)) > max_length:
-#                 max_length = len(str(cell.value))
-#         except:
-#             pass
-#     adjusted_width = (max_length)
-#     ws.column_dimensions[column].width = adjusted_width
-
-# # Salva o arquivo
-# # if 'alpha' in globals():
-# #     if 'fixadas' in globals():
-# #         file_name = f"Visualização de {str(alpha).replace('.',',')} fixadas.xlsx"
-# #     else:
-# #         file_name = f"Visualização de {str(alpha).replace('.',',')}.xlsx"
-# # else:
-# #     file_name = "Tabela de horários.xlsx"
-# # file_name = "Tabela_Horario_teste.xlsx"
-# # print(file_name)
-# # print(alpha in locals())
-# file_name = "Tabela de teste da função.xlsx"
-# wb.save(file_name)
-# print("Arquivo salvo com sucesso!")
-# print("Número de aulas alocadas:", aulas)
-# # Se eu tenho os horários, então agora é a etapa para definir como preencher as linhas e colunas com os valores corretos
-
-# grupos_de_conflitos = []
-# print(theta_aal[36,29])
-# # Para cada aula 'a'
-# for a in range(lenA):
-#     # Verifico se 'a' não é horário problemático, vulgo 17/19 e 18/20:40
-#     # Se 'a' não é problemático
-#     if not (start_a[a] >= 17 and end_a[a] > 18.9 and end_a[a] <= 19) \
-#     and not (start_a[a] >= 18 and end_a[a] > 20 and start_a[a] < 19) \
-#     and not start_a[a] == 0:
-#         print(df['Disciplina (código)'][int(a % lenT)])
-#         # Verifico se já fiz outras listas de conflitos
-#         if len(grupos_de_conflitos) > 0:
-#             # Se há outras listas, crio um contador para verificar a existência da aula nas outras listas
-#             verificar = 0
-#             # Para cada outra lista de conflitos
-#             for grupo in grupos_de_conflitos:
-#                 # Se encontro 'a' numa outra lista, não quero adicioná-lo, então contabilizo ele e paro o loop
-#                 if a in grupo:
-#                     verificar += 1
-#                     break
-#             # Se eu não encontrei 'a' numa outra lista, passo para a etapa de adicionar aulas com conflito na lista atual
-#             if verificar == 0:
-#                 lista_a = []
-#                 # Para cada 'al', se theta_aal = 1, adiciono ela na lista
-#                 for al in range(lenA):
-#                     if theta_aal[a,al] == 1:
-#                         lista_a.append(al)
-#         else:
-#             lista_a = []
-#             for al in range(lenA):
-#                 if theta_aal[a,al] == 1:
-#                     lista_a.append(al)
-
-#     if len(lista_a) > 0:
-#         grupos_de_conflitos.append(lista_a)
-#         lista_a = []
-
-# print(grupos_de_conflitos)
-# print(sum([len(grupo) for grupo in grupos_de_conflitos]))
-
-# teste = time.time()
-# for subS in Sn:
-#     for n in range(len(A_t[0])):
-#         # print(f"x_[{A_t[0][n]},{subS[n]}]")
-#         a = []
-# print(time.time() - )
-
-# # Eu quero imprimir uma lista dos horários livres de cada sala
-# # Como eu tenho as escolhas feitas e as salas alocadas, devo conseguir fazer isso sem problema
-# slot_full = []
-# for s in range(lenS):
-#     slot_full.append([A[a] for a in range(lenA) if x_as[a,s].x >= 0.5])
-
-# for sala in range(len(slot_full)):
-#     slot_full[sala].sort()
-#     print(f"A sala {salas.loc[sala, 'Sala']} tem os seguintes slots preenchidos: {slot_full[sala]}, ou seja, "
-#     f"{len(slot_full[sala])} dos {len(H)} horários da sala estão ocupados.")
-# #     for a in range(lenA):
-# #         if x_as[a,s].x >= 0.5:
-# #             slot_full.append
-
-# # Exemplo de DataFrame
-# data = {'coluna': ['valor1;valor2;valor3', 'valor4,valor5,valor6']}
-# df = pd.DataFrame(data)
-
-# # Suponha que você queira acessar a célula da linha 0
-# valores_semi_colon = df.loc[0, 'coluna'].split(';')  # Separa por ponto e vírgula
-# valores_comma = df.loc[1, 'coluna'].split(',')  # Separa por vírgula
-
-# # Mostrando os resultados
-# print(valores_semi_colon)
-# print(valores_comma)
+wb.save(file_path)
+print(f"Arquivo '{file_path}' salvo com sucesso!")
 
