@@ -121,26 +121,26 @@ for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
         df.loc[s, 'Sala'] = 0
 
-if sys.argv[7]:
-    # Variável com o número suposto de alunos da pós.
-    qtd_pos = int(sys.argv[7])
-    for d in range(len(tam_t)):
-        # print(f"Valor de tam_t: {tam_t[d]}")
-        # print(f"Valor do dataframe: {df.loc[d, 'Vagas por disciplina']}")
-        if not pd.isna(df.loc[d, 'Observações']):
-            if 'Espelho' in df.loc[d, 'Observações'] or 'espelho' in df.loc[d, 'Observações']:
-                print(
-                    f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-                    f"\nAdicionando número de inscritos da pós fornecido pelo usuário."
-                )
-                # print(df.loc[d, 'Vagas por disciplina'])
-                # print(tam_t[d])
-                tam_t[d] += qtd_pos
-                df.loc[d, 'Vagas por disciplina'] += qtd_pos
-                print(
-                    f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-                )
-            # print(tam_t[d])
+# if sys.argv[7]:
+#     # Variável com o número suposto de alunos da pós.
+#     qtd_pos = int(sys.argv[7])
+#     for d in range(len(tam_t)):
+#         # print(f"Valor de tam_t: {tam_t[d]}")
+#         # print(f"Valor do dataframe: {df.loc[d, 'Vagas por disciplina']}")
+#         if not pd.isna(df.loc[d, 'Observações']):
+#             if 'Espelho' in df.loc[d, 'Observações'] or 'espelho' in df.loc[d, 'Observações']:
+#                 print(
+#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
+#                     f"\nAdicionando número de inscritos da pós fornecido pelo usuário."
+#                 )
+#                 # print(df.loc[d, 'Vagas por disciplina'])
+#                 # print(tam_t[d])
+#                 tam_t[d] += qtd_pos
+#                 df.loc[d, 'Vagas por disciplina'] += qtd_pos
+#                 print(
+#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
+#                 )
+#             # print(tam_t[d])
 
 for d in range(len(tam_t)):
     if pd.isna(df.loc[d, 'Turma']):
