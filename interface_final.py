@@ -24,13 +24,6 @@ from openpyxl import load_workbook
 from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 from datetime import datetime, timedelta # Funções para a leitura de horários de aula
 
-current_path = os.path.dirname(os.path.abspath("interface final.ipynb")) # Caminho atual do arquivo .py
-print(current_path) # Imprime o caminho atual do arquivo .py
-new_path = os.path.join(current_path, 'Saídas da Interface') # Caminho do arquivo de saída (Relatório)
-# print(new_path) # Imprime o caminho do arquivo de saída (Relatório)
-print(os.path.dirname(os.path.abspath("jupiter sheet maker.py")))
-print(os.path.dirname(os.path.abspath("verificar_dados.py")))
-
 """# Teste de Interface mais Clara
 
 ## Padroniza dataframe
@@ -298,11 +291,6 @@ def planilha_dep(jupiter):
             # Depois disso, adiciono os arquivos da lista no visor.
             for file in lista_outros:
                 file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
-        # def concluir():
-        #     # lista_outros = list(file_listbox).copy()
-        #     for l in lista_outros:
-        #         arquivo_outros += l + '\n'
-        #     print(lista_outros)
 
         # Defino um botão para adicionar arquivos, e sua posição na janela.
         add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
@@ -503,7 +491,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
 
 
     # Para finalmente concatenar os arquivos lidos, defino o nome da base de dados com o nome disponível.
-    with pd.ExcelWriter(os.path.join(new_path, nome_arquivo), engine="openpyxl") as writer:
+    with pd.ExcelWriter(os.path.join(saidas, nome_arquivo), engine="openpyxl") as writer:
         # Caso a base sendo definida não for a do Júpiter, preciso incluir a planilha de salas no arquivo.
         if not jupiter:
             df_salas.to_excel(writer, sheet_name="Salas", index=False)
@@ -705,7 +693,7 @@ def base_dados(pior_caso):
             df_pior_caso = base_pior_caso(df1, df2)
 
             # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
-            with pd.ExcelWriter(os.path.join(new_path, nome), engine="openpyxl") as writer:
+            with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
                 for sh, df_sh in df_pior_caso.items():
                     df_sh.to_excel(writer, sheet_name=sh, index=False)
 
@@ -1258,7 +1246,7 @@ def Novo_edit_config(file_name, verify):
 
 
             # Após isso, rodo o script com as configurações necessárias.
-            roda_script(script="C:/Users/gabri/Estágio/Códigos/Demonstração/verificar_dados.py",
+            roda_script(script="verificar_dados.py",
                     nome=file_name, peso_x="", peso_y="", peso_v="", peso_z="",
                     alpha="", qtd_pos=aux_q, pref="")
 
@@ -1286,7 +1274,7 @@ def Novo_edit_config(file_name, verify):
         # Análogo aos botões que são definidos no menu de configurações do modelo.
         ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
         ttk.Button(frame2, text="Verificar com Recomendados",
-                   command=lambda: roda_script(script="C:/Users/gabri/Estágio/Códigos/Demonstração/verificar_dados.py",
+                   command=lambda: roda_script(script="verificar_dados.py",
                                                nome=file_name, peso_x='1', peso_y='500', peso_v="",
                                                peso_z='10', alpha='0.85', qtd_pos='20', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
@@ -1359,7 +1347,7 @@ def analise_vazios():
 
 
         # Com o arquivo necessário selecionado, e os nomes dos novos arquivos obtidos, chamo a função que fará a análise dos espaços livres.
-        criar_visualizacao_vazia(visu.get(), salas.get(), caminho_arquivo.get(), caminho_arquivo1.get(), )
+        criar_visualizacao_de_vazias(visu.get(), salas.get(), caminho_arquivo.get(), caminho_arquivo1.get(), )
 
         # E destruo a janela após a conclusão do processo.
         nova_janela.destroy()
@@ -1395,7 +1383,7 @@ def analise_vazios():
 """### Criar Visualização em cima de Visualização"""
 
 # Função que faz a análise de espaços livres restantes após a alocação feita pelo modelo.
-def criar_visualizacao_vazia(file_path, file_path_salas, caminho_arquivo, caminho_arquivo1):
+def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, caminho_arquivo1):
     # Defino uma variável que recebe a planilha do Excel da Visualização Completa da Solução do modelo.
     wb = load_workbook(file_path)
     ws = wb.active
@@ -1576,8 +1564,8 @@ def criar_visualizacao_vazia(file_path, file_path_salas, caminho_arquivo, caminh
         caminho_arquivo1 = caminho_arquivo1 + ".xlsx"
 
     # Por fim, salvo os arquivos criados com seus respectivos métodos.
-    wb.save(os.path.join(new_path, caminho_arquivo))
-    df_vazio.to_excel(os.path.join(new_path, caminho_arquivo1), sheet_name="Resultados", index=False)
+    wb.save(os.path.join(saidas, caminho_arquivo))
+    df_vazio.to_excel(os.path.join(saidas, caminho_arquivo1), sheet_name="Resultados", index=False)
 
     # E abro uma janela avisando o usuário de que os arquivos foram salvos.
     messagebox.showinfo("", f"Arquivo {caminho_arquivo} criado com sucesso!\n\nArquivo {caminho_arquivo1} criado com sucesso!")
@@ -2036,6 +2024,31 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
             base[sheet].to_excel(writer, sheet_name=sheet, index=False)
 
 """# Interface"""
+
+# Nome da pasta que você quer verificar/criar
+nome_pasta = "Saídas da Interface"
+
+# Caminho completo da pasta, relativo ao diretório atual
+caminho_pasta = os.path.join(os.getcwd(), nome_pasta)
+
+# Verifica se a pasta existe
+if not os.path.exists(caminho_pasta):
+    os.makedirs(caminho_pasta)
+
+# Caminho da pasta principal
+pasta_principal = os.path.join(os.getcwd(), "Saídas da Interface")
+
+# Subpastas a serem criadas
+subpastas = ["Planilhas de Dados", "Saídas do Modelo"]
+
+# Criar cada subpasta dentro da pasta principal
+for nome in subpastas:
+    caminho_subpasta = os.path.join(pasta_principal, nome)
+    if not os.path.exists(caminho_subpasta):
+        os.makedirs(caminho_subpasta)
+
+# Crio uma variável para conter o caminho da pasta "Saídas da Interface"
+saidas = os.path.join(os.getcwd(), "Saídas da Interface")
 
 # Aqui é onde a janela principal da interface (root) é montada.
 # Defino ela com a variável root, e dou-lhe um título.
