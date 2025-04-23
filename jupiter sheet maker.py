@@ -31,12 +31,21 @@ for d in range(len(ingressantes['Disciplina (código)'])):
     if '-' not in str(ingressantes.loc[d, 'Disciplina (código)']):
         ingressantes.loc[d, 'Disciplina (código)'] = \
         f"{ingressantes.loc[d, 'Disciplina (código)']}-{int(ingressantes.loc[d, 'Turma'])}"
+
+espelho = pd.read_excel(sys.argv[5])
+for d in range(len(espelho['Disciplina (código)'])):
+    if ' ' in str(espelho.loc[d, 'Disciplina (código)']):
+        espelho.loc[d, 'Disciplina (código)'] = str(espelho.loc[d, 'Disciplina (código)']).replace(' ', '')
+    if '-' not in str(espelho.loc[d, 'Disciplina (código)']):
+        espelho.loc[d, 'Disciplina (código)'] = \
+        f"{espelho.loc[d, 'Disciplina (código)']}-{int(espelho.loc[d, 'Turma'])}"
         
 for sheet in sheet_names_jpter[0:]:
     vagas[sheet] = vagas[sheet].fillna(0)
 
 # df = pd.read_excel('C:/Users/gabri/Estágio/Dados/Dados_das_salas_copia.xlsx', sheet_name=sheets)
 
+# Para as planilhas de SME, SMA, SCC e SSC (4 primeiras planilhas depois da de salas)
 for sheet in sheet_names[1:5]:
     df[sheet].columns = [col.replace("\n", " ") for col in df[sheet].columns]
     
@@ -82,10 +91,17 @@ for sheet in sheet_names[1:5]:
             vagas[sheet].loc[index, colunas[lista2[3]]]
         else:
             df[sheet].loc[d, 'Vagas por disciplina'] = 0
+
         if pd.isna(df[sheet].loc[d, 'Observações']) or df[sheet].loc[d, 'Observações'] != 0:
             if "Ingressantes" in str(df[sheet].loc[d, 'Observações']):
                 index = (ingressantes['Disciplina (código)'].tolist()).index(df[sheet].loc[d, 'Disciplina (código)'])
                 df[sheet].loc[d, 'Vagas por disciplina'] += ingressantes.loc[index, 'Ingressantes']
+
+        if pd.isna(df[sheet].loc[d, 'Observações']) or df[sheet].loc[d, 'Observações'] != 0:
+            if "Espelho" in str(df[sheet].loc[d, 'Observações']):
+                index = (espelho['Disciplina (código)'].tolist()).index(df[sheet].loc[d, 'Disciplina (código)'])
+                df[sheet].loc[d, 'Vagas por disciplina'] += espelho.loc[index, 'Espelho']
+            
             
             
     
@@ -134,7 +150,12 @@ for d in range(len(df[sheet_names[5]]['Disciplina (código)'])):
         if "Ingressantes" in str(df[sheet_names[5]].loc[d, 'Observações']):
             index = (ingressantes['Disciplina (código)'].tolist()).index(df[sheet_names[5]].loc[d, 'Disciplina (código)'])
             df[sheet_names[5]].loc[d, 'Vagas por disciplina'] += ingressantes.loc[index, 'Ingressantes']
+    if pd.isna(df[5].loc[d, 'Observações']) or df[5].loc[d, 'Observações'] != 0:
+            if "Espelho" in str(df[5].loc[d, 'Observações']):
+                index = (espelho['Disciplina (código)'].tolist()).index(df[5].loc[d, 'Disciplina (código)'])
+                df[5].loc[d, 'Vagas por disciplina'] += espelho.loc[index, 'Espelho']
             
+
 # curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
 # ingressantes = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Endgame/Testes/Dados dos ingressantes.xlsx')
 # for sheet in sheet_names[1:]:
