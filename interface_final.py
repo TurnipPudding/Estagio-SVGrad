@@ -501,7 +501,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
             files[sh].to_excel(writer, sheet_name=sheets[sh], index=False)
 
     # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-    messagebox.showinfo("", f"Arquivo {nome_arquivo} criado com sucesso!")
+    messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
 
 """## Construir base de dados completa"""
 
@@ -698,7 +698,7 @@ def base_dados(pior_caso):
                     df_sh.to_excel(writer, sheet_name=sh, index=False)
 
             # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-            messagebox.showinfo("", f"Arquivo {nome} criado com sucesso!")
+            messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
 
         # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
         # Terminada a criação da base de dados, destruo a janela de seleção.
@@ -1568,7 +1568,10 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
     df_vazio.to_excel(os.path.join(saidas, caminho_arquivo1), sheet_name="Resultados", index=False)
 
     # E abro uma janela avisando o usuário de que os arquivos foram salvos.
-    messagebox.showinfo("", f"Arquivo {caminho_arquivo} criado com sucesso!\n\nArquivo {caminho_arquivo1} criado com sucesso!")
+    messagebox.showinfo("Suesso", 
+                        f"Arquivo {caminho_arquivo} criado com sucesso!\n\
+                        \nArquivo {caminho_arquivo1} criado com sucesso!\n\
+                        Verifique a pasta {saidas} para encontrá-lo.")
 
 """# Preencher Planilha de Dados"""
 
@@ -2048,7 +2051,7 @@ for nome in subpastas:
         os.makedirs(caminho_subpasta)
 
 # Crio uma variável para conter o caminho da pasta "Saídas da Interface"
-saidas = os.path.join(os.getcwd(), "Saídas da Interface")
+saidas = os.path.join(os.getcwd(), "Saídas da Interface", "Planilhas de Dados")
 
 # Aqui é onde a janela principal da interface (root) é montada.
 # Defino ela com a variável root, e dou-lhe um título.

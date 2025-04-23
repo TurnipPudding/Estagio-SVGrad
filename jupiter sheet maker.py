@@ -162,7 +162,8 @@ for d in range(len(df[sheet_names[5]]['Disciplina (código)'])):
 #                     f"Número de inscritos na disciplina {df[sheet].loc[d, 'Disciplina (código)']} (disciplina de ingressantes): {df[sheet].loc[d, 'Vagas por disciplina']}"
 #                 )
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2024 copia.xlsx'
-file_path = sys.argv[4]
+full_name = sys.argv[4]
+file_path = os.path.join(os.getcwd(), "Saídas da Interface", "Planilhas de Dados", full_name)
 
 # if os.path.exists(file_path):
 #     os.remove(file_path)
@@ -181,4 +182,4 @@ dfs = {
 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
     for sheet_name, df in dfs.items():
         df.to_excel(writer, sheet_name=sheet_name, index=False)
-print("Conversão dos dados das planilhas do Júpiter terminadas.")
+# print("Conversão dos dados das planilhas do Júpiter terminadas.")
