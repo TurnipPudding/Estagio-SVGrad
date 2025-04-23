@@ -362,12 +362,18 @@ sala_proibida = {}
 for a in range(lenA):
     
     if not pd.isna(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]):
+
         cell = str(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)])
         
         if ',' in cell:
             sala_proibida.update({a : cell.split(', ')})
+            for sala in cell.split(', '):
+                s = salas[salas['Sala'] == sala].index[0]
+                eta_as[a,s] = 0
         else:
             sala_proibida.update({a : cell})
+            s = salas[salas['Sala'] == cell].index[0]
+            eta_as[a,s] = 0
         
 
 
@@ -484,16 +490,16 @@ for a in range(lenA):
             # E garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
             model += xsum(x_as[a,s] for s in range(lenS)) == 1
 
-        if a in sala_proibida.keys():
-            proibir_sala = sala_proibida.get(a)
-            print(proibir_sala)
-            if len(proibir_sala) > 1:
-                # proibir_sala = proibir_sala.split(', ')
-                aux_s = [salas['Sala'].tolist().index(proibir_sala[s]) for s in range(len(proibir_sala))]
-                model += xsum(x_as[a,s] for s in aux_s) == 0
-            else:
-                s = salas['Sala'].tolist().index(proibir_sala)
-                model += x_as[a,s] == 0
+        # if a in sala_proibida.keys():
+        #     proibir_sala = sala_proibida.get(a)
+        #     print(proibir_sala)
+        #     if len(proibir_sala) > 1:
+        #         # proibir_sala = proibir_sala.split(', ')
+        #         aux_s = [salas['Sala'].tolist().index(proibir_sala[s]) for s in range(len(proibir_sala))]
+        #         model += xsum(x_as[a,s] for s in aux_s) == 0
+        #     else:
+        #         s = salas['Sala'].tolist().index(proibir_sala)
+        #         model += x_as[a,s] == 0
                 
             # print(proibir_sala)
             # aux_s = [salas['Sala'].tolist().index(proibir_sala[s]) for s in range(len(proibir_sala))]
