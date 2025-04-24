@@ -625,7 +625,7 @@ def base_dados(pior_caso):
 
     # Defino a legenda e o campo na janela para o usuário inserir o nome da nova base de dados.
     lbl_arq = tk.Label(frame, text="Insira o nome para a nova base de dados:")
-    lbl_arq.grid(row=3, column=0, sticky="w", pady=5)
+    lbl_arq.grid(row=4, column=0, sticky="w", pady=5)
     campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
     campo_arq.grid(row=4, column=1, pady=5)
 
