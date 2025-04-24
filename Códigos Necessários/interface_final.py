@@ -209,7 +209,7 @@ def planilha_dep(jupiter):
 
 
     # Crio uma legenda para ficar ao lado do botão.
-    lbl_sme = tk.Label(frame, text="Selecione a planilha do SME")
+    lbl_sme = tk.Label(frame, text="Selecione a planilha do SME:")
     # Defino a posição do texto na janela.
     lbl_sme.grid(row=0, column=0, pady=5, sticky="w")
     # Crio o botão para salvar o arquivo do SME.
@@ -218,17 +218,17 @@ def planilha_dep(jupiter):
     btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
 
     # As linhas a seguir são análogas.
-    lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA")
+    lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA:")
     lbl_sma.grid(row=1, column=0, pady=5, sticky="w")
     btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
     btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
 
-    lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC")
+    lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC:")
     lbl_scc.grid(row=2, column=0, pady=5, sticky="w")
     btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
     btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
 
-    lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC")
+    lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC:")
     lbl_ssc.grid(row=3, column=0, pady=5, sticky="w")
     btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
     btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
@@ -236,12 +236,12 @@ def planilha_dep(jupiter):
     # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
     if not jupiter:
         # Defino algumas legendas e botões adicionais.
-        lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos")
+        lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
         lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
         btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
         btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
 
-        lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas")
+        lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas:")
         lbl_salas.grid(row=5, column=0, pady=5, sticky="w")
         btn_selecionar_salas = tk.Button(frame, textvariable=arquivo_salas, command=selecionar_salas, wraplength=250, width=40)
         btn_selecionar_salas.grid(row=5, column=1, padx=5, pady=5)
@@ -591,22 +591,22 @@ def base_dados(pior_caso):
     if not pior_caso:
         # Defino legendas e botões na janela para o usuário definir os arquivos necessários.
         lbl_base = tk.Label(frame, text="Selecione a planilha dos dados das aulas")
-        lbl_base.grid(row=0, column=0, pady=5)
+        lbl_base.grid(row=0, column=0, pady=5, sticky="w")
         btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_um, wraplength=250, width=40)
         btn_selecionar_base.grid(row=0, column=1, padx=5, pady=5)
 
         lbl_jptr = tk.Label(frame, text="Selecione a planilha dos dados do júpiter")
-        lbl_jptr.grid(row=1, column=0, pady=5)
+        lbl_jptr.grid(row=1, column=0, pady=5, sticky="w")
         btn_selecionar_jptr = tk.Button(frame, textvariable=arquivo_jptr, command=selecionar_dois, wraplength=250, width=40)
         btn_selecionar_jptr.grid(row=1, column=1, padx=5, pady=5)
 
         lbl_ing = tk.Label(frame, text="Selecione a planilha dos dados dos ingressantes")
-        lbl_ing.grid(row=2, column=0, pady=5)
+        lbl_ing.grid(row=2, column=0, pady=5, sticky="w")
         btn_selecionar_ing = tk.Button(frame, textvariable=arquivo_ing, command=selecionar_tres, wraplength=250, width=40)
         btn_selecionar_ing.grid(row=2, column=1, padx=5, pady=5)
 
         lbl_esp = tk.Label(frame, text="Selecione a planilha com os inscritos das disciplinas com espelho")
-        lbl_esp.grid(row=3, column=0, pady=5)
+        lbl_esp.grid(row=3, column=0, pady=5, sticky="w")
         btn_selecionar_esp = tk.Button(frame, textvariable=arquivo_esp, command=selecionar_quatro, wraplength=250, width=40)
         btn_selecionar_esp.grid(row=3, column=1, padx=5, pady=5)
 
@@ -614,12 +614,12 @@ def base_dados(pior_caso):
     else:
         # Defino legendas e botões na janela para o usuário definir os arquivos necessários.
         lbl_base1 = tk.Label(frame, text="Selecione a base de dados mais recente")
-        lbl_base1.grid(row=0, column=0, pady=5)
+        lbl_base1.grid(row=0, column=0, pady=5, sticky="w")
         btn_selecionar_base1 = tk.Button(frame, textvariable=arquivo_base1, command=selecionar_um, wraplength=250, width=40)
         btn_selecionar_base1.grid(row=0, column=1, padx=5, pady=5)
 
         lbl_base2 = tk.Label(frame, text="Selecione a base de dados mais antiga")
-        lbl_base2.grid(row=1, column=0, pady=5)
+        lbl_base2.grid(row=1, column=0, pady=5, sticky="w")
         btn_selecionar_base2 = tk.Button(frame, textvariable=arquivo_base2, command=selecionar_dois, wraplength=250, width=40)
         btn_selecionar_base2.grid(row=1, column=1, padx=5, pady=5)
 
@@ -1563,7 +1563,7 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
     messagebox.showinfo("Suesso", 
                         f"Arquivo {caminho_arquivo} criado com sucesso!\n\
                         \nArquivo {caminho_arquivo1} criado com sucesso!\n\
-                        Verifique a pasta {saidas} para encontrá-lo.")
+                        \nVerifique a pasta {saidas} para encontrá-lo.")
 
 """# Preencher Planilha de Dados"""
 
@@ -1703,12 +1703,12 @@ def preencher_planilha_dados():
 
         # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
         messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
-        - {arquivo_sme.get().replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {arquivo_sma.get().replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {arquivo_scc.get().replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {arquivo_ssc.get().replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {arquivo_outros.get().replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {arquivo_base.get().replace('.xlsx', ' Preenchido.xlsx')}\n")
+        - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
 
         # E fecho a janela que havia sido criada.
         nova_janela.destroy()
