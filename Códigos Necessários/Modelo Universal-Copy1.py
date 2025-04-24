@@ -1244,7 +1244,7 @@ full_name = f"Visualização por curso.xlsx"
 file_path = os.path.join(pasta_dados, full_name)
 
 wb.save(file_path)
-print(f"Arquivo '{file_path}' salvo com sucesso!")
+print(f"Arquivo '{full_name}' salvo com sucesso!")
 
 """### Visualização por Departamento"""
 
@@ -1322,7 +1322,7 @@ full_name = f"Visualização por departamento.xlsx"
 file_path = os.path.join(pasta_dados, full_name)
 
 wb.save(file_path)
-print(f"Arquivo '{file_path}' salvo com sucesso!")
+print(f"Arquivo '{full_name}' salvo com sucesso!")
 
 """## Planilha de Distribuição"""
 
@@ -1436,5 +1436,5 @@ full_name = f"Distribuição de Cursos.xlsx"
 file_path = os.path.join(pasta_dados, full_name)
 
 wb.save(file_path)
-print(f"Arquivo '{file_path}' salvo com sucesso!")
+print(f"Arquivo '{full_name}' salvo com sucesso!")
 
