@@ -430,8 +430,8 @@ if sys.argv[5] and sys.argv[6]:
     alpha = float(sys.argv[6])
 
     obj += peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS))
-if sys.argv[8]:
-    peso_pref = int(sys.argv[8])
+if sys.argv[7]:
+    peso_pref = int(sys.argv[7])
 
     obj += peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS))
 # Função Objetivo.

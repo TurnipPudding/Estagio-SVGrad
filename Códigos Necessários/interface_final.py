@@ -813,7 +813,7 @@ def execute():
 
 # Função que roda um script em Python. Seus parâmetros são variáveis fornecidas pelo usuário, como qual script
 # o nome da base de dados que será lida, e o peso das variáveis do modelo.
-def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, qtd_pos, pref):
+def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
 
     # Crio uma janela para mostrar a saída do script, como prints importantes e até saídas de erros.
     output_window = tk.Toplevel(root)
@@ -825,7 +825,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, qtd_pos, pr
     try:
         # Executo o script utilizando subprocess.
         process = subprocess.Popen(
-            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, qtd_pos, pref],
+            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -898,8 +898,8 @@ def Novo_edit_config(file_name, verify):
     var52 = IntVar()
     var61 = IntVar()
     var62 = IntVar()
-    var71 = IntVar()
-    var72 = IntVar()
+    # var71 = IntVar()
+    # var72 = IntVar()
 
     # Defino uma função que atualiza o estado de cada checkbox após marcar, ou desmarcar, um deles.
     def atualizar_estado():
@@ -992,17 +992,17 @@ def Novo_edit_config(file_name, verify):
         # Esse par de variáveis não está separado com as demais por elas serem associadas com os únicos valores necessários
         # tanto para a verificação dos dados, quanto para a execução do modelo, que são o número de alunos da pós a serem
         # considerados em disciplinas com espelho.
-        if var71.get():
-            checkbox72.config(state=DISABLED)
-        else:
-            checkbox72.config(state=NORMAL)
-        if var72.get():
-            checkbox71.config(state=DISABLED)
-            qtd_pos.config(state=NORMAL)
-        else:
-            checkbox71.config(state=NORMAL)
-            qtd_pos.delete(0, "end")
-            qtd_pos.config(state=DISABLED)
+        # if var71.get():
+        #     checkbox72.config(state=DISABLED)
+        # else:
+        #     checkbox72.config(state=NORMAL)
+        # if var72.get():
+        #     checkbox71.config(state=DISABLED)
+        #     qtd_pos.config(state=NORMAL)
+        # else:
+        #     checkbox71.config(state=NORMAL)
+        #     qtd_pos.delete(0, "end")
+        #     qtd_pos.config(state=DISABLED)
 
     # Caso o menu não seja o de configurar a verificação dos dados:
     if not verify:
@@ -1130,20 +1130,20 @@ def Novo_edit_config(file_name, verify):
         preencher uma sala que poderia ser usada para alguma outra função, por ela ser mais fácil de ser preenchida, \n\
         do que mantê-la desocupada para a pós.")
 
-    ttk.Separator(frame2, orient="horizontal").grid(row=20, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-    lblq = tk.Label(frame2, text="Defina uma quantidade de alunos da pós para as disciplinas com espelho:")
-    lblq.grid(row=21,column=0,sticky='w',pady=5)
-    checkbox71 = Checkbutton(frame2, text="Recomendado: 20", variable=var71, command=atualizar_estado)
-    checkbox71.grid(row=21, column=1, sticky='w', pady=5)
-    checkbox72 = Checkbutton(frame2, text="Personalizado: ", variable=var72, command=atualizar_estado)
-    checkbox72.grid(row=21, column=2, sticky='w', pady=5)
-    qtd_pos = Entry(frame2, state=DISABLED)
-    qtd_pos.grid(row=22,column=2,sticky='e',pady=5)
-    Tooltip(lblq, "A quantidade de alunos da pós refere-se a um valor sugerido pelo usuário \n\
-    para simbolizar quantos alunos da pós-graduação farão \n\
-    uma disciplina da graduação que é espelhada com a pós. \n\
-    Esse valor será aplicado no número de inscritos de QUALQUER \n\
-    disciplina que tenha espelho com a pós.")
+    # ttk.Separator(frame2, orient="horizontal").grid(row=20, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    # lblq = tk.Label(frame2, text="Defina uma quantidade de alunos da pós para as disciplinas com espelho:")
+    # lblq.grid(row=21,column=0,sticky='w',pady=5)
+    # checkbox71 = Checkbutton(frame2, text="Recomendado: 20", variable=var71, command=atualizar_estado)
+    # checkbox71.grid(row=21, column=1, sticky='w', pady=5)
+    # checkbox72 = Checkbutton(frame2, text="Personalizado: ", variable=var72, command=atualizar_estado)
+    # checkbox72.grid(row=21, column=2, sticky='w', pady=5)
+    # qtd_pos = Entry(frame2, state=DISABLED)
+    # qtd_pos.grid(row=22,column=2,sticky='e',pady=5)
+    # Tooltip(lblq, "A quantidade de alunos da pós refere-se a um valor sugerido pelo usuário \n\
+    # para simbolizar quantos alunos da pós-graduação farão \n\
+    # uma disciplina da graduação que é espelhada com a pós. \n\
+    # Esse valor será aplicado no número de inscritos de QUALQUER \n\
+    # disciplina que tenha espelho com a pós.")
 
     # Defino uma função que detecta as configurações escolhidas pelo usuário.
     def executar_configs_perso():
@@ -1234,36 +1234,36 @@ def Novo_edit_config(file_name, verify):
             else:
                 aux_p = pref.get()
 
-            if var72.get() and not qtd_pos.get():
-                messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
-                return
-            elif var71.get():
-                aux_q = '20'
-            else:
-                aux_q = qtd_pos.get()
+            # if var72.get() and not qtd_pos.get():
+            #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
+            #     return
+            # elif var71.get():
+            #     aux_q = '20'
+            # else:
+            #     aux_q = qtd_pos.get()
 
             # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
             # então só resta rodar o script com elas.
             roda_script(script="Modelo Universal-Copy1.py",
                     nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
-                    alpha=aux_a, qtd_pos=aux_q, pref=aux_p)
+                    alpha=aux_a, pref=aux_p)
 
         # Caso o menu seja o de configurar a verificação dos dados:
         else:
-            # Faço apenas a verificação das checkbox referentes à quantida de aluno da pós das disciplinas espelho, como anteriormente.
-            if var72.get() and not qtd_pos.get():
-                messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
-                return
-            elif var71.get():
-                aux_q = '20'
-            else:
-                aux_q = qtd_pos.get()
+            # # Faço apenas a verificação das checkbox referentes à quantida de aluno da pós das disciplinas espelho, como anteriormente.
+            # if var72.get() and not qtd_pos.get():
+            #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
+            #     return
+            # elif var71.get():
+            #     aux_q = '20'
+            # else:
+            #     aux_q = qtd_pos.get()
 
 
             # Após isso, rodo o script com as configurações necessárias.
             roda_script(script="verificar_dados.py",
                     nome=file_name, peso_x="", peso_y="", peso_v="", peso_z="",
-                    alpha="", qtd_pos=aux_q, pref="")
+                    alpha="", pref="")
 
 
 
@@ -1277,7 +1277,7 @@ def Novo_edit_config(file_name, verify):
         ttk.Button(frame2, text="Executar com Recomendados",
                    command=lambda: roda_script(script="Modelo Universal-Copy1.py",
                                                nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                               peso_z='10', alpha='0.85', qtd_pos='20', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
+                                               peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
         # Defino o botão de Executar o Modelo com os parâmetros Personalizados, que chama a função definida anteriormente
         # para checar as configurações personalizadas pelo usuário.
@@ -1291,7 +1291,7 @@ def Novo_edit_config(file_name, verify):
         ttk.Button(frame2, text="Verificar com Recomendados",
                    command=lambda: roda_script(script="verificar_dados.py",
                                                nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                               peso_z='10', alpha='0.85', qtd_pos='20', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
+                                               peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
         ttk.Button(frame2, text="Verificar com Personalizados",
                    command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
