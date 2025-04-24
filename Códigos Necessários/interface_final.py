@@ -798,7 +798,7 @@ def execute():
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de verificação de dados.
     vd1 = ttk.Button(frame, text="Selecionar Verificação de Dados",
-                     command=lambda: roda_script("verifica_dados.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
+                     command=lambda: roda_script("verificar_dados.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
     vd1.grid(row=4, column=0, pady=5)
 
     # Defino uma linha de separação horizontal na janela, separando o botão de verificação de dados do botão de execução do modelo.

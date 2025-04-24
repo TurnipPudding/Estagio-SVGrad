@@ -804,13 +804,6 @@ dataframe = pd.DataFrame(dados_solucao)
 full_name = "Dados da solução do Modelo.xlsx"
 file_path = os.path.join(pasta_dados, full_name)
 
-# full_name = file_path + ".xlsx"
-# i = 1
-# while os.path.exists(full_name):
-#     full_name = f"{file_path} ({i}){'.xlsx'}"
-#     i += 1
-
-file_path = full_name
 
 # Crio um novo arquivo Excel e escrevo os dados.
 with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
@@ -905,7 +898,7 @@ for sala in sti_planilha['Sala'].unique():
     file_path = os.path.join(pasta_dados, full_name)
 
     sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-    print(f"Novo arquivo '{file_path}' criado e dados salvos com sucesso!")
+    print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
 
 """## Factibilidade e Verificação"""
 
