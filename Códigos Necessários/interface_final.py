@@ -798,7 +798,7 @@ def execute():
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de verificação de dados.
     vd1 = ttk.Button(frame, text="Selecionar Verificação de Dados",
-                     command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get(), verify=True))
+                     command=lambda: roda_script("verifica_dados.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
     vd1.grid(row=4, column=0, pady=5)
 
     # Defino uma linha de separação horizontal na janela, separando o botão de verificação de dados do botão de execução do modelo.
@@ -806,7 +806,7 @@ def execute():
     em_separator.grid(row=5, column=0, sticky="ew", pady=(0,10))
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de execução do modelo.
-    em = ttk.Button(frame, text="Selecionar Modelo", command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get(), verify=False))
+    em = ttk.Button(frame, text="Selecionar Modelo", command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get()))
     em.grid(row=6, column=0, pady=5)
 
 """### Roda Script"""
@@ -864,7 +864,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
 # Função que cria uma nova janela para configurar os parâmetros da verificação ou do modelo antes de chamar o script.
 # Seus parâmetros são o nome da base de dados (file_name) e uma variável booleana 'verify', que recebe o valor True quando
 # o menu é de configurações da Verificação dos Dados, e False quando o menu é de configurações para Executar o Modelo
-def Novo_edit_config(file_name, verify):
+def Novo_edit_config(file_name):
 
     # Faço uma breve verificação para saber se foi fornecida uma base de dados.
     if file_name == "Selecione uma base de dados":
@@ -903,91 +903,89 @@ def Novo_edit_config(file_name, verify):
 
     # Defino uma função que atualiza o estado de cada checkbox após marcar, ou desmarcar, um deles.
     def atualizar_estado():
-        # Caso o menu não seja o de configurar a verificação dos dados:
-        if not verify:
-            # Se o checkbox da primeira linha e primeira coluna estiver marcado:
-            if var11.get():
-                # Desabilito o checkbox da primeira linha e segunda coluna.
-                checkbox12.config(state=DISABLED)
-            # Se ele não estiver mais marcado:
-            else:
-                # Retorno o checkbox da primeira linha e segunda coluna ao normal.
-                checkbox12.config(state=NORMAL)
-            # Se o checkbox da primeira linha e segunda coluna estiver marcado:
-            if var12.get():
-                # Desabilito o checkbox da primeira linha e segunda coluna.
-                checkbox11.config(state=DISABLED)
-                # E habilito o campo correspondente para o usuário inserir um valor.
-                peso_x.config(state=NORMAL)
-            # Se ele não estiver mais marcado:
-            else:
-                # Retorno o checkbox da primeira linha e primeira coluna ao normal.
-                checkbox11.config(state=NORMAL)
-                # E deleto o conteúdo inserido no campo, além de desabilitá-lo novamente.
-                peso_x.delete(0, "end")
-                peso_x.config(state=DISABLED)
+        # Se o checkbox da primeira linha e primeira coluna estiver marcado:
+        if var11.get():
+            # Desabilito o checkbox da primeira linha e segunda coluna.
+            checkbox12.config(state=DISABLED)
+        # Se ele não estiver mais marcado:
+        else:
+            # Retorno o checkbox da primeira linha e segunda coluna ao normal.
+            checkbox12.config(state=NORMAL)
+        # Se o checkbox da primeira linha e segunda coluna estiver marcado:
+        if var12.get():
+            # Desabilito o checkbox da primeira linha e segunda coluna.
+            checkbox11.config(state=DISABLED)
+            # E habilito o campo correspondente para o usuário inserir um valor.
+            peso_x.config(state=NORMAL)
+        # Se ele não estiver mais marcado:
+        else:
+            # Retorno o checkbox da primeira linha e primeira coluna ao normal.
+            checkbox11.config(state=NORMAL)
+            # E deleto o conteúdo inserido no campo, além de desabilitá-lo novamente.
+            peso_x.delete(0, "end")
+            peso_x.config(state=DISABLED)
 
-            # As demais condições são análogas às anteriores.
+        # As demais condições são análogas às anteriores.
 
-            if var21.get():
-                checkbox22.config(state=DISABLED)
-            else:
-                checkbox22.config(state=NORMAL)
-            if var22.get():
-                checkbox21.config(state=DISABLED)
-                peso_y.config(state=NORMAL)
-            else:
-                checkbox21.config(state=NORMAL)
-                peso_y.delete(0, "end")
-                peso_y.config(state=DISABLED)
+        if var21.get():
+            checkbox22.config(state=DISABLED)
+        else:
+            checkbox22.config(state=NORMAL)
+        if var22.get():
+            checkbox21.config(state=DISABLED)
+            peso_y.config(state=NORMAL)
+        else:
+            checkbox21.config(state=NORMAL)
+            peso_y.delete(0, "end")
+            peso_y.config(state=DISABLED)
 
-            if var31.get():
-                checkbox32.config(state=DISABLED)
-            else:
-                checkbox32.config(state=NORMAL)
-            if var32.get():
-                checkbox31.config(state=DISABLED)
-                peso_v.config(state=NORMAL)
-            else:
-                checkbox31.config(state=NORMAL)
-                peso_v.delete(0, "end")
-                peso_v.config(state=DISABLED)
+        if var31.get():
+            checkbox32.config(state=DISABLED)
+        else:
+            checkbox32.config(state=NORMAL)
+        if var32.get():
+            checkbox31.config(state=DISABLED)
+            peso_v.config(state=NORMAL)
+        else:
+            checkbox31.config(state=NORMAL)
+            peso_v.delete(0, "end")
+            peso_v.config(state=DISABLED)
 
-            if var41.get():
-                checkbox42.config(state=DISABLED)
-            else:
-                checkbox42.config(state=NORMAL)
-            if var42.get():
-                checkbox41.config(state=DISABLED)
-                peso_z.config(state=NORMAL)
-            else:
-                checkbox41.config(state=NORMAL)
-                peso_z.delete(0, "end")
-                peso_z.config(state=DISABLED)
+        if var41.get():
+            checkbox42.config(state=DISABLED)
+        else:
+            checkbox42.config(state=NORMAL)
+        if var42.get():
+            checkbox41.config(state=DISABLED)
+            peso_z.config(state=NORMAL)
+        else:
+            checkbox41.config(state=NORMAL)
+            peso_z.delete(0, "end")
+            peso_z.config(state=DISABLED)
 
-            if var51.get():
-                checkbox52.config(state=DISABLED)
-            else:
-                checkbox52.config(state=NORMAL)
-            if var52.get():
-                checkbox51.config(state=DISABLED)
-                alpha.config(state=NORMAL)
-            else:
-                checkbox51.config(state=NORMAL)
-                alpha.delete(0, "end")
-                alpha.config(state=DISABLED)
+        if var51.get():
+            checkbox52.config(state=DISABLED)
+        else:
+            checkbox52.config(state=NORMAL)
+        if var52.get():
+            checkbox51.config(state=DISABLED)
+            alpha.config(state=NORMAL)
+        else:
+            checkbox51.config(state=NORMAL)
+            alpha.delete(0, "end")
+            alpha.config(state=DISABLED)
 
-            if var61.get():
-                checkbox62.config(state=DISABLED)
-            else:
-                checkbox62.config(state=NORMAL)
-            if var62.get():
-                checkbox61.config(state=DISABLED)
-                pref.config(state=NORMAL)
-            else:
-                checkbox61.config(state=NORMAL)
-                pref.delete(0, "end")
-                pref.config(state=DISABLED)
+        if var61.get():
+            checkbox62.config(state=DISABLED)
+        else:
+            checkbox62.config(state=NORMAL)
+        if var62.get():
+            checkbox61.config(state=DISABLED)
+            pref.config(state=NORMAL)
+        else:
+            checkbox61.config(state=NORMAL)
+            pref.delete(0, "end")
+            pref.config(state=DISABLED)
 
         # Esse par de variáveis não está separado com as demais por elas serem associadas com os únicos valores necessários
         # tanto para a verificação dos dados, quanto para a execução do modelo, que são o número de alunos da pós a serem
@@ -1004,131 +1002,130 @@ def Novo_edit_config(file_name, verify):
         #     qtd_pos.delete(0, "end")
         #     qtd_pos.config(state=DISABLED)
 
-    # Caso o menu não seja o de configurar a verificação dos dados:
-    if not verify:
-        # Defino uma linha puramente estética no topo da janela.
-        # Em seguida, defino uma legenda e um botão ao lado, ambos desabilitados, apenas para servir como
-        # instruções e mostrar as configurações recomendadas dos parâmetros.
-        ttk.Separator(frame2, orient="horizontal").grid(row=0, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lbl = tk.Label(frame2, text="Selecione e/ou digite os valores que deseja para os parâmetros.", state=DISABLED)
-        lbl.grid(row=1,column=0,sticky='w')
-        btnl = ttk.Button(frame2, text="Recomendações - Configurações Recomendadas", state=DISABLED)
-        btnl.grid(row=1,column=1,sticky='e')
-        Tooltip(btnl, "Recomendado:\n\
-        Peso de alocação: 1\n\
-        Peso de troca de sala: 500\n\
-        Peso de agrupamento: 1\n\
-        Peso de superlotação: 10\n\
-        Índice de superlotação: 0.85\n\
-        Peso de salas preferencialmente vazias: 1\n\
-        Quantidade de alunos da pós: 20")
+    
+    # Defino uma linha puramente estética no topo da janela.
+    # Em seguida, defino uma legenda e um botão ao lado, ambos desabilitados, apenas para servir como
+    # instruções e mostrar as configurações recomendadas dos parâmetros.
+    ttk.Separator(frame2, orient="horizontal").grid(row=0, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lbl = tk.Label(frame2, text="Selecione e/ou digite os valores que deseja para os parâmetros.", state=DISABLED)
+    lbl.grid(row=1,column=0,sticky='w')
+    btnl = ttk.Button(frame2, text="Recomendações - Configurações Recomendadas", state=DISABLED)
+    btnl.grid(row=1,column=1,sticky='e')
+    Tooltip(btnl, "Recomendado:\n\
+    Peso de alocação: 1\n\
+    Peso de troca de sala: 500\n\
+    Peso de agrupamento: 1\n\
+    Peso de superlotação: 10\n\
+    Índice de superlotação: 0.85\n\
+    Peso de salas preferencialmente vazias: 1\n\
+    Quantidade de alunos da pós: 20")
 
-        # Semelhantemente, os próximos 'blocos de código' seguem a mesma lógica.
-        # Crio uma linha para separar o espaço de cada parâmetro.
-        # Incluo uma legenda com uma Tooltip para explicar o propósito do parâmetro.
-        # Crio uma checkbox para marcar a configuração padrão daquele parâmetro sempre primeiro.
-        # Crio, após ele, um checkbox para marcar a configuração personalizada com um campo desabilitado ao lado dele.
-        # Ele precisa estar desabilitado inicialmente, ou é possível inserir um valor mesmo sem marcar um checkbox.
-        ttk.Separator(frame2, orient="horizontal").grid(row=2, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lblx = tk.Label(frame2, text="Defina um peso de alocação:")
-        lblx.grid(row=3, column=0, sticky='w', pady=5)
-        # checkbox1 = Checkbutton(frame1, text="Modelo 1", variable=var1, command=atualizar_estado)
-        checkbox11 = Checkbutton(frame2, text="Recomendado: 1", variable=var11, command=atualizar_estado)
-        checkbox11.grid(row=3, column=1, sticky='w', pady=5)
-        checkbox12 = Checkbutton(frame2, text="Personalizado: ", variable=var12, command=atualizar_estado)
-        checkbox12.grid(row=3, column=2, sticky='w', pady=5)
-        peso_x = Entry(frame2, state=DISABLED)
-        peso_x.grid(row=4, column=2, sticky='e', pady=5)
-        Tooltip(lblx, "O peso de alocação refere-se ao peso da variável x_as no modelo. \n\
-        Quanto mais alto, mais importante será essa variável,\n\
-        logo, o modelo pode deixar de alocar de forma ótima se o peso for baixo.\n\
-        Por exemplo, ele pode entender que é mais importante agrupar \n\
-        os cursos, do que usar o maior espaço possível.")
+    # Semelhantemente, os próximos 'blocos de código' seguem a mesma lógica.
+    # Crio uma linha para separar o espaço de cada parâmetro.
+    # Incluo uma legenda com uma Tooltip para explicar o propósito do parâmetro.
+    # Crio uma checkbox para marcar a configuração padrão daquele parâmetro sempre primeiro.
+    # Crio, após ele, um checkbox para marcar a configuração personalizada com um campo desabilitado ao lado dele.
+    # Ele precisa estar desabilitado inicialmente, ou é possível inserir um valor mesmo sem marcar um checkbox.
+    ttk.Separator(frame2, orient="horizontal").grid(row=2, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lblx = tk.Label(frame2, text="Defina um peso de alocação:")
+    lblx.grid(row=3, column=0, sticky='w', pady=5)
+    # checkbox1 = Checkbutton(frame1, text="Modelo 1", variable=var1, command=atualizar_estado)
+    checkbox11 = Checkbutton(frame2, text="Recomendado: 1", variable=var11, command=atualizar_estado)
+    checkbox11.grid(row=3, column=1, sticky='w', pady=5)
+    checkbox12 = Checkbutton(frame2, text="Personalizado: ", variable=var12, command=atualizar_estado)
+    checkbox12.grid(row=3, column=2, sticky='w', pady=5)
+    peso_x = Entry(frame2, state=DISABLED)
+    peso_x.grid(row=4, column=2, sticky='e', pady=5)
+    Tooltip(lblx, "O peso de alocação refere-se ao peso da variável x_as no modelo. \n\
+    Quanto mais alto, mais importante será essa variável,\n\
+    logo, o modelo pode deixar de alocar de forma ótima se o peso for baixo.\n\
+    Por exemplo, ele pode entender que é mais importante agrupar \n\
+    os cursos, do que usar o maior espaço possível.")
 
-        ttk.Separator(frame2, orient="horizontal").grid(row=5, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lbly = tk.Label(frame2, text="Defina um peso de troca de sala:")
-        lbly.grid(row=6,column=0,sticky='w',pady=5)
-        checkbox21 = Checkbutton(frame2, text="Recomendado: 500", variable=var21, command=atualizar_estado)
-        checkbox21.grid(row=6, column=1, sticky='w', pady=5)
-        checkbox22 = Checkbutton(frame2, text="Personalizado: ", variable=var22, command=atualizar_estado)
-        checkbox22.grid(row=6, column=2, sticky='w', pady=5)
-        peso_y = Entry(frame2, state=DISABLED)
-        peso_y.grid(row=7,column=2,sticky='e',pady=5)
-        Tooltip(lbly, "O peso de troca de sala refere-se ao peso da variável y_t no modelo. \n\
-        Quanto mais alto, mais importante será essa variável,\n\
-        logo, o modelo pode deixar de manter aulas de uma \n\
-        turma/disciplina alocadas na mesma sala se o peso for baixo.\n\
-        Por exemplo, ele pode entender que é mais importante preencher \n\
-        uma sala o máximo possível sem verificar quais são elas.")
+    ttk.Separator(frame2, orient="horizontal").grid(row=5, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lbly = tk.Label(frame2, text="Defina um peso de troca de sala:")
+    lbly.grid(row=6,column=0,sticky='w',pady=5)
+    checkbox21 = Checkbutton(frame2, text="Recomendado: 500", variable=var21, command=atualizar_estado)
+    checkbox21.grid(row=6, column=1, sticky='w', pady=5)
+    checkbox22 = Checkbutton(frame2, text="Personalizado: ", variable=var22, command=atualizar_estado)
+    checkbox22.grid(row=6, column=2, sticky='w', pady=5)
+    peso_y = Entry(frame2, state=DISABLED)
+    peso_y.grid(row=7,column=2,sticky='e',pady=5)
+    Tooltip(lbly, "O peso de troca de sala refere-se ao peso da variável y_t no modelo. \n\
+    Quanto mais alto, mais importante será essa variável,\n\
+    logo, o modelo pode deixar de manter aulas de uma \n\
+    turma/disciplina alocadas na mesma sala se o peso for baixo.\n\
+    Por exemplo, ele pode entender que é mais importante preencher \n\
+    uma sala o máximo possível sem verificar quais são elas.")
 
 
-        ttk.Separator(frame2, orient="horizontal").grid(row=8, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lblv = tk.Label(frame2, text="Defina um peso de agrupamento:")
-        lblv.grid(row=9,column=0,sticky='w',pady=5)
-        checkbox31 = Checkbutton(frame2, text="Recomendado: 1", variable=var31, command=atualizar_estado)
-        checkbox31.grid(row=9, column=1, sticky='w', pady=5)
-        checkbox32 = Checkbutton(frame2, text="Personalizado: ", variable=var32, command=atualizar_estado)
-        checkbox32.grid(row=9, column=2, sticky='w', pady=5)
-        peso_v = Entry(frame2, state=DISABLED)
-        peso_v.grid(row=10,column=2,sticky='e',pady=5)
-        Tooltip(lblv, "O peso de agrupamento refere-se ao peso da variável v_cssl no modelo. \n\
-        Quanto mais alto, mais importante será essa variável,\n\
-        logo, o modelo pode deixar de tentar agrupar as aulas de \n\
-        um curso próximas umas das outras se o peso for baixo.\n\
-        Por exemplo, ele pode entender que é mais importante \n\
-        acomodar os alunos numa sala, do que agrupar os cursos.")
+    ttk.Separator(frame2, orient="horizontal").grid(row=8, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lblv = tk.Label(frame2, text="Defina um peso de agrupamento:")
+    lblv.grid(row=9,column=0,sticky='w',pady=5)
+    checkbox31 = Checkbutton(frame2, text="Recomendado: 1", variable=var31, command=atualizar_estado)
+    checkbox31.grid(row=9, column=1, sticky='w', pady=5)
+    checkbox32 = Checkbutton(frame2, text="Personalizado: ", variable=var32, command=atualizar_estado)
+    checkbox32.grid(row=9, column=2, sticky='w', pady=5)
+    peso_v = Entry(frame2, state=DISABLED)
+    peso_v.grid(row=10,column=2,sticky='e',pady=5)
+    Tooltip(lblv, "O peso de agrupamento refere-se ao peso da variável v_cssl no modelo. \n\
+    Quanto mais alto, mais importante será essa variável,\n\
+    logo, o modelo pode deixar de tentar agrupar as aulas de \n\
+    um curso próximas umas das outras se o peso for baixo.\n\
+    Por exemplo, ele pode entender que é mais importante \n\
+    acomodar os alunos numa sala, do que agrupar os cursos.")
 
-        ttk.Separator(frame2, orient="horizontal").grid(row=11, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lblz = tk.Label(frame2, text="Defina um peso de superlotação:")
-        lblz.grid(row=12,column=0,sticky='w',pady=5)
-        checkbox41 = Checkbutton(frame2, text="Recomendado: 10", variable=var41, command=atualizar_estado)
-        checkbox41.grid(row=12, column=1, sticky='w', pady=5)
-        checkbox42 = Checkbutton(frame2, text="Personalizado: ", variable=var42, command=atualizar_estado)
-        checkbox42.grid(row=12, column=2, sticky='w', pady=5)
-        peso_z = Entry(frame2, state=DISABLED)
-        peso_z.grid(row=13,column=2,sticky='e',pady=5)
-        Tooltip(lblz, "O peso de superlotação refere-se ao peso da variável z_as no modelo. \n\
-        Quanto mais alto, mais importante será essa variável,\n\
-        logo, o modelo pode deixar de tentar acomodar melhor os \n\
-        alunos em uma sala se o peso for baixo.\n\
-        Por exemplo, ele pode entender que é mais importante \n\
-        preencher uma sala o máximo possível, do que deixar alguns lugares desocupados \n\
-        para acomodar melhor os alunos, ou para receber alunos vindos do requerimento.")
+    ttk.Separator(frame2, orient="horizontal").grid(row=11, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lblz = tk.Label(frame2, text="Defina um peso de superlotação:")
+    lblz.grid(row=12,column=0,sticky='w',pady=5)
+    checkbox41 = Checkbutton(frame2, text="Recomendado: 10", variable=var41, command=atualizar_estado)
+    checkbox41.grid(row=12, column=1, sticky='w', pady=5)
+    checkbox42 = Checkbutton(frame2, text="Personalizado: ", variable=var42, command=atualizar_estado)
+    checkbox42.grid(row=12, column=2, sticky='w', pady=5)
+    peso_z = Entry(frame2, state=DISABLED)
+    peso_z.grid(row=13,column=2,sticky='e',pady=5)
+    Tooltip(lblz, "O peso de superlotação refere-se ao peso da variável z_as no modelo. \n\
+    Quanto mais alto, mais importante será essa variável,\n\
+    logo, o modelo pode deixar de tentar acomodar melhor os \n\
+    alunos em uma sala se o peso for baixo.\n\
+    Por exemplo, ele pode entender que é mais importante \n\
+    preencher uma sala o máximo possível, do que deixar alguns lugares desocupados \n\
+    para acomodar melhor os alunos, ou para receber alunos vindos do requerimento.")
 
-        ttk.Separator(frame2, orient="horizontal").grid(row=14, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lbla = tk.Label(frame2, text="Defina um índice de superlotação (valor entre 0 e 1, utilizando '.'):")
-        lbla.grid(row=15,column=0,sticky='w',pady=5)
-        checkbox51 = Checkbutton(frame2, text="Recomendado: 0.85", variable=var51, command=atualizar_estado)
-        checkbox51.grid(row=15, column=1, sticky='w', pady=5)
-        checkbox52 = Checkbutton(frame2, text="Personalizado: ", variable=var52, command=atualizar_estado)
-        checkbox52.grid(row=15, column=2, sticky='w', pady=5)
-        alpha = Entry(frame2, state=DISABLED)
-        alpha.grid(row=16,column=2,sticky='e',pady=5)
-        Tooltip(lbla, "O índice de superlotação refere-se à porcentagem usada pela variável z_as no modelo. \n\
-        Em outras palavras, é o quanto uma aula preenche uma sala \n\
-        para que o modelo tente colocar essa aula em uma sala maior, \n\
-        garantindo uma melhor acomodação para os alunos e espaço para \n\
-        alunos vindos do requerimento. Quanto mais alto, mais o modelo \n\
-        prioriza preencher o máximo possível de uma sala. Um valor baixo \n\
-        faz com que as salas maiores sejam preenchidas com mais facilidade, \n\
-        e um valor alto fará o mesmo, mas para as salas menores.")
+    ttk.Separator(frame2, orient="horizontal").grid(row=14, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lbla = tk.Label(frame2, text="Defina um índice de superlotação (valor entre 0 e 1, utilizando '.'):")
+    lbla.grid(row=15,column=0,sticky='w',pady=5)
+    checkbox51 = Checkbutton(frame2, text="Recomendado: 0.85", variable=var51, command=atualizar_estado)
+    checkbox51.grid(row=15, column=1, sticky='w', pady=5)
+    checkbox52 = Checkbutton(frame2, text="Personalizado: ", variable=var52, command=atualizar_estado)
+    checkbox52.grid(row=15, column=2, sticky='w', pady=5)
+    alpha = Entry(frame2, state=DISABLED)
+    alpha.grid(row=16,column=2,sticky='e',pady=5)
+    Tooltip(lbla, "O índice de superlotação refere-se à porcentagem usada pela variável z_as no modelo. \n\
+    Em outras palavras, é o quanto uma aula preenche uma sala \n\
+    para que o modelo tente colocar essa aula em uma sala maior, \n\
+    garantindo uma melhor acomodação para os alunos e espaço para \n\
+    alunos vindos do requerimento. Quanto mais alto, mais o modelo \n\
+    prioriza preencher o máximo possível de uma sala. Um valor baixo \n\
+    faz com que as salas maiores sejam preenchidas com mais facilidade, \n\
+    e um valor alto fará o mesmo, mas para as salas menores.")
 
-        ttk.Separator(frame2, orient="horizontal").grid(row=17, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-        lbl_pref = tk.Label(frame2, text="Defina um peso de salas preferencialmente vazias:")
-        lbl_pref.grid(row=18,column=0,sticky='w',pady=5)
-        checkbox61 = Checkbutton(frame2, text="Recomendado: 500", variable=var61, command=atualizar_estado)
-        checkbox61.grid(row=18, column=1, sticky='w', pady=5)
-        checkbox62 = Checkbutton(frame2, text="Personalizado: ", variable=var62, command=atualizar_estado)
-        checkbox62.grid(row=18, column=2, sticky='w', pady=5)
-        pref = Entry(frame2, state=DISABLED)
-        pref.grid(row=19,column=2,sticky='e',pady=5)
-        Tooltip(lbl_pref, "O peso de salas preferencialmente vazias refere-se à importância de determinadas salas ficarem desocupadas no modelo. \n\
-        Quanto mais alto, maior a chance de essas salas não serem utilizadas,\n\
-        logo, o modelo pode tentar alocar aulas em salas indesejadas \n\
-        se o peso for baixo.\n\
-        Por exemplo, ele pode entender que é mais importante \n\
-        preencher uma sala que poderia ser usada para alguma outra função, por ela ser mais fácil de ser preenchida, \n\
-        do que mantê-la desocupada para a pós.")
+    ttk.Separator(frame2, orient="horizontal").grid(row=17, column=0, columnspan=3, sticky="ew", pady=(0, 10))
+    lbl_pref = tk.Label(frame2, text="Defina um peso de salas preferencialmente vazias:")
+    lbl_pref.grid(row=18,column=0,sticky='w',pady=5)
+    checkbox61 = Checkbutton(frame2, text="Recomendado: 500", variable=var61, command=atualizar_estado)
+    checkbox61.grid(row=18, column=1, sticky='w', pady=5)
+    checkbox62 = Checkbutton(frame2, text="Personalizado: ", variable=var62, command=atualizar_estado)
+    checkbox62.grid(row=18, column=2, sticky='w', pady=5)
+    pref = Entry(frame2, state=DISABLED)
+    pref.grid(row=19,column=2,sticky='e',pady=5)
+    Tooltip(lbl_pref, "O peso de salas preferencialmente vazias refere-se à importância de determinadas salas ficarem desocupadas no modelo. \n\
+    Quanto mais alto, maior a chance de essas salas não serem utilizadas,\n\
+    logo, o modelo pode tentar alocar aulas em salas indesejadas \n\
+    se o peso for baixo.\n\
+    Por exemplo, ele pode entender que é mais importante \n\
+    preencher uma sala que poderia ser usada para alguma outra função, por ela ser mais fácil de ser preenchida, \n\
+    do que mantê-la desocupada para a pós.")
 
     # ttk.Separator(frame2, orient="horizontal").grid(row=20, column=0, columnspan=3, sticky="ew", pady=(0, 10))
     # lblq = tk.Label(frame2, text="Defina uma quantidade de alunos da pós para as disciplinas com espelho:")
@@ -1147,154 +1144,134 @@ def Novo_edit_config(file_name, verify):
 
     # Defino uma função que detecta as configurações escolhidas pelo usuário.
     def executar_configs_perso():
-        # Caso o menu não seja o de configurar a verificação dos dados:
-        if not verify:
-            # Verifico se ao menos uma das checkbox relacionadas ao peso de alocação foi selecionada,
-            # pois o modelo precisa desse peso obrigatoriamente.
-            if not var11.get() and not var12.get():
-                # Se nenhum peso foi fornecido, uma janela alerta o ocorrido e pede para o usuário definir um peso.
-                messagebox.showwarning("Aviso", "Por favor, defina um peso de alocação.")
-                return
+        # Verifico se ao menos uma das checkbox relacionadas ao peso de alocação foi selecionada,
+        # pois o modelo precisa desse peso obrigatoriamente.
+        if not var11.get() and not var12.get():
+            # Se nenhum peso foi fornecido, uma janela alerta o ocorrido e pede para o usuário definir um peso.
+            messagebox.showwarning("Aviso", "Por favor, defina um peso de alocação.")
+            return
 
-            # Verifico se a checkbox da configuração recomendada está marcado:
-            elif var11.get():
-                # Se estiver, dou o valor recomendado para a variável auxiliar.
-                aux_x = '1'
+        # Verifico se a checkbox da configuração recomendada está marcado:
+        elif var11.get():
+            # Se estiver, dou o valor recomendado para a variável auxiliar.
+            aux_x = '1'
 
-            # Verifico se a checkbox da configuração personalizada está marcado:
-            else:
-                # Se estiver, dou o valor fornecido pelo usuário para a variável auxiliar.
-                aux_x = peso_x.get()
-
-            # Verifico se ao menos uma das checkbox relacionadas ao peso de troca de sala foi selecionada,
-            # pois o modelo precisa desse peso obrigatoriamente. A lógica é a mesma da de anteriormente.
-            if not var21.get() and not var22.get():
-                messagebox.showwarning("Aviso", "Por favor, defina um peso de troca de sala.")
-                return
-            elif var21.get():
-                aux_y = '500'
-            else:
-                aux_y = peso_y.get()
-
-            # As condições a seguir seguem a mesma lógica para cada parâmetro e configuração disponível.
-            # Verifico se a checkbox da configuração personalizada está marcada e sem um valor inserido pelo usuário:
-            if var12.get() and not peso_x.get():
-                # Se for o caso, uma janela alerta o ocorrido e pede para o usuário definir um valor para o parâmetro.
-                messagebox.showwarning("Aviso", "Por favor, digite um peso de alocação.")
-                return
-
-            # Verifico se a checkbox da configuração recomendada está marcada:
-            elif var11.get():
-                # Se estiver, dou o valor recomendado para a variável auxiliar.
-                aux_x = '1'
-
-            # Verifico, por fim, se a checkbox da configuração personalizada está marcada.
-            else:
-                # Se estiver, para ter entrado nessa condição, o usuário deve ter fornecido um valor para o parâmetro.
-                # Portanto, dou o valor fornecido para a variável auxiliar.
-                aux_x = peso_x.get()
-
-            if var22.get() and not peso_y.get():
-                messagebox.showwarning("Aviso", "Por favor, digite um peso de troca de sala.")
-                return
-            elif var21.get():
-                aux_y = '500'
-            else:
-                aux_y = peso_y.get()
-
-            if var32.get() and not peso_v.get():
-                messagebox.showwarning("Aviso", "Por favor, digite um peso de agrupamento.")
-                return
-            elif var31.get():
-                aux_v = '1'
-            else:
-                aux_v = peso_v.get()
-
-            if var42.get() and not peso_z.get():
-                messagebox.showwarning("Aviso", "Por favor, digite um peso de superlotação.")
-                return
-            elif var41.get():
-                aux_z = '10'
-            else:
-                aux_z = peso_z.get()
-
-            if var52.get() and not alpha.get():
-                messagebox.showwarning("Aviso", "Por favor, digite um índice de superlotação.")
-                return
-            elif var51.get():
-                aux_a = '0.85'
-            else:
-                aux_a = alpha.get()
-
-            if var62.get() and not pref.get():
-                messagebox.showwarning("Aviso", "Por favor, digite um peso de salas preferencialmente vazias.")
-                return
-            elif var61.get():
-                aux_p = '500'
-            else:
-                aux_p = pref.get()
-
-            # if var72.get() and not qtd_pos.get():
-            #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
-            #     return
-            # elif var71.get():
-            #     aux_q = '20'
-            # else:
-            #     aux_q = qtd_pos.get()
-
-            # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
-            # então só resta rodar o script com elas.
-            roda_script(script="Modelo Universal-Copy1.py",
-                    nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
-                    alpha=aux_a, pref=aux_p)
-
-        # Caso o menu seja o de configurar a verificação dos dados:
+        # Verifico se a checkbox da configuração personalizada está marcado:
         else:
-            # # Faço apenas a verificação das checkbox referentes à quantida de aluno da pós das disciplinas espelho, como anteriormente.
-            # if var72.get() and not qtd_pos.get():
-            #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
-            #     return
-            # elif var71.get():
-            #     aux_q = '20'
-            # else:
-            #     aux_q = qtd_pos.get()
+            # Se estiver, dou o valor fornecido pelo usuário para a variável auxiliar.
+            aux_x = peso_x.get()
+
+        # Verifico se ao menos uma das checkbox relacionadas ao peso de troca de sala foi selecionada,
+        # pois o modelo precisa desse peso obrigatoriamente. A lógica é a mesma da de anteriormente.
+        if not var21.get() and not var22.get():
+            messagebox.showwarning("Aviso", "Por favor, defina um peso de troca de sala.")
+            return
+        elif var21.get():
+            aux_y = '500'
+        else:
+            aux_y = peso_y.get()
+
+        # As condições a seguir seguem a mesma lógica para cada parâmetro e configuração disponível.
+        # Verifico se a checkbox da configuração personalizada está marcada e sem um valor inserido pelo usuário:
+        if var12.get() and not peso_x.get():
+            # Se for o caso, uma janela alerta o ocorrido e pede para o usuário definir um valor para o parâmetro.
+            messagebox.showwarning("Aviso", "Por favor, digite um peso de alocação.")
+            return
+
+        # Verifico se a checkbox da configuração recomendada está marcada:
+        elif var11.get():
+            # Se estiver, dou o valor recomendado para a variável auxiliar.
+            aux_x = '1'
+
+        # Verifico, por fim, se a checkbox da configuração personalizada está marcada.
+        else:
+            # Se estiver, para ter entrado nessa condição, o usuário deve ter fornecido um valor para o parâmetro.
+            # Portanto, dou o valor fornecido para a variável auxiliar.
+            aux_x = peso_x.get()
+
+        if var22.get() and not peso_y.get():
+            messagebox.showwarning("Aviso", "Por favor, digite um peso de troca de sala.")
+            return
+        elif var21.get():
+            aux_y = '500'
+        else:
+            aux_y = peso_y.get()
+
+        if var32.get() and not peso_v.get():
+            messagebox.showwarning("Aviso", "Por favor, digite um peso de agrupamento.")
+            return
+        elif var31.get():
+            aux_v = '1'
+        else:
+            aux_v = peso_v.get()
+
+        if var42.get() and not peso_z.get():
+            messagebox.showwarning("Aviso", "Por favor, digite um peso de superlotação.")
+            return
+        elif var41.get():
+            aux_z = '10'
+        else:
+            aux_z = peso_z.get()
+
+        if var52.get() and not alpha.get():
+            messagebox.showwarning("Aviso", "Por favor, digite um índice de superlotação.")
+            return
+        elif var51.get():
+            aux_a = '0.85'
+        else:
+            aux_a = alpha.get()
+
+        if var62.get() and not pref.get():
+            messagebox.showwarning("Aviso", "Por favor, digite um peso de salas preferencialmente vazias.")
+            return
+        elif var61.get():
+            aux_p = '500'
+        else:
+            aux_p = pref.get()
+
+        # if var72.get() and not qtd_pos.get():
+        #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
+        #     return
+        # elif var71.get():
+        #     aux_q = '20'
+        # else:
+        #     aux_q = qtd_pos.get()
+
+        # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
+        # então só resta rodar o script com elas.
+        roda_script(script="Modelo Universal-Copy1.py",
+                nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
+                alpha=aux_a, pref=aux_p)
 
 
-            # Após isso, rodo o script com as configurações necessárias.
-            roda_script(script="verificar_dados.py",
-                    nome=file_name, peso_x="", peso_y="", peso_v="", peso_z="",
-                    alpha="", pref="")
 
+    
+    # Crio uma linha horizontal para separar as escolhas de parâmetro dos botões da janela.
+    ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
 
+    # Defino o botão de Executar o Modelo com os parâmetros Recomendados, que chama a função de rodar script e os
+    # parâmetros recomendados diretamente.
+    ttk.Button(frame2, text="Executar com Recomendados",
+                command=lambda: roda_script(script="Modelo Universal-Copy1.py",
+                                            nome=file_name, peso_x='1', peso_y='500', peso_v="",
+                                            peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
-    # Caso o menu não seja o de configurar a verificação dos dados:
-    if not verify:
-        # Crio uma linha horizontal para separar as escolhas de parâmetro dos botões da janela.
-        ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
+    # Defino o botão de Executar o Modelo com os parâmetros Personalizados, que chama a função definida anteriormente
+    # para checar as configurações personalizadas pelo usuário.
+    ttk.Button(frame2, text="Executar com Personalizados",
+                command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
 
-        # Defino o botão de Executar o Modelo com os parâmetros Recomendados, que chama a função de rodar script e os
-        # parâmetros recomendados diretamente.
-        ttk.Button(frame2, text="Executar com Recomendados",
-                   command=lambda: roda_script(script="Modelo Universal-Copy1.py",
-                                               nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                               peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
+    
+        
+        # # Análogo aos botões que são definidos no menu de configurações do modelo.
+        # ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
+        # ttk.Button(frame2, text="Verificar com Recomendados",
+        #            command=lambda: roda_script(script="verificar_dados.py",
+        #                                        nome=file_name, peso_x='1', peso_y='500', peso_v="",
+        #                                        peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
-        # Defino o botão de Executar o Modelo com os parâmetros Personalizados, que chama a função definida anteriormente
-        # para checar as configurações personalizadas pelo usuário.
-        ttk.Button(frame2, text="Executar com Personalizados",
-                   command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
-
-    # Caso o menu seja o de configurar a verificação dos dados:
-    else:
-        # Análogo aos botões que são definidos no menu de configurações do modelo.
-        ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
-        ttk.Button(frame2, text="Verificar com Recomendados",
-                   command=lambda: roda_script(script="verificar_dados.py",
-                                               nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                               peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
-
-        ttk.Button(frame2, text="Verificar com Personalizados",
-                   command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
+        # ttk.Button(frame2, text="Verificar com Personalizados",
+        #            command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
 
 """## Análise de Espaços Livres (colocar nos arquivos de modelo)"""
 
