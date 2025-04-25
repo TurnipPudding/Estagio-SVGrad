@@ -525,6 +525,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
     
         # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
         messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+
     except PermissionError as e:
         if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
             messagebox.showerror("Erro de Permissão", 
@@ -533,8 +534,10 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                                         "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                     )
                                 )
+            return
         else:
             messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+            return
 
     except KeyError as e:
         coluna_faltando = str(e).strip("'")
@@ -544,10 +547,12 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                                             "Verifique o cabeçalho do arquivo de entrada."
                                         )
                                     )
+        return
     
     except Exception as e:
         # Para qualquer outro erro
         messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+        return
 
 """## Construir base de dados completa"""
 
@@ -733,17 +738,20 @@ def base_dados(pior_caso):
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome])
 
-                # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-                messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
+                
 
             # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
             except subprocess.CalledProcessError as e:
                 messagebox.showerror("Erro", f"Erro ao executar o script:\n{e.stderr}")
-
+                return
+            
             # Caso um erro inesperado ocorra, uma janela alertando o erro é apresentada para o usuário.
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro inesperado: {e}")
-
+                return
+            
+            # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+            messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
         # Caso esteja fazendo a base de pior caso:
         else:
             # Leio os dois dataframes fornecidos pelo usuário.
@@ -752,14 +760,32 @@ def base_dados(pior_caso):
 
             # Chamo a função que faz um dataframe com o maior número de inscritos de cada ano.
             df_pior_caso = base_pior_caso(df1, df2)
+            try:
+                # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
+                with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
+                    for sh, df_sh in df_pior_caso.items():
+                        df_sh.to_excel(writer, sheet_name=sh, index=False)
+                # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+                messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
 
-            # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
-            with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
-                for sh, df_sh in df_pior_caso.items():
-                    df_sh.to_excel(writer, sheet_name=sh, index=False)
-
-            # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-            messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+            except PermissionError as e:
+                if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+                    messagebox.showerror("Erro de Permissão", 
+                                            (
+                                                f"Não foi possível salvar o arquivo {nome_arquivo}. "
+                                                "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                            )
+                                        )
+                    return
+                else:
+                    messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+                    return
+            except Exception as e:
+                # Para qualquer outro erro
+                messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+                return
+    
+            
 
         # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
         # Terminada a criação da base de dados, destruo a janela de seleção.
@@ -777,30 +803,45 @@ def base_pior_caso(df1, df2):
 
     # df1 = pd.read_excel(df1_name, sheet_name=sheets)
     # df2 = pd.read_excel(df1_name, sheet_name=sheets)
+    try:
     # Para cada planilha na base de dados mais recente:
-    for sh in df1.sheet_names[1:]:
-        # Considerando que df1 e df2 possuem as mesmas planilhas (ou, pelo menos, deveriam), crio duas variáveis auxiliares
-        # para salvar os dados a mesma planilha de ambas as bases.
-        df1_sh = df1[sh]
-        df2_sh = df2[sh]
+        for sh in df1.sheet_names[1:]:
+            # Considerando que df1 e df2 possuem as mesmas planilhas (ou, pelo menos, deveriam), crio duas variáveis auxiliares
+            # para salvar os dados a mesma planilha de ambas as bases.
+            df1_sh = df1[sh]
+            df2_sh = df2[sh]
 
-        # Crio também duas variáveis para salvar as colunas de disciplinas das bases como listas.
-        l1 = df1_sh['Disciplina (código)'].tolist()
-        l2 = df2_sh['Disciplina (código)'].tolist()
+            # Crio também duas variáveis para salvar as colunas de disciplinas das bases como listas.
+            l1 = df1_sh['Disciplina (código)'].tolist()
+            l2 = df2_sh['Disciplina (código)'].tolist()
 
-        # Para cada disciplina 'd' na lista de disciplinas da base de dados mais recente:
-        for d in l1:
-            # Verifico se 'd' está na lista de disciplinas da base de dados mais antiga:
-            if d in l2:
-                # Em caso positivo, verifico se o número de inscritos do ano mais recente da disciplina é menor
-                # que o número de inscritos do ano mais antigo da disciplina.
-                if df1[sh].loc[l1.index(d), 'Vagas por disciplina'] < df2[sh].loc[l2.index(d), 'Vagas por disciplina']:
-                    # Se for o caso, então no ano anterior houveram mais inscritos, isto é, no ano mais recente, pode ser que
-                    # o número de inscritos chegue até esse valor ou o ultrapasse.
-                    # Por conta disso, atualizo o número de inscritos e o ano dos dados da disciplina 'd' na base mais recente.
-                    df1[sh].loc[l1.index(d), 'Vagas por disciplina'] = df2[sh].loc[l2.index(d), 'Vagas por disciplina']
-                    df1[sh].loc[l1.index(d), 'Ano dos dados'] = df2[sh].loc[l2.index(d), 'Ano dos dados']
+            # Para cada disciplina 'd' na lista de disciplinas da base de dados mais recente:
+            for d in l1:
+                # Verifico se 'd' está na lista de disciplinas da base de dados mais antiga:
+                if d in l2:
+                    # Em caso positivo, verifico se o número de inscritos do ano mais recente da disciplina é menor
+                    # que o número de inscritos do ano mais antigo da disciplina.
+                    if df1[sh].loc[l1.index(d), 'Vagas por disciplina'] < df2[sh].loc[l2.index(d), 'Vagas por disciplina']:
+                        # Se for o caso, então no ano anterior houveram mais inscritos, isto é, no ano mais recente, pode ser que
+                        # o número de inscritos chegue até esse valor ou o ultrapasse.
+                        # Por conta disso, atualizo o número de inscritos e o ano dos dados da disciplina 'd' na base mais recente.
+                        df1[sh].loc[l1.index(d), 'Vagas por disciplina'] = df2[sh].loc[l2.index(d), 'Vagas por disciplina']
+                        df1[sh].loc[l1.index(d), 'Ano dos dados'] = df2[sh].loc[l2.index(d), 'Ano dos dados']
 
+    except KeyError as e:
+        coluna_faltando = str(e).strip("'")
+        messagebox.showerror("Erro de Cabeçalho", 
+                                (
+                                    f"A coluna '{coluna_faltando}' não foi encontrada em um dos arquivos. "
+                                    "Verifique o cabeçalho dos arquivos de entrada."
+                                )
+                            )
+        return
+    
+    except Exception as e:
+        # Caso ocorra algum erro, alerto o usuário.
+        messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
+        return
     # Após concluir a análise, retorno a base de dados atualizada.
     return df1
 
