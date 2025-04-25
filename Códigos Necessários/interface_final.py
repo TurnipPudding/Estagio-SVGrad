@@ -448,7 +448,9 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                     break
 
             if not header_found:
-                messagebox.showerror("Erro de Cabeçalho", f"A coluna '{header_name}' não foi encontrada no DataFrame. Verifique o cabeçalho do arquivo de entrada.")
+                messagebox.showerror("Erro de Cabeçalho", f"A coluna '{header_name}' \
+                                     não foi encontrada no arquivo {os.path.basename(name)}.\
+                                          Verifique o cabeçalho do arquivo de entrada.")
                 return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
         sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
@@ -461,43 +463,57 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         # Adiciono os nomes dos arquivos dos outros institutos a essa lista de nomes.
         name_files.extend(outros)
 
+        sheets = []
         # E defino uma lista para salvar a sigla das disciplinas dos outros institutos.
-        other_files = []
+        # other_files = []
 
-        # Como anteriormente, para cada nome de arquivo:
+        # # Como anteriormente, para cada nome de arquivo:
+        # for name in name_files:
+        #     # Leio e salvo o arquivo em uma variável.
+        #     df = ler_df(name)
+
+        #     # E salvo o dataframe em na lista dos arquivos que serão concatenados.
+        #     files.append(df)
+
+        
+    # Para cada nome de arquivo de outros institutos:
         for name in name_files:
             # Leio e salvo o arquivo em uma variável.
             df = ler_df(name)
 
-            # E salvo o dataframe em na lista dos arquivos que serão concatenados.
-            files.append(df)
-
-        try:
-        # Para cada nome de arquivo de outros institutos:
-            for name in outros:
-                # Leio e salvo o arquivo em uma variável.
-                df = ler_df(name)
-
-                # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
-                # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
+            try:
+            # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
+            # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
                 new_name = str(df.loc[0, 'Disciplina'])[:3]
 
-                # Salvo essa nova sigla na lista definida anteriormente.
-                other_files.append(new_name)
-                
-        except KeyError as e:
-            coluna_faltando = str(e).strip("'")
-            messagebox.showerror("Erro de Cabeçalho", f"A coluna '{coluna_faltando}' não foi encontrada no DataFrame. Verifique o cabeçalho do arquivo de entrada.")
+            except KeyError as e:
+                coluna_faltando = str(e).strip("'")
+                messagebox.showerror("Erro de Cabeçalho", f"A coluna 'Disciplina' \
+                                     não foi encontrada no arquivo {os.path.basename(name)}.\
+                                          Verifique o cabeçalho do arquivo de entrada.")
+                return
 
-        except Exception as e:
-            # Caso ocorra algum erro, alerto o usuário.
-            messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
-            return
-        # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
-        sheets = ["SME", "SMA", "SCC", "SSC"]
+            except Exception as e:
+                # Caso ocorra algum erro, alerto o usuário.
+                messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
+                return
+        
+            # Com o arquivo lido, salvo a sigla do instituto na lista de siglas.
+            sheets.append(new_name)
 
-        # E adiciono os nomes obtidos dos demais departamentos.
-        sheets.extend(other_files)
+            # Salvo o dataframe em na lista dos arquivos que serão concatenados.
+            files.append(df)
+
+
+                # # Salvo essa nova sigla na lista definida anteriormente.
+                # other_files.append(new_name)
+
+        
+        # # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
+        # sheets = ["SME", "SMA", "SCC", "SSC"]
+
+        # # E adiciono os nomes obtidos dos demais departamentos.
+        # sheets.extend(other_files)
 
     # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
     if not nome_arquivo.endswith(".xlsx"):
