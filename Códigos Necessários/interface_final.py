@@ -490,18 +490,37 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         nome_arquivo = nome_arquivo + ".xlsx"
 
 
-    # Para finalmente concatenar os arquivos lidos, defino o nome da base de dados com o nome disponível.
-    with pd.ExcelWriter(os.path.join(saidas, nome_arquivo), engine="openpyxl") as writer:
-        # Caso a base sendo definida não for a do Júpiter, preciso incluir a planilha de salas no arquivo.
-        if not jupiter:
-            df_salas.to_excel(writer, sheet_name="Salas", index=False)
+    # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
+    if not nome_arquivo.endswith(".xlsx"):
+        # Em caso negativo, adiciono essa terminologia.
+        nome_arquivo = nome_arquivo + ".xlsx"
 
-        # Incluo todas as planilhas com as aulas dos departamentos no arquivo.
-        for sh in range(len(files)):
-            files[sh].to_excel(writer, sheet_name=sheets[sh], index=False)
+    try:
+        # Para finalmente concatenar os arquivos lidos, defino o nome da base de dados com o nome disponível.
+        with pd.ExcelWriter(os.path.join(saidas, nome_arquivo), engine="openpyxl") as writer:
+            # Caso a base sendo definida não for a do Júpiter, preciso incluir a planilha de salas no arquivo.
+            if not jupiter:
+                df_salas.to_excel(writer, sheet_name="Salas", index=False)
+    
+            # Incluo todas as planilhas com as aulas dos departamentos no arquivo.
+            for sh in range(len(files)):
+                files[sh].to_excel(writer, sheet_name=sheets[sh], index=False)
+    
+        # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+        messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+    except PermissionError as e:
+        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+            messagebox.showerror("Erro de Permissão", f"Não foi possível salvar o arquivo {nome_arquivo}. Verifique se ele está aberto em outro programa (como o Excel) e tente novamente.")
+        else:
+            messagebox.showerror("Erro", f"Erro de permissão: {str(e)}")
 
-    # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-    messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+    except KeyError as e:
+        coluna_faltando = str(e).strip("'")
+        messagebox.showerror("Erro de Cabeçalho", f"A coluna '{coluna_faltando}' não foi encontrada no DataFrame. Verifique o cabeçalho do arquivo de entrada.")
+    
+    except Exception as e:
+        # Para qualquer outro erro
+        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado: {str(e)}")
 
 """## Construir base de dados completa"""
 
