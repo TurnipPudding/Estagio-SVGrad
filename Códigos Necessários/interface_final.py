@@ -424,6 +424,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
             # Defino uma variável com o nome de um cabeçalho para ser encontrado, caso o cabeçalho não seja a primeira linha da planilha.
             header_name = 'Disciplina (código)'
 
+            header_found = False
             # Para cada linha e célula da primeira coluna do dataframe:
             for i, valor in enumerate(df.loc[:,df.columns[0]]):
                 # Se o valor da célula for o nome do cabeçalho que estou procurando:
@@ -443,7 +444,12 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                         return
 
                     # Se o cabeçalho foi encontrado, não há motivo para continuar buscando, então encerro o loop dessa busca.
+                    header_found = True
                     break
+
+            if not header_found:
+                messagebox.showerror("Erro de Cabeçalho", f"A coluna '{header_name}' não foi encontrada no DataFrame. Verifique o cabeçalho do arquivo de entrada.")
+                return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
         sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
 
@@ -466,18 +472,27 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
             # E salvo o dataframe em na lista dos arquivos que serão concatenados.
             files.append(df)
 
+        try:
         # Para cada nome de arquivo de outros institutos:
-        for name in outros:
-            # Leio e salvo o arquivo em uma variável.
-            df = ler_df(name)
+            for name in outros:
+                # Leio e salvo o arquivo em uma variável.
+                df = ler_df(name)
 
-            # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
-            # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
-            new_name = str(df.loc[0, 'Disciplina'])[:3]
+                # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
+                # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
+                new_name = str(df.loc[0, 'Disciplina'])[:3]
 
-            # Salvo essa nova sigla na lista definida anteriormente.
-            other_files.append(new_name)
+                # Salvo essa nova sigla na lista definida anteriormente.
+                other_files.append(new_name)
+                
+        except KeyError as e:
+            coluna_faltando = str(e).strip("'")
+            messagebox.showerror("Erro de Cabeçalho", f"A coluna '{coluna_faltando}' não foi encontrada no DataFrame. Verifique o cabeçalho do arquivo de entrada.")
 
+        except Exception as e:
+            # Caso ocorra algum erro, alerto o usuário.
+            messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
+            return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
         sheets = ["SME", "SMA", "SCC", "SSC"]
 
@@ -512,7 +527,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
             messagebox.showerror("Erro de Permissão", f"Não foi possível salvar o arquivo {nome_arquivo}. Verifique se ele está aberto em outro programa (como o Excel) e tente novamente.")
         else:
-            messagebox.showerror("Erro", f"Erro de permissão: {str(e)}")
+            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
 
     except KeyError as e:
         coluna_faltando = str(e).strip("'")
@@ -520,7 +535,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
     
     except Exception as e:
         # Para qualquer outro erro
-        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado: {str(e)}")
+        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
 
 """## Construir base de dados completa"""
 
