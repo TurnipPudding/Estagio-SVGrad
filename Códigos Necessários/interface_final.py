@@ -736,13 +736,25 @@ def base_dados(pior_caso):
                 file3 = arquivo_ing.get()
                 file4 = arquivo_esp.get()
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
-                subprocess.run(["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome])
-
+                subprocess.run(
+                    ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                    )
+                
+                # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+                messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
                 
 
             # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
             except subprocess.CalledProcessError as e:
-                messagebox.showerror("Erro", f"Erro ao executar o script:\n{e.stderr}")
+                if e.returncode == 1:
+                    messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+                elif e.returncode == 2:
+                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+                else:
+                    messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
             
             # Caso um erro inesperado ocorra, uma janela alertando o erro é apresentada para o usuário.
@@ -750,8 +762,7 @@ def base_dados(pior_caso):
                 messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
             
-            # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-            messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
+            
         # Caso esteja fazendo a base de pior caso:
         else:
             # Leio os dois dataframes fornecidos pelo usuário.

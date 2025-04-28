@@ -200,7 +200,18 @@ dfs = {
     "Outros": df['Outros']
 }
 
-with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-    for sheet_name, df in dfs.items():
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
-# print("Conversão dos dados das planilhas do Júpiter terminadas.")
+try:
+    with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+        for sheet_name, df in dfs.items():
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+except PermissionError as e:
+    if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+        sys.exit(2)
+        
+    else:
+        sys.exit(3)
+        
+except Exception as e:
+    # Para qualquer outro erro
+    sys.exit(1)
