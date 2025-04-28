@@ -17,6 +17,8 @@ salas = pd.read_excel(sys.argv[1], sheet_name=sheet_names[0])
 # df = pd.read_excel('C:/Users/gabri/Estágio/Dados/Dados_das_salas.xlsx', sheet_name=sheets)
 # df = pd.read_excel(sys.argv[1], sheet_name=sheets)
 df = pd.read_excel(sys.argv[1], sheet_name=sheet_names[1:])
+
+
 # print(df)
 # vagas = pd.read_excel('C:/Users/gabri/Estágio/Dados/planilhas jupiter 2025.xlsx', sheet_name=sheets)
 # vagas = pd.read_excel('C:/Users/gabri/Estágio/Dados/planilhas_jupiter.xlsx', sheet_name=sheets)
@@ -25,21 +27,51 @@ sheet_names_jpter = jpter.sheet_names
 vagas = pd.read_excel(sys.argv[2], sheet_name=sheet_names_jpter[0:])
 
 ingressantes = pd.read_excel(sys.argv[3])
-for d in range(len(ingressantes['Disciplina (código)'])):
-    if ' ' in str(ingressantes.loc[d, 'Disciplina (código)']):
-        ingressantes.loc[d, 'Disciplina (código)'] = str(ingressantes.loc[d, 'Disciplina (código)']).replace(' ', '')
-    if '-' not in str(ingressantes.loc[d, 'Disciplina (código)']):
-        ingressantes.loc[d, 'Disciplina (código)'] = \
-        f"{ingressantes.loc[d, 'Disciplina (código)']}-{int(ingressantes.loc[d, 'Turma'])}"
 
 espelho = pd.read_excel(sys.argv[4])
-for d in range(len(espelho['Disciplina (código)'])):
-    if ' ' in str(espelho.loc[d, 'Disciplina (código)']):
-        espelho.loc[d, 'Disciplina (código)'] = str(espelho.loc[d, 'Disciplina (código)']).replace(' ', '')
-    if '-' not in str(espelho.loc[d, 'Disciplina (código)']):
-        espelho.loc[d, 'Disciplina (código)'] = \
-        f"{espelho.loc[d, 'Disciplina (código)']}-{int(espelho.loc[d, 'Turma'])}"
-        
+
+# if 'Disciplina (código)' not in df.columns:
+#     msg = f"A coluna 'Disciplina (código)' não foi encontrada no arquivo {os.path.basename(sys.argv[1])}."
+#     "Verifique o arquivo e tente novamente."
+#     print(msg, file=sys.stderr)
+#     sys.exit(4)
+# elif 'Turma' not in df.columns:
+#     msg = f"A coluna 'Turma' não foi encontrada no arquivo {os.path.basename(sys.argv[1])}."
+#     "Verifique o arquivo e tente novamente."
+#     print(msg, file=sys.stderr)
+#     sys.exit(4)
+# elif 'Disciplina' not in vagas.columns:
+#     msg = f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(sys.argv[2])}."
+#     "Verifique o arquivo e tente novamente."
+#     print(msg, file=sys.stderr)
+#     sys.exit(4)
+
+try:
+    for d in range(len(ingressantes['Disciplina (código)'])):
+        if ' ' in str(ingressantes.loc[d, 'Disciplina (código)']):
+            ingressantes.loc[d, 'Disciplina (código)'] = str(ingressantes.loc[d, 'Disciplina (código)']).replace(' ', '')
+        if '-' not in str(ingressantes.loc[d, 'Disciplina (código)']):
+            ingressantes.loc[d, 'Disciplina (código)'] = \
+            f"{ingressantes.loc[d, 'Disciplina (código)']}-{int(ingressantes.loc[d, 'Turma'])}"
+except KeyError as e:
+    coluna = str(e).strip('\'')
+    msg = f"A coluna '{coluna}' não foi encontrada no arquivo {os.path.basename(sys.argv[3])}. Verifique o arquivo."
+    print(msg, file=sys.stderr)
+    sys.exit(4)
+
+try:
+    for d in range(len(espelho['Disciplina (código)'])):
+        if ' ' in str(espelho.loc[d, 'Disciplina (código)']):
+            espelho.loc[d, 'Disciplina (código)'] = str(espelho.loc[d, 'Disciplina (código)']).replace(' ', '')
+        if '-' not in str(espelho.loc[d, 'Disciplina (código)']):
+            espelho.loc[d, 'Disciplina (código)'] = \
+            f"{espelho.loc[d, 'Disciplina (código)']}-{int(espelho.loc[d, 'Turma'])}"
+except KeyError as e:
+    coluna = str(e).strip('\'')
+    msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[4])}. Verifique o arquivo."
+    print(msg, file=sys.stderr)
+    sys.exit(4)
+
 for sheet in sheet_names_jpter[0:]:
     vagas[sheet] = vagas[sheet].fillna(0)
 
@@ -49,17 +81,28 @@ for sheet in sheet_names_jpter[0:]:
 for sheet in sheet_names[1:5]:
     df[sheet].columns = [col.replace("\n", " ") for col in df[sheet].columns]
     
-    for d in range(len(vagas[sheet]['Disciplina'])):
-        vagas[sheet].loc[d, 'Disciplina'] = \
-        f"{vagas[sheet].loc[d, 'Disciplina']}-{int(vagas[sheet].loc[d, 'Turma'] % 100)}"
+    try:
+        for d in range(len(vagas[sheet]['Disciplina'])):
+            vagas[sheet].loc[d, 'Disciplina'] = \
+            f"{vagas[sheet].loc[d, 'Disciplina']}-{int(vagas[sheet].loc[d, 'Turma'] % 100)}"
+    except KeyError as e:
+        coluna = str(e).strip('\'')
+        msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[2])}. Verifique o arquivo."
+        print(msg, file=sys.stderr)
+        sys.exit(4)
         
-
-    for d in range(len(df[sheet]['Disciplina (código)'])):
-        if ' ' in str(df[sheet].loc[d, 'Disciplina (código)']):
-            df[sheet].loc[d, 'Disciplina (código)'] = str(df[sheet].loc[d, 'Disciplina (código)']).replace(' ', '')
-        if '-' not in str(df[sheet].loc[d, 'Disciplina (código)']):
-            df[sheet].loc[d, 'Disciplina (código)'] = \
-            f"{df[sheet].loc[d, 'Disciplina (código)']}-{int(df[sheet].loc[d, 'Turma'])}"
+    try:
+        for d in range(len(df[sheet]['Disciplina (código)'])):
+            if ' ' in str(df[sheet].loc[d, 'Disciplina (código)']):
+                df[sheet].loc[d, 'Disciplina (código)'] = str(df[sheet].loc[d, 'Disciplina (código)']).replace(' ', '')
+            if '-' not in str(df[sheet].loc[d, 'Disciplina (código)']):
+                df[sheet].loc[d, 'Disciplina (código)'] = \
+                f"{df[sheet].loc[d, 'Disciplina (código)']}-{int(df[sheet].loc[d, 'Turma'])}"
+    except KeyError as e:
+        coluna = str(e).strip('\'')
+        msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[1])}. Verifique o arquivo."
+        print(msg, file=sys.stderr)
+        sys.exit(4)
 
     # print(vagas['SME'])
     # print(df['SME'])
@@ -68,7 +111,14 @@ for sheet in sheet_names[1:5]:
     lista1 = ["Vagas obrigatórias", "Vagas eletivas", "Vagas optativas livres", "Vagas especiais"]
     lista2 = []
     for l in lista1:
-        lista2.append(colunas.get_loc(l) + 1)
+        try:
+            lista2.append(colunas.get_loc(l) + 1)
+        except KeyError as e:
+            coluna = str(e).strip('\'')
+            msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[2])}. "
+            f"Verifique a planilha {sheet}."
+            print(msg, file=sys.stderr)
+            sys.exit(4)
     for d in range(len(df[sheet]['Disciplina (código)'])):
         # if df[sheet].loc[d, 'Disciplina (código)'] in vagas[sheet]['Disciplina'].tolist():
         #     index = (vagas[sheet]['Disciplina'].tolist()).index(df[sheet].loc[d, 'Disciplina (código)'])
@@ -86,9 +136,12 @@ for sheet in sheet_names[1:5]:
         if df[sheet].loc[d, 'Disciplina (código)'] in vagas[sheet]['Disciplina'].tolist():
             index = (vagas[sheet]['Disciplina'].tolist()).index(df[sheet].loc[d, 'Disciplina (código)'])
             # vagas[sheet].loc[index, coluna[lista2[0]]]
-            df[sheet].loc[d, 'Vagas por disciplina'] = vagas[sheet].loc[index, colunas[lista2[0]]] + \
-            vagas[sheet].loc[index, colunas[lista2[1]]] + vagas[sheet].loc[index, colunas[lista2[2]]] + \
-            vagas[sheet].loc[index, colunas[lista2[3]]]
+            df[sheet].loc[d, 'Vagas por disciplina'] = 0
+            for i in range(len(lista2)):
+                df[sheet].loc[d, 'Vagas por disciplina'] += vagas[sheet].loc[index, colunas[lista2[i]]]
+            # df[sheet].loc[d, 'Vagas por disciplina'] = vagas[sheet].loc[index, colunas[lista2[0]]] + \
+            # vagas[sheet].loc[index, colunas[lista2[1]]] + vagas[sheet].loc[index, colunas[lista2[2]]] + \
+            # vagas[sheet].loc[index, colunas[lista2[3]]]
         else:
             df[sheet].loc[d, 'Vagas por disciplina'] = 0
 
@@ -111,23 +164,42 @@ for sheet in sheet_names[1:5]:
 df[sheet_names[5]].columns = [col.replace("\n", " ") for col in df[sheet_names[5]].columns]
 
 for d in range(len(df[sheet_names[5]]['Disciplina (código)'])):
-    if ' ' in str(df[sheet_names[5]].loc[d, 'Disciplina (código)']):
-        df[sheet_names[5]].loc[d, 'Disciplina (código)'] = str(df[sheet_names[5]].loc[d, 'Disciplina (código)']).replace(' ', '')
-    if '-' not in str(df[sheet_names[5]].loc[d, 'Disciplina (código)']):
-        df[sheet_names[5]].loc[d, 'Disciplina (código)'] = \
-        f"{df[sheet_names[5]].loc[d, 'Disciplina (código)']}-{int(df[sheet_names[5]].loc[d, 'Turma'])}"
+    try:
+        if ' ' in str(df[sheet_names[5]].loc[d, 'Disciplina (código)']):
+            df[sheet_names[5]].loc[d, 'Disciplina (código)'] = str(df[sheet_names[5]].loc[d, 'Disciplina (código)']).replace(' ', '')
+        if '-' not in str(df[sheet_names[5]].loc[d, 'Disciplina (código)']):
+            df[sheet_names[5]].loc[d, 'Disciplina (código)'] = \
+            f"{df[sheet_names[5]].loc[d, 'Disciplina (código)']}-{int(df[sheet_names[5]].loc[d, 'Turma'])}"
+    except KeyError as e:
+        coluna = str(e).strip('\'')
+        msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[1])}. Verifique o arquivo."
+        print(msg, file=sys.stderr)
+        sys.exit(4)
         
 for sheet in sheet_names_jpter[4:]:
-    for d in range(len(vagas[sheet]['Disciplina'])):
-        vagas[sheet].loc[d, 'Disciplina'] = \
-        f"{vagas[sheet].loc[d, 'Disciplina']}-{int(vagas[sheet].loc[d, 'Turma'] % 100)}"
+    try:
+        for d in range(len(vagas[sheet]['Disciplina'])):
+            vagas[sheet].loc[d, 'Disciplina'] = \
+            f"{vagas[sheet].loc[d, 'Disciplina']}-{int(vagas[sheet].loc[d, 'Turma'] % 100)}"
+    except KeyError as e:
+        coluna = str(e).strip('\'')
+        msg = f"A coluna '{coluna} não foi encontrada no arquivo {os.path.basename(sys.argv[2])}. Verifique o arquivo."
+        print(msg, file=sys.stderr)
+        sys.exit(4)
         
     colunas = vagas[sheet].columns
     # lista1 = ["Vagas obrigatórias", "Vagas eletivas", "Vagas optativas livres", "Vagas especiais", "Vagas extras"]
     lista1 = ["Vagas obrigatórias", "Vagas eletivas", "Vagas optativas livres", "Vagas especiais"]
     lista2 = []
     for l in lista1:
-        lista2.append(colunas.get_loc(l) + 1)
+        try:
+            lista2.append(colunas.get_loc(l) + 1)
+        except KeyError as e:
+            coluna = str(e).strip('\'')
+            msg = f"A coluna '{coluna}' não foi encontrada no arquivo {os.path.basename(sys.argv[2])}. "
+            f"Verifique a planilha {sheet}."
+            print(msg, file=sys.stderr)
+            sys.exit(4)
     # print(vagas[sheet]['Disciplina'])
     for d in range(len(df[sheet_names[5]]['Disciplina (código)'])):
         # print(df[sheet_names[5]].loc[d, 'Disciplina (código)'])
@@ -139,9 +211,13 @@ for sheet in sheet_names_jpter[4:]:
         #     int(vagas[sheet].loc[index, colunas[lista2[3]]]) + int(vagas[sheet].loc[index, colunas[lista2[4]]])
         if df[sheet_names[5]].loc[d, 'Disciplina (código)'] in vagas[sheet]['Disciplina'].tolist():
             index = (vagas[sheet]['Disciplina'].tolist()).index(df[sheet_names[5]].loc[d, 'Disciplina (código)'])
-            df[sheet_names[5]].loc[d, 'Vagas por disciplina'] = int(vagas[sheet].loc[index, colunas[lista2[0]]]) + \
-            int(vagas[sheet].loc[index, colunas[lista2[1]]]) + int(vagas[sheet].loc[index, colunas[lista2[2]]]) + \
-            int(vagas[sheet].loc[index, colunas[lista2[3]]])
+
+            df[sheet_names[5]].loc[d, 'Vagas por disciplina'] = 0
+            for i in range(len(lista2)):
+                df[sheet_names[5]].loc[d, 'Vagas por disciplina'] += vagas[sheet].loc[index, colunas[lista2[i]]]
+            # df[sheet_names[5]].loc[d, 'Vagas por disciplina'] = int(vagas[sheet].loc[index, colunas[lista2[0]]]) + \
+            # int(vagas[sheet].loc[index, colunas[lista2[1]]]) + int(vagas[sheet].loc[index, colunas[lista2[2]]]) + \
+            # int(vagas[sheet].loc[index, colunas[lista2[3]]])
         elif pd.isna(df[sheet_names[5]].loc[d, 'Vagas por disciplina']):
             df[sheet_names[5]].loc[d, 'Vagas por disciplina'] = 0
             

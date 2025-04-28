@@ -753,6 +753,9 @@ def base_dados(pior_caso):
                     messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
                 elif e.returncode == 2:
                     messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+                elif e.returncode == 4:
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro ao executar o script:\n{msg}")
                 else:
                     messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
