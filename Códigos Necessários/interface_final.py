@@ -1656,10 +1656,49 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
         # Em caso negativo, adiciono essa terminologia.
         caminho_arquivo1 = caminho_arquivo1 + ".xlsx"
 
-    # Por fim, salvo os arquivos criados com seus respectivos métodos.
-    wb.save(os.path.join(saidas, caminho_arquivo))
-    df_vazio.to_excel(os.path.join(saidas, caminho_arquivo1), sheet_name="Resultados", index=False)
+    try:
+        # Por fim, salvo os arquivos criados com seus respectivos métodos.
+        wb.save(os.path.join(saidas, caminho_arquivo))
+    
+    except PermissionError as e:
+        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+            messagebox.showerror("Erro de Permissão", 
+                                    (
+                                        f"Não foi possível salvar o arquivo {os.path.basename(caminho_arquivo)}. "
+                                        "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                    )
+                                )
+            return
+        else:
+            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+            return
+    except Exception as e:
+        # Para qualquer outro erro
+        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+        return
+    
 
+    try:
+        df_vazio.to_excel(os.path.join(saidas, caminho_arquivo1), sheet_name="Resultados", index=False)
+
+        
+    except PermissionError as e:
+        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+            messagebox.showerror("Erro de Permissão", 
+                                    (
+                                        f"Não foi possível salvar o arquivo {os.path.basename(caminho_arquivo1)}. "
+                                        "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                    )
+                                )
+            return
+        else:
+            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+            return
+    except Exception as e:
+        # Para qualquer outro erro
+        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+        return
+    
     # E abro uma janela avisando o usuário de que os arquivos foram salvos.
     messagebox.showinfo("Suesso", 
                         f"Arquivo {caminho_arquivo} criado com sucesso!\n\
@@ -1802,14 +1841,14 @@ def preencher_planilha_dados():
         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
         preenchimento(elenco, arquivo_sol.get(), arquivo_base.get(), True)
 
-        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-        messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
-        - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-        - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
+        # # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+        # messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
+        # - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        # - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        # - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        # - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        # - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+        # - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
 
         # E fecho a janela que havia sido criada.
         nova_janela.destroy()
@@ -1943,19 +1982,34 @@ def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
                 index = vars_checkboxes.index(var)
                 new_df.loc[len(new_df)] = df.loc[index]
 
-
-        new_df.to_excel(file_path_sol.replace('.xlsx',' com Fixadas.xlsx'), sheet_name="Resultados", index=False)
+        try:
+            new_df.to_excel(file_path_sol.replace('.xlsx',' com Fixadas.xlsx'), sheet_name="Resultados", index=False)
+        except PermissionError as e:
+                if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+                    messagebox.showerror("Erro de Permissão", 
+                                            (
+                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                                "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                            )
+                                        )
+                    return
+                else:
+                    messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+                    return
+        except Exception as e:
+            # Para qualquer outro erro
+            messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+            return
 
         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
         # elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
 
         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
+        
         preenchimento(elenco, file_path_sol.replace('.xlsx',' com Fixadas.xlsx'), file_path_base, False)
+        
 
-        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-        messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-        - {file_path_sol.replace('.xlsx', ' com Fixadas.xlsx')}\n\
-        - {file_path_base.replace('.xlsx', ' Preenchido.xlsx')}\n")
+        
 
 
         # E fecho a janela que havia sido criada.
@@ -2075,9 +2129,27 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
                                     ws.cell(row=header_row+row, column=coluna).value = str(solucao_filtrada.loc[a, 'Sala'])
 
 
-            # Após isso, salvo um novo arquivo de elenco de mesmo nome, mas adicionando 'Preenchido' para saber qual é qual.
-            wb.save(file_path_elenco.replace('.xlsx', ' Preenchido.xlsx'))
-
+            try:
+                # Após isso, salvo um novo arquivo de elenco de mesmo nome, mas adicionando 'Preenchido' para saber qual é qual.
+                wb.save(file_path_elenco.replace('.xlsx', ' Preenchido.xlsx'))
+            except PermissionError as e:
+                if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+                    messagebox.showerror("Erro de Permissão", 
+                                            (
+                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                                "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                            )
+                                        )
+                    return
+                else:
+                    messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+                    return
+            except Exception as e:
+                # Para qualquer outro erro
+                messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+                return
+        
+        
 
     # Com todos os elencos preenchidos, agora resta preencher a base de dados para o modelo.
     # Assim, abro a base de dados como um arquivo Excel.
@@ -2114,10 +2186,42 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
 
                 base[sheet].loc[d, 'Sala'] = salas_fixadas
 
-    # Com o novo dataframe construído, salvo-o como arquivo Excel com o nome alterado para distinção.
-    with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
-        for sheet in sheet_names:
-            base[sheet].to_excel(writer, sheet_name=sheet, index=False)
+    try:
+        # Com o novo dataframe construído, salvo-o como arquivo Excel com o nome alterado para distinção.
+        with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
+            for sheet in sheet_names:
+                base[sheet].to_excel(writer, sheet_name=sheet, index=False)
+    except PermissionError as e:
+        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+            messagebox.showerror("Erro de Permissão", 
+                                    (
+                                        f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                        "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                    )
+                                )
+            return
+        else:
+            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+            return
+    except Exception as e:
+        # Para qualquer outro erro
+        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+        return
+    
+    if preencher_elenco:
+        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+        messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
+        - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+        - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+        - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+        - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+        - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+        - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
+    else:
+        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+        messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
+        - {os.path.basename(file_path_sol)}\n\
+        - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
 
 """# Interface"""
 
