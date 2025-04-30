@@ -805,11 +805,22 @@ full_name = "Dados da solução do Modelo.xlsx"
 file_path = os.path.join(pasta_dados, full_name)
 
 
-# Crio um novo arquivo Excel e escrevo os dados.
-with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-    dataframe.to_excel(writer, sheet_name='Resultados', index=False)
+try:
+    # Crio um novo arquivo Excel e escrevo os dados.
+    with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+        dataframe.to_excel(writer, sheet_name='Resultados', index=False)
 
-print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+    print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+except PermissionError as e:
+        if e.errno == 13:
+            print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+            sys.exit(2)
+        else:
+            print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            sys.exit(1)
+except Exception as e:
+    print(f"Ocorreu um erro nesperado ao criar o arquivo '{full_name}': {e}")
+    sys.exit(1)
 
 """## Conversão de tabela"""
 

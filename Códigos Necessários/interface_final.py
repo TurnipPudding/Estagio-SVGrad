@@ -956,9 +956,24 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
             # E rolo automaticamente até o final da janela.
             output_text.see(tk.END)
 
-    # Caso algum erro ocorra ao executar o script, alerto o usuário inserindo o erro na janela de saída.
+    # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 1:
+            messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+        elif e.returncode == 2:
+            messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+        else:
+            messagebox.showerror("Erro", f"Erro inesperado: {e}")
+        return
+    
+    # Caso um erro inesperado ocorra, uma janela alertando o erro é apresentada para o usuário.
     except Exception as e:
-        output_text.insert(tk.END, f"\nErro ao executar o script: {e}")
+        messagebox.showerror("Erro", f"Erro inesperado: {e}")
+        return
+
+    # # Caso algum erro ocorra ao executar o script, alerto o usuário inserindo o erro na janela de saída.
+    # except Exception as e:
+    #     output_text.insert(tk.END, f"\nErro ao executar o script: {e}")
 
 """### Novo Edit Configs"""
 
