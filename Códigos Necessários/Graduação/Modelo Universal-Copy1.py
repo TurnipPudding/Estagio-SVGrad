@@ -344,7 +344,7 @@ for a in aula_labs:
 # sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
-    sala_valor = str(df.loc[a % lenT, 'Sala'])
+    sala_valor = str(int(df.loc[a % lenT, 'Sala']))
     if ', ' in sala_valor:
         if not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
             if len(sala_valor.split(', ')) >= (int(a / lenT) + 1):
