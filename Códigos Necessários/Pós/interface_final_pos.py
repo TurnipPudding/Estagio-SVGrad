@@ -219,12 +219,12 @@ def planilha_dep(jupiter):
     btn_selecionar_CCMC.grid(row=0, column=1, padx=5, pady=5)
 
     # As linhas a seguir são análogas.
-    lbl_PPGMAT = tk.Label(frame, text="Selecione a planilha do SMA:")
+    lbl_PPGMAT = tk.Label(frame, text="Selecione a planilha do PPGMAT:")
     lbl_PPGMAT.grid(row=1, column=0, pady=5, sticky="w")
     btn_selecionar_PPGMAT = tk.Button(frame, textvariable=arquivo_PPGMAT, command=selecionar_PPGMAT, wraplength=250, width=40)
     btn_selecionar_PPGMAT.grid(row=1, column=1, padx=5, pady=5)
 
-    lbl_MECAI = tk.Label(frame, text="Selecione a planilha do SCC:")
+    lbl_MECAI = tk.Label(frame, text="Selecione a planilha do MECAI:")
     lbl_MECAI.grid(row=2, column=0, pady=5, sticky="w")
     btn_selecionar_MECAI = tk.Button(frame, textvariable=arquivo_MECAI, command=selecionar_MECAI, wraplength=250, width=40)
     btn_selecionar_MECAI.grid(row=2, column=1, padx=5, pady=5)
@@ -318,8 +318,8 @@ def planilha_dep(jupiter):
         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
 
-        if not arquivo_CCMC.get() or arquivo_CCMC.get() == "Selecione a planilha do SME":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+        if not arquivo_CCMC.get() or arquivo_CCMC.get() == "Selecione a planilha do CCMC":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do CCMC.")
             return
         if not arquivo_PPGMAT.get() or arquivo_PPGMAT.get() == "Selecione a planilha do PPGMAT":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PPGMAT.")
@@ -327,8 +327,8 @@ def planilha_dep(jupiter):
         if not arquivo_MECAI.get() or arquivo_MECAI.get() == "Selecione a planilha do MECAI":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do MECAI.")
             return
-        if not arquivo_PIPGES.get() or arquivo_PIPGES.get() == "Selecione a planilha do SSC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+        if not arquivo_PIPGES.get() or arquivo_PIPGES.get() == "Selecione a planilha do PIPGES":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PIPGES.")
             return
 
         # Caso não seja a base dos dados do Júpiter que está sendo feita:
@@ -406,7 +406,7 @@ def ler_df(caminho_arquivo):
 """### Concatenar"""
 
 # Função que concatena as planilhas em um único arquivo.
-def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
+def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, outros):
     # Crio uma variável para listar os arquivos que serão concatenados.
     files = []
     # Caso eu não esteja concatenando os arquivos para a base do JúpiterWeb:
@@ -415,7 +415,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         df_salas = ler_df(salas)
 
         # Defino uma lista com os nomes dos arquivos a serem concatenados.
-        name_files = [SME, SMA, SCC, SSC, outros]
+        name_files = [CCMC, PPGMAT, MECAI, PIPGES, outros]
 
         # Para cada nome de arquivo:
         for name in name_files:
@@ -457,12 +457,12 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                                     )
                 return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
-        sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
+        sheets = ["CCMC", "SMA", "MECAI", "PIPGES", "Outros"]
 
     # Para o caso de concatenando os arquivos para a base do Júpiter:
     else:
         # Defino uma lista com os nomes dos arquivos a serem concatenados.
-        name_files = [SME, SMA, SCC, SSC]
+        name_files = [CCMC, PPGMAT, MECAI, PIPGES]
 
         # Adiciono os nomes dos arquivos dos outros institutos a essa lista de nomes.
         name_files.extend(outros)
