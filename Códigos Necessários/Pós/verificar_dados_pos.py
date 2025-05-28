@@ -41,14 +41,19 @@ sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arq
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas semigual ao 202401.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 copia.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 pior caso.xlsx'
-file_path = sys.argv[1]
+# file_path = sys.argv[1]
 
-# Criação e mescla do dataframe (dados das aulas)
-df = pd.read_excel(file_path, sheet_name=sheets)
-df = pd.concat(df.values(), ignore_index=True)
+# # Criação e mescla do dataframe (dados das aulas)
+# df = pd.read_excel(file_path, sheet_name=sheets)
+# df = pd.concat(df.values(), ignore_index=True)
+
+df = pd.read_excel("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Dados da Pós/Elenco CCMC 202501.xlsx", skiprows=2)
+df = df.rename(columns={"Sala (a definir)": "Sala"})
+print(df.columns)
 # print(df)
 # Dataframe com os dados das salas
-salas = pd.read_excel(file_path, sheet_name="Salas")
+# salas = pd.read_excel(file_path, sheet_name="Salas")
+salas = pd.read_excel("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Interface/Planilha das salas.xlsx", sheet_name="Salas")
 # print(salas)
 # Lista da capacidade de cada sala do dataframe
 cap_s = salas['Lugares'].tolist()
@@ -141,9 +146,11 @@ for s in range(len(df['Sala'])):
 #                 )
 #                 # print(tam_t[d])
 
-for d in range(len(tam_t)):
-    if pd.isna(df.loc[d, 'Turma']):
-        df.loc[d, 'Turma'] = 1
+# Descomentar depois
+
+# for d in range(len(tam_t)):
+#     if pd.isna(df.loc[d, 'Turma']):
+#         df.loc[d, 'Turma'] = 1
 
 """## Dados de Entrada"""
 
@@ -175,26 +182,29 @@ curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
 lenC = len(curriculos)
 # Crio uma dicionário em formato de matriz para identificar quais turmas/disciplinas são ministradas para cada curso do instituto
 # Inicio todos os valores da matriz como 0 para atualizá-los
-Y_tc = {(t,c): 0 for t in range(lenT) for c in range(lenC)}
-# Para cada turma/disciplina
-for t in range(lenT):
-    # Analiso a célula de curso daquela turma/disciplina
-    celula = df.loc[t, 'Curso(s)']
-    # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
-    if ',' in celula:
-        # print(df['Curso(s)'][int(a % lenT)].split(', '))
-        # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
-        # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
-        for c in celula.split(', '):
-            # Se aquela curso está na lista dos cursos do instituto
-            if c in curriculos:
-                # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-                Y_tc.update({(t,curriculos.index(c)): 1})
-    else:
-        # Se há um único curso para o qual aquela turma/disciplina é ministrada, verifico se é um dos cursos do ICMC
-        if celula in curriculos:
-            # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-            Y_tc.update({(t,curriculos.index(celula)): 1})
+
+# Descomentar depois
+
+# Y_tc = {(t,c): 0 for t in range(lenT) for c in range(lenC)}
+# # Para cada turma/disciplina
+# for t in range(lenT):
+#     # Analiso a célula de curso daquela turma/disciplina
+#     celula = df.loc[t, 'Curso(s)']
+#     # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
+#     if ',' in celula:
+#         # print(df['Curso(s)'][int(a % lenT)].split(', '))
+#         # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
+#         # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
+#         for c in celula.split(', '):
+#             # Se aquela curso está na lista dos cursos do instituto
+#             if c in curriculos:
+#                 # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
+#                 Y_tc.update({(t,curriculos.index(c)): 1})
+#     else:
+#         # Se há um único curso para o qual aquela turma/disciplina é ministrada, verifico se é um dos cursos do ICMC
+#         if celula in curriculos:
+#             # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
+#             Y_tc.update({(t,curriculos.index(celula)): 1})
 
 # print(Y_tc)
 
@@ -247,11 +257,13 @@ for t in A_t:
 # print("A_s =", A_s)
 
 # A variável A_c é uma lista onde cada elemento é uma lista das turmas/disciplinas que são ministradas para um determinado curso 'c' do instituto.
-A_c = []
-for c in range(lenC):
-    # A ideia é semelhante à criação das listas anteriores, utilizando uma conta "esperta" para simbolizar o índice correto,
-    # com a condição de colocar na lista as turmas/disciplinas corretas (Y_tc = 1).
-    A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t,c] == 1])
+
+# Descomentar depois
+# A_c = []
+# for c in range(lenC):
+#     # A ideia é semelhante à criação das listas anteriores, utilizando uma conta "esperta" para simbolizar o índice correto,
+#     # com a condição de colocar na lista as turmas/disciplinas corretas (Y_tc = 1).
+#     A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t,c] == 1])
 
 # print("A_c =", A_c[0])
 
@@ -342,7 +354,7 @@ for a in aula_labs:
 # sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
-    sala_valor = str(df.loc[a % lenT, 'Sala'])
+    sala_valor = str(int(df.loc[a % lenT, 'Sala']))
     if ', ' in sala_valor:
         if not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
             if len(sala_valor.split(', ')) >= (int(a / lenT) + 1):
@@ -354,25 +366,58 @@ for a in range(lenA):
         sala_fixa.append(sala_valor)
     else:
         sala_fixa.append('0')
-# print(sala_fixa)
 
 
-sala_proibida = {}
-for a in range(lenA):
+# Descomentar depois
+
+# sala_proibida = {}
+# for a in range(lenA):
     
-    if not pd.isna(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]):
+#     if not pd.isna(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]):
 
-        cell = str(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)])
+#         cell = str(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)])
         
-        if ',' in cell:
-            sala_proibida.update({a : cell.split(', ')})
-            for sala in cell.split(', '):
-                s = salas[salas['Sala'] == sala].index[0]
-                eta_as[a,s] = 0
-        else:
-            sala_proibida.update({a : cell})
-            s = salas[salas['Sala'] == cell].index[0]
-            eta_as[a,s] = 0
+#         if ',' in cell:
+#             sala_proibida.update({a : cell.split(', ')})
+#             for sala in cell.split(', '):
+#                 s = salas[salas['Sala'] == sala].index[0]
+#                 eta_as[a,s] = 0
+#         else:
+#             sala_proibida.update({a : cell})
+#             s = salas[salas['Sala'] == cell].index[0]
+#             eta_as[a,s] = 0
+
+# for s in range(lenS):
+#     print(f"Aula {df.loc[0, 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(0, s)]}")
+
+# Preciso usar o dataframe df_livres para verificar os horários livres de cada sala
+# No df_livres, cada linha tem uma sala, e essa sala tem um index no eta_as.
+# Além disso, na mesma linha, há um dia da semana e um horário vago.
+# Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
+df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
+for idx, row in df_livres.iterrows():
+    sala = row['Sala']
+    dia = row['Dia da semana']
+    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+    inicio = horario_para_decimal(inicio_str.strip())
+    fim = horario_para_decimal(fim_str.strip())
+    
+    # Verifico se a sala está livre para cada aula
+    for a in range(lenA):
+        # Se o dia da aula for o mesmo que o dia do horário livre
+        # e o horário da aula não estiver completamente dentro do horário livre,
+        if dia_a[a] == dia and not start_a[a] >= inicio and not end_a[a] <= fim:
+            # Verifico se a aula caberia na sala
+            s = salas[salas['Sala'] == sala].index[0]
+            if eta_as[(a, s)] == 1:
+                # Se a aula caberia na sala, marco como 0 (não cabe),
+                # pois o horário não está livre para aquela aula
+                eta_as[(a, s)] = 0
+                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+
+# for s in range(lenS):
+#     print(f"Aula {df.loc[0, 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(0, s)]}")
 
 """## Verificação dos Dados
 
