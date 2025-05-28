@@ -457,7 +457,7 @@ def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, ou
                                     )
                 return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
-        sheets = ["CCMC", "SMA", "MECAI", "PIPGES", "Outros"]
+        sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES", "Outros"]
 
     # Para o caso de concatenando os arquivos para a base do Júpiter:
     else:
@@ -1738,10 +1738,10 @@ def preencher_planilha_dados():
     frame.pack(pady=10, padx=10)
 
     # Defino várias variáveis para armazenar os nomes dos arquivos que serão preenchidos.
-    arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
-    arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
-    arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
-    arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
+    arquivo_CCMC = tk.StringVar(value="Selecione a planilha do CCMC")
+    arquivo_PPGMAT = tk.StringVar(value="Selecione a planilha do PPGMAT")
+    arquivo_MECAI = tk.StringVar(value="Selecione a planilha do MECAI")
+    arquivo_PIPGES = tk.StringVar(value="Selecione a planilha do PIPGES")
     arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
     arquivo_sol = tk.StringVar(value="Selecione a planilha com os Dados da Solução do Modelo")
     arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
@@ -1749,26 +1749,26 @@ def preencher_planilha_dados():
 
 
     # Defino funções para selecionar arquivos.
-    def selecionar_sme():
+    def selecionar_CCMC():
         # O usuário seleciona o arquivo contendo a base de dados das aulas.
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do CCMC")
 
         # Se um arquivo foi selecionado:
         if arquivo:
             # Salvo o caminho do arquivo.
-            arquivo_sme.set(arquivo)
-    def selecionar_sma():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
+            arquivo_CCMC.set(arquivo)
+    def selecionar_PPGMAT():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do PPGMAT")
         if arquivo:
-            arquivo_sma.set(arquivo)
-    def selecionar_scc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
+            arquivo_PPGMAT.set(arquivo)
+    def selecionar_MECAI():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do MECAI")
         if arquivo:
-            arquivo_scc.set(arquivo)
-    def selecionar_ssc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
+            arquivo_MECAI.set(arquivo)
+    def selecionar_PIPGES():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do PIPGES")
         if arquivo:
-            arquivo_ssc.set(arquivo)
+            arquivo_PIPGES.set(arquivo)
     def selecionar_outros():
         arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
         if arquivo:
@@ -1785,29 +1785,29 @@ def preencher_planilha_dados():
 
 
     # Crio uma legenda para ficar ao lado do botão.
-    lbl_sme = tk.Label(frame, text="Selecione a planilha do SME")
+    lbl_CCMC = tk.Label(frame, text="Selecione a planilha do CCMC")
     # Defino a posição do texto na janela.
-    lbl_sme.grid(row=0, column=0, pady=5, sticky='w')
-    # Crio o botão para salvar o arquivo do SME.
-    btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
+    lbl_CCMC.grid(row=0, column=0, pady=5, sticky='w')
+    # Crio o botão para salvar o arquivo do CCMC.
+    btn_selecionar_CCMC = tk.Button(frame, textvariable=arquivo_CCMC, command=selecionar_CCMC, wraplength=250, width=40)
     # Defino a posição do botão na janela.
-    btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
+    btn_selecionar_CCMC.grid(row=0, column=1, padx=5, pady=5)
 
     # As linhas a seguir são análogas.
-    lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA")
-    lbl_sma.grid(row=1, column=0, pady=5, sticky='w')
-    btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
-    btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
+    lbl_PPGMAT = tk.Label(frame, text="Selecione a planilha do PPGMAT")
+    lbl_PPGMAT.grid(row=1, column=0, pady=5, sticky='w')
+    btn_selecionar_PPGMAT = tk.Button(frame, textvariable=arquivo_PPGMAT, command=selecionar_PPGMAT, wraplength=250, width=40)
+    btn_selecionar_PPGMAT.grid(row=1, column=1, padx=5, pady=5)
 
-    lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC")
-    lbl_scc.grid(row=2, column=0, pady=5, sticky='w')
-    btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
-    btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
+    lbl_MECAI = tk.Label(frame, text="Selecione a planilha do MECAI")
+    lbl_MECAI.grid(row=2, column=0, pady=5, sticky='w')
+    btn_selecionar_MECAI = tk.Button(frame, textvariable=arquivo_MECAI, command=selecionar_MECAI, wraplength=250, width=40)
+    btn_selecionar_MECAI.grid(row=2, column=1, padx=5, pady=5)
 
-    lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC")
-    lbl_ssc.grid(row=3, column=0, pady=5, sticky='w')
-    btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
-    btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
+    lbl_PIPGES = tk.Label(frame, text="Selecione a planilha do PIPGES")
+    lbl_PIPGES.grid(row=3, column=0, pady=5, sticky='w')
+    btn_selecionar_PIPGES = tk.Button(frame, textvariable=arquivo_PIPGES, command=selecionar_PIPGES, wraplength=250, width=40)
+    btn_selecionar_PIPGES.grid(row=3, column=1, padx=5, pady=5)
 
     lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos")
     lbl_outros.grid(row=4, column=0, pady=5, sticky='w')
@@ -1829,17 +1829,17 @@ def preencher_planilha_dados():
         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
 
-        if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+        if not arquivo_CCMC.get() or arquivo_CCMC.get() == "Selecione a planilha do CCMC":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do CCMC.")
             return
-        if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+        if not arquivo_PPGMAT.get() or arquivo_PPGMAT.get() == "Selecione a planilha do PPGMAT":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PPGMAT.")
             return
-        if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+        if not arquivo_MECAI.get() or arquivo_MECAI.get() == "Selecione a planilha do MECAI":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do MECAI.")
             return
-        if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+        if not arquivo_PIPGES.get() or arquivo_PIPGES.get() == "Selecione a planilha do PIPGES":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PIPGES.")
             return
         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
@@ -1852,7 +1852,7 @@ def preencher_planilha_dados():
             return
 
         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-        elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+        elenco = [arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(), arquivo_PIPGES.get(), arquivo_outros.get()]
 
         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
         preenchimento(elenco, arquivo_sol.get(), arquivo_base.get(), True)
@@ -1874,17 +1874,17 @@ def preencher_planilha_dados():
         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
 
-        if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+        if not arquivo_CCMC.get() or arquivo_CCMC.get() == "Selecione a planilha do CCMC":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do CCMC.")
             return
-        if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+        if not arquivo_PPGMAT.get() or arquivo_PPGMAT.get() == "Selecione a planilha do PPGMAT":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PPGMAT.")
             return
-        if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+        if not arquivo_MECAI.get() or arquivo_MECAI.get() == "Selecione a planilha do MECAI":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do MECAI.")
             return
-        if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+        if not arquivo_PIPGES.get() or arquivo_PIPGES.get() == "Selecione a planilha do PIPGES":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PIPGES.")
             return
         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
@@ -1899,7 +1899,7 @@ def preencher_planilha_dados():
 
 
         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-        elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+        elenco = [arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(), arquivo_PIPGES.get(), arquivo_outros.get()]
 
         escolhas_preenchimento(elenco, arquivo_sol.get(), arquivo_base.get())
 
