@@ -62,13 +62,14 @@ def padroniza_dataframe(file_name, header_row, ano):
     df['Utilizará laboratório? (sim ou não)'] = df['Utilizará laboratório? (sim ou não)'].fillna("Não")
     # print(df['Utilizará laboratório? (sim ou não)'])
 
-    # Busco e listo por disciplinas cuja Turma não foi definida.
-    turmas0 = df[df['Turma'].isna()].index.tolist()
-    # Se existirem tais disciplinas, uma janela é aberta para indicar as linhas do arquivo que possuem turmas vazias.
-    if len(turmas0) != 0:
-        messagebox.showwarning(f"Aviso!", f"A(s) linha(s) {[d + header_row + 2 for d in turmas0]} do arquivo {file_name} \
-        possuem turmas não identificadas. Verifique qual a turma da disciplina.")
-        return None
+    # Talvez precise descomentar as linhas a seguir, caso queira verificar se existem turmas não definidas no arquivo.
+    # # Busco e listo por disciplinas cuja Turma não foi definida.
+    # turmas0 = df[df['Turma'].isna()].index.tolist()
+    # # Se existirem tais disciplinas, uma janela é aberta para indicar as linhas do arquivo que possuem turmas vazias.
+    # if len(turmas0) != 0:
+    #     messagebox.showwarning(f"Aviso!", f"A(s) linha(s) {[d + header_row + 2 for d in turmas0]} do arquivo {file_name} \
+    #     possuem turmas não identificadas. Verifique qual a turma da disciplina.")
+    #     return None
 
     # Adiciono mais duas colunas no dataframe, uma para colocar o número de inscritos das disciplinas, e outra para o ano dos dados.
     df.insert(df.columns.get_loc(headers[-1]), "Vagas por disciplina", "")
@@ -159,11 +160,11 @@ def planilha_dep(jupiter):
     frame.pack(pady=10, padx=10)
 
     # Defino várias variáveis para armazenar os nomes dos arquivos para criar a base de dados.
-    arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
-    arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
-    arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
-    arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
-    arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
+    arquivo_CCMC = tk.StringVar(value="Selecione a planilha do CCMC")
+    arquivo_PPGMAT = tk.StringVar(value="Selecione a planilha do PPGMAT")
+    arquivo_MECAI = tk.StringVar(value="Selecione a planilha do MECAI")
+    arquivo_PIPGES = tk.StringVar(value="Selecione a planilha do PIPGES")
+    # arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
     arquivo_salas = tk.StringVar(value="Selecione a planilha dos dados das salas")
     # Defino uma variável para conter o ano dos dados fornecidos.
     ano_dados = IntVar()
@@ -173,27 +174,27 @@ def planilha_dep(jupiter):
     lista_outros = []
 
     # Defino as funções para selecionar arquivos.
-    def selecionar_sme():
+    def selecionar_CCMC():
         # A classe filedialog faz com que o gerenciador de arquivos seja aberto para selecionar um arquivo.
         # O usuário seleciona o arquivo contendo a base de dados das aulas.
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do CCMC")
 
         # Se um arquivo foi selecionado:
         if arquivo:
             # Salvo o caminho do arquivo.
-            arquivo_sme.set(arquivo)
-    def selecionar_sma():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
+            arquivo_CCMC.set(arquivo)
+    def selecionar_PPGMAT():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do PPGMAT")
         if arquivo:
-            arquivo_sma.set(arquivo)
-    def selecionar_scc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
+            arquivo_PPGMAT.set(arquivo)
+    def selecionar_MECAI():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do MECAI")
         if arquivo:
-            arquivo_scc.set(arquivo)
-    def selecionar_ssc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
+            arquivo_MECAI.set(arquivo)
+    def selecionar_PIPGES():
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha do PIPGES")
         if arquivo:
-            arquivo_ssc.set(arquivo)
+            arquivo_PIPGES.set(arquivo)
     # Se não estiver criando a base de dados do Júpiter:
     if not jupiter:
         # Também defino as funções necessárias para salvar outros arquivos.
@@ -209,29 +210,29 @@ def planilha_dep(jupiter):
 
 
     # Crio uma legenda para ficar ao lado do botão.
-    lbl_sme = tk.Label(frame, text="Selecione a planilha do SME:")
+    lbl_CCMC = tk.Label(frame, text="Selecione a planilha do CCMC:")
     # Defino a posição do texto na janela.
-    lbl_sme.grid(row=0, column=0, pady=5, sticky="w")
-    # Crio o botão para salvar o arquivo do SME.
-    btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
+    lbl_CCMC.grid(row=0, column=0, pady=5, sticky="w")
+    # Crio o botão para salvar o arquivo do CCMC.
+    btn_selecionar_CCMC = tk.Button(frame, textvariable=arquivo_CCMC, command=selecionar_CCMC, wraplength=250, width=40)
     # Defino a posição do botão na janela.
-    btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
+    btn_selecionar_CCMC.grid(row=0, column=1, padx=5, pady=5)
 
     # As linhas a seguir são análogas.
-    lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA:")
-    lbl_sma.grid(row=1, column=0, pady=5, sticky="w")
-    btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
-    btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
+    lbl_PPGMAT = tk.Label(frame, text="Selecione a planilha do SMA:")
+    lbl_PPGMAT.grid(row=1, column=0, pady=5, sticky="w")
+    btn_selecionar_PPGMAT = tk.Button(frame, textvariable=arquivo_PPGMAT, command=selecionar_PPGMAT, wraplength=250, width=40)
+    btn_selecionar_PPGMAT.grid(row=1, column=1, padx=5, pady=5)
 
-    lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC:")
-    lbl_scc.grid(row=2, column=0, pady=5, sticky="w")
-    btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
-    btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
+    lbl_MECAI = tk.Label(frame, text="Selecione a planilha do SCC:")
+    lbl_MECAI.grid(row=2, column=0, pady=5, sticky="w")
+    btn_selecionar_MECAI = tk.Button(frame, textvariable=arquivo_MECAI, command=selecionar_MECAI, wraplength=250, width=40)
+    btn_selecionar_MECAI.grid(row=2, column=1, padx=5, pady=5)
 
-    lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC:")
-    lbl_ssc.grid(row=3, column=0, pady=5, sticky="w")
-    btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
-    btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
+    lbl_PIPGES = tk.Label(frame, text="Selecione a planilha do PIPGES:")
+    lbl_PIPGES.grid(row=3, column=0, pady=5, sticky="w")
+    btn_selecionar_PIPGES = tk.Button(frame, textvariable=arquivo_PIPGES, command=selecionar_PIPGES, wraplength=250, width=40)
+    btn_selecionar_PIPGES.grid(row=3, column=1, padx=5, pady=5)
 
     # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
     if not jupiter:
@@ -317,16 +318,16 @@ def planilha_dep(jupiter):
         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
 
-        if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
+        if not arquivo_CCMC.get() or arquivo_CCMC.get() == "Selecione a planilha do SME":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
             return
-        if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+        if not arquivo_PPGMAT.get() or arquivo_PPGMAT.get() == "Selecione a planilha do PPGMAT":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do PPGMAT.")
             return
-        if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+        if not arquivo_MECAI.get() or arquivo_MECAI.get() == "Selecione a planilha do MECAI":
+            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do MECAI.")
             return
-        if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
+        if not arquivo_PIPGES.get() or arquivo_PIPGES.get() == "Selecione a planilha do SSC":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
             return
 
@@ -357,11 +358,11 @@ def planilha_dep(jupiter):
 
         # Baseando-se em qual base de dados está sendo criada, chamo uma função para concatenar os dados dos arquivos fornecidos.
         if not jupiter:
-            concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
-                      arquivo_ssc.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
+            concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
+                      arquivo_PIPGES.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
         else:
-            concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
-                      arquivo_ssc.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
+            concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
+                      arquivo_PIPGES.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
         # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
 
         # Terminada a concatenação, destruo a janela de seleção.
