@@ -4,20 +4,20 @@ from datetime import datetime
 df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
 
 
-# Função auxiliar para converter horário "HH:MM" em datetime.time
-def str_to_time(horastr):
-    return datetime.strptime(horastr, "%H:%M").time()
+# # Função auxiliar para converter horário "HH:MM" em datetime.time
+# def str_to_time(horastr):
+#     return datetime.strptime(horastr, "%H:%M").time()
 
-# Pré-processamento: transformar os intervalos livres em objetos time
-intervalos_livres = {}  # chave: (sala, dia), valor: lista de tuplas (inicio, fim)
-for idx, row in df_livres.iterrows():
-    sala = row['Sala']
-    dia = row['Dia da semana']
-    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
-    inicio = str_to_time(inicio_str.strip())
-    fim = str_to_time(fim_str.strip())
-    chave = (sala, dia)
-    intervalos_livres.setdefault(chave, []).append((inicio, fim))
+# # Pré-processamento: transformar os intervalos livres em objetos time
+# intervalos_livres = {}  # chave: (sala, dia), valor: lista de tuplas (inicio, fim)
+# for idx, row in df_livres.iterrows():
+#     sala = row['Sala']
+#     dia = row['Dia da semana']
+#     inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+#     inicio = str_to_time(inicio_str.strip())
+#     fim = str_to_time(fim_str.strip())
+#     chave = (sala, dia)
+#     intervalos_livres.setdefault(chave, []).append((inicio, fim))
 
 
 
@@ -113,3 +113,27 @@ eta_as = {(a, s): 1 if tam_t[int((a % lenT ))] <= cap_s[s] \
 
 print(eta_as)
 
+# Preciso usar o dataframe df_livres para verificar os horários livres de cada sala
+# No df_livres, cada linha tem uma sala, e essa sala tem um index no eta_as.
+# Além disso, na mesma linha, há um dia da semana e um horário vago.
+# Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
+for idx, row in df_livres.iterrows():
+    sala = row['Sala']
+    dia = row['Dia da semana']
+    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+    inicio = horario_para_decimal(inicio_str.strip())
+    fim = horario_para_decimal(fim_str.strip())
+    
+    # Verifico se a sala está livre para cada aula
+    for a in range(lenA):
+        # Se o dia da aula for o mesmo que o dia do horário livre
+        # e o horário da aula não estiver completamente dentro do horário livre,
+        if dia_a[a] == dia and not (start_a[a] >= inicio and end_a[a] <= fim):
+            # Verifico se a aula caberia na sala
+            s = salas[salas['Sala'] == sala].index[0]
+            if eta_as[(a, s)] == 1:
+                # Se a aula caberia na sala, marco como 0 (não cabe),
+                # pois o horário não está livre para aquela aula
+                eta_as[(a, s)] = 0
+
+print(eta_as)
