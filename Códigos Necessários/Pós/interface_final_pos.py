@@ -737,7 +737,7 @@ def base_dados(pior_caso):
                 file4 = arquivo_esp.get()
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(
-                    ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
+                    ["python", "jupiter sheet maker_pos.py", file1, file2, file3, file4, nome],
                     check=True,
                     capture_output=True,
                     text=True
@@ -899,7 +899,7 @@ def execute():
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de verificação de dados.
     vd1 = ttk.Button(frame, text="Selecionar Verificação de Dados",
-                     command=lambda: roda_script("verificar_dados.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
+                     command=lambda: roda_script("verificar_dados_pos.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
     vd1.grid(row=4, column=0, pady=5)
 
     # Defino uma linha de separação horizontal na janela, separando o botão de verificação de dados do botão de execução do modelo.
@@ -1355,7 +1355,7 @@ def Novo_edit_config(file_name):
 
         # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
         # então só resta rodar o script com elas.
-        roda_script(script="Modelo Universal-Copy1.py",
+        roda_script(script="Modelo Universal-Copy1_pos.py",
                 nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
                 alpha=aux_a, pref=aux_p)
 
@@ -1368,7 +1368,7 @@ def Novo_edit_config(file_name):
     # Defino o botão de Executar o Modelo com os parâmetros Recomendados, que chama a função de rodar script e os
     # parâmetros recomendados diretamente.
     ttk.Button(frame2, text="Executar com Recomendados",
-                command=lambda: roda_script(script="Modelo Universal-Copy1.py",
+                command=lambda: roda_script(script="Modelo Universal-Copy1_pos.py",
                                             nome=file_name, peso_x='1', peso_y='500', peso_v="",
                                             peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
 
