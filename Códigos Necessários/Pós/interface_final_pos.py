@@ -171,7 +171,7 @@ def planilha_dep(jupiter):
     # Defino uma variável para conter o nome da nova base de dados.
     nome_arquivo = tk.StringVar()
     # Defino uma lista que irá conter os nomes de outros arquivos necessários para criar uma base de dados.
-    lista_outros = []
+    # lista_outros = []
 
     # Defino as funções para selecionar arquivos.
     def selecionar_CCMC():
@@ -198,10 +198,10 @@ def planilha_dep(jupiter):
     # Se não estiver criando a base de dados do Júpiter:
     if not jupiter:
         # Também defino as funções necessárias para salvar outros arquivos.
-        def selecionar_outros():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
-            if arquivo:
-                arquivo_outros.set(arquivo)
+        # def selecionar_outros():
+        #     arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
+        #     if arquivo:
+        #         arquivo_outros.set(arquivo)
         def selecionar_salas():
             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das salas")
             if arquivo:
@@ -237,10 +237,10 @@ def planilha_dep(jupiter):
     # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
     if not jupiter:
         # Defino algumas legendas e botões adicionais.
-        lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
-        lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
-        btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
-        btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
+        # lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
+        # lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
+        # btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
+        # btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
 
         lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas:")
         lbl_salas.grid(row=5, column=0, pady=5, sticky="w")
@@ -254,56 +254,56 @@ def planilha_dep(jupiter):
         campo_ano = tk.Entry(frame, textvariable=ano_dados)
         campo_ano.grid(row=6, column=1, pady=5)
 
-    # Caso esteja sendo criada a base de dados do Júpiter:
-    else:
-        # Defino um frame adicional na janela.
-        frame2 = tk.Frame(nova_janela)
-        frame2.pack(pady=10, padx=10)
+    # # Caso esteja sendo criada a base de dados do Júpiter:
+    # else:
+    #     # Defino um frame adicional na janela.
+    #     frame2 = tk.Frame(nova_janela)
+    #     frame2.pack(pady=10, padx=10)
 
-        # Defino algumas funções especiais para utilizar nesse novo frame.
+    #     # Defino algumas funções especiais para utilizar nesse novo frame.
 
-        # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
-        def add_file():
-            file_path = filedialog.askopenfilename(title="Selecione um arquivo")
-            # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
-            if file_path:
-                lista_outros.append(file_path)
-                # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
-                update_listbox()
+    #     # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
+    #     def add_file():
+    #         file_path = filedialog.askopenfilename(title="Selecione um arquivo")
+    #         # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
+    #         if file_path:
+    #             lista_outros.append(file_path)
+    #             # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
+    #             update_listbox()
 
-        # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
-        def remove_selected():
-            # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
-            try:
-                # Salvo o índice do arquivo selecionado pelo usuário.
-                selected_index = file_listbox.curselection()[0]
-                # Removo o arquivo de mesmo índice da lista.
-                lista_outros.pop(selected_index)
-                # E atualizo a lista visualizada no frame.
-                update_listbox()
-            # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
-            except IndexError:
-                pass
+    #     # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
+    #     def remove_selected():
+    #         # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
+    #         try:
+    #             # Salvo o índice do arquivo selecionado pelo usuário.
+    #             selected_index = file_listbox.curselection()[0]
+    #             # Removo o arquivo de mesmo índice da lista.
+    #             lista_outros.pop(selected_index)
+    #             # E atualizo a lista visualizada no frame.
+    #             update_listbox()
+    #         # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
+    #         except IndexError:
+    #             pass
 
-        # Defino uma função que atualiza a visualização da lista no frame.
-        def update_listbox():
-            # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
-            file_listbox.delete(0, tk.END)
-            # Depois disso, adiciono os arquivos da lista no visor.
-            for file in lista_outros:
-                file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+    #     # Defino uma função que atualiza a visualização da lista no frame.
+    #     def update_listbox():
+    #         # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
+    #         file_listbox.delete(0, tk.END)
+    #         # Depois disso, adiciono os arquivos da lista no visor.
+    #         for file in lista_outros:
+    #             file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
 
-        # Defino um botão para adicionar arquivos, e sua posição na janela.
-        add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
-        add_file_button.grid(row=0, column=0, pady=5, sticky="w")
+    #     # Defino um botão para adicionar arquivos, e sua posição na janela.
+    #     add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
+    #     add_file_button.grid(row=0, column=0, pady=5, sticky="w")
 
-        # Defino uma lista para aparecer no visor do frame.
-        file_listbox = tk.Listbox(frame2, width=100, height=10)
-        file_listbox.grid(row=1, column=0, pady=5)
+    #     # Defino uma lista para aparecer no visor do frame.
+    #     file_listbox = tk.Listbox(frame2, width=100, height=10)
+    #     file_listbox.grid(row=1, column=0, pady=5)
 
-        # Defino um botão para remover arquivos, e sua posição na janela.
-        remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
-        remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
+    #     # Defino um botão para remover arquivos, e sua posição na janela.
+    #     remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
+    #     remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
 
 
     # Defino uma legenda e sua posição na janela, que indicará o campo onde o usuário digitará o nome do arquivo da base de dados.
@@ -334,21 +334,21 @@ def planilha_dep(jupiter):
         # Caso não seja a base dos dados do Júpiter que está sendo feita:
         if not jupiter:
             # Verifico se os arquivos foram selecionados, e os campos preenchidos, novamente alertando se algo estiver faltando.
-            if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-                return
+            # if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
+            #     messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
+            #     return
             if not arquivo_salas.get() or arquivo_salas.get() == "Selecione a planilha dos dados das salas":
                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das salas.")
                 return
             if not ano_dados.get():
                 messagebox.showwarning("Aviso", "Por favor, insira o ano dos dados.")
                 return
-        # Caso seja a base dos dados do Júpiter que está sendo feita:
-        else:
-            # Verifico se foram adicionados arquivos com os dados dos outros institutos, alertando a ausência deles.
-            if len(lista_outros) == 0:
-                messagebox.showwarning("Aviso", "Por favor, selecione a(s) planilha(s) dos Outros Institutos.")
-                return
+        # # Caso seja a base dos dados do Júpiter que está sendo feita:
+        # else:
+        #     # Verifico se foram adicionados arquivos com os dados dos outros institutos, alertando a ausência deles.
+        #     if len(lista_outros) == 0:
+        #         messagebox.showwarning("Aviso", "Por favor, selecione a(s) planilha(s) dos Outros Institutos.")
+        #         return
 
         # Faço o mesmo alerta de antes caso o usuário não tenha fornecido o nome para a nova base de dados.
         if not nome_arquivo.get():
@@ -358,11 +358,15 @@ def planilha_dep(jupiter):
 
         # Baseando-se em qual base de dados está sendo criada, chamo uma função para concatenar os dados dos arquivos fornecidos.
         if not jupiter:
+            # concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
+            #           arquivo_PIPGES.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
             concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
-                      arquivo_PIPGES.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
+                      arquivo_PIPGES.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter)
         else:
+            # concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
+            #           arquivo_PIPGES.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
             concat_df(arquivo_CCMC.get(), arquivo_PPGMAT.get(), arquivo_MECAI.get(),
-                      arquivo_PIPGES.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
+                      arquivo_PIPGES.get(), None, nome_arquivo.get(), None, jupiter)
         # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
 
         # Terminada a concatenação, destruo a janela de seleção.
@@ -406,7 +410,8 @@ def ler_df(caminho_arquivo):
 """### Concatenar"""
 
 # Função que concatena as planilhas em um único arquivo.
-def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, outros):
+# def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, outros):
+def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter):
     # Crio uma variável para listar os arquivos que serão concatenados.
     files = []
     # Caso eu não esteja concatenando os arquivos para a base do JúpiterWeb:
@@ -415,7 +420,8 @@ def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, ou
         df_salas = ler_df(salas)
 
         # Defino uma lista com os nomes dos arquivos a serem concatenados.
-        name_files = [CCMC, PPGMAT, MECAI, PIPGES, outros]
+        # name_files = [CCMC, PPGMAT, MECAI, PIPGES, outros]
+        name_files = [CCMC, PPGMAT, MECAI, PIPGES]
 
         # Para cada nome de arquivo:
         for name in name_files:
@@ -457,7 +463,8 @@ def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, ou
                                     )
                 return
         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
-        sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES", "Outros"]
+        # sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES", "Outros"]
+        sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"]
 
     # Para o caso de concatenando os arquivos para a base do Júpiter:
     else:
@@ -465,7 +472,7 @@ def concat_df(CCMC, PPGMAT, MECAI, PIPGES, salas, nome_arquivo, ano, jupiter, ou
         name_files = [CCMC, PPGMAT, MECAI, PIPGES]
 
         # Adiciono os nomes dos arquivos dos outros institutos a essa lista de nomes.
-        name_files.extend(outros)
+        # name_files.extend(outros)
 
         sheets = []
 
@@ -876,6 +883,9 @@ def execute():
     # Defino uma variável para salvar o arquivo com a base de dados para o modelo, seja ela a completa ou a de pior caso.
     arquivo_selecionado1 = tk.StringVar(value="Selecione uma base de dados")
 
+    # Defino uma variável para salvar o arquivo com os horários livres das salas.
+    arquivo_selecionado2 = tk.StringVar(value="Selecione a planilha com os horários livres das salas")
+
     # Defino a função para selecionar a base de dados.
     def selecionar_arquivo1():
         # O usuário seleciona o arquivo contendo a base de dados das aulas.
@@ -886,12 +896,27 @@ def execute():
             # Salvo o caminho do arquivo.
             arquivo_selecionado1.set(arquivo)
 
+    # Defino a função para selecionar o arquivo com os horários livres das salas.
+    def selecionar_arquivo2():
+        # O usuário seleciona o arquivo contendo os horários livres das salas.
+        arquivo = filedialog.askopenfilename(title="Selecione a planilha com os horários livres das salas")
+
+        # Se um arquivo foi selecionado:
+        if arquivo:
+            # Salvo o caminho do arquivo.
+            arquivo_selecionado2.set(arquivo)
+
 
 
     # Defino um botão, e sua posição na janela, para o usuário escolher a base de dados.
     btn_selecionar1 = tk.Button(frame, textvariable=arquivo_selecionado1,
                                 command=selecionar_arquivo1, wraplength=250, width=40)
     btn_selecionar1.grid(row=0, column=0, padx=5, pady=5)
+
+    # Defino um botão, e sua posição na janela, para o usuário escolher o arquivo com os horários livres das salas.
+    btn_selecionar2 = tk.Button(frame, textvariable=arquivo_selecionado2,
+                                command=selecionar_arquivo2, wraplength=250, width=40)
+    btn_selecionar2.grid(row=1, column=0, padx=5, pady=5)
 
 
     # Defino uma linha de separação horizontal na janela, separando o botão de seleção de arquivo do botão de verificação de dados.
@@ -900,7 +925,8 @@ def execute():
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de verificação de dados.
     vd1 = ttk.Button(frame, text="Selecionar Verificação de Dados",
-                     command=lambda: roda_script("verificar_dados_pos.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
+                     command=lambda: roda_script("verificar_dados_pos.py", arquivo_selecionado1.get(), 
+                                                 "", "", "", "", "", "", arquivo_selecionado2.get()))
     vd1.grid(row=4, column=0, pady=5)
 
     # Defino uma linha de separação horizontal na janela, separando o botão de verificação de dados do botão de execução do modelo.
@@ -908,15 +934,30 @@ def execute():
     em_separator.grid(row=5, column=0, sticky="ew", pady=(0,10))
 
     # Defino um botão, e sua posição na janela, para o usuário abrir o menu de execução do modelo.
-    em = ttk.Button(frame, text="Selecionar Modelo", command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get()))
+    em = ttk.Button(frame, text="Selecionar Modelo", command=lambda: Novo_edit_config(file_name1=arquivo_selecionado1.get(), 
+                                                                                      file_name2=arquivo_selecionado2.get()))
     em.grid(row=6, column=0, pady=5)
 
 """### Roda Script"""
 
 # Função que roda um script em Python. Seus parâmetros são variáveis fornecidas pelo usuário, como qual script
 # o nome da base de dados que será lida, e o peso das variáveis do modelo.
-def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
+# def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
+def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_livre):
 
+    # Faço uma breve verificação para saber se foi fornecida uma base de dados.
+    if nome == "Selecione uma base de dados":
+        # Se nenhum arquivo foi selecionado, uma janela avisando o ocorrido
+        # aparece, pedindo para o usuário fornecer uma base de dados.
+        messagebox.showwarning("Aviso", "Por favor, selecione uma base de dados.")
+        return
+    
+    if df_livre == "Selecione a planilha com os horários livres das salas":
+        # Se nenhum arquivo foi selecionado, uma janela avisando o ocorrido
+        # aparece, pedindo para o usuário fornecer uma base de dados.
+        messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os horários livres das salas.")
+        return
+    
     # Crio uma janela para mostrar a saída do script, como prints importantes e até saídas de erros.
     output_window = tk.Toplevel(root)
     output_window.title("Saída do Script")
@@ -927,7 +968,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
     try:
         # Executo o script utilizando subprocess.
         process = subprocess.Popen(
-            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
+            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_livre],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -981,13 +1022,19 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
 # Função que cria uma nova janela para configurar os parâmetros da verificação ou do modelo antes de chamar o script.
 # Seus parâmetros são o nome da base de dados (file_name) e uma variável booleana 'verify', que recebe o valor True quando
 # o menu é de configurações da Verificação dos Dados, e False quando o menu é de configurações para Executar o Modelo
-def Novo_edit_config(file_name):
+def Novo_edit_config(file_name1, file_name2):
 
     # Faço uma breve verificação para saber se foi fornecida uma base de dados.
-    if file_name == "Selecione uma base de dados":
+    if file_name1 == "Selecione uma base de dados":
         # Se nenhum arquivo foi selecionado, uma janela avisando o ocorrido
         # aparece, pedindo para o usuário fornecer uma base de dados.
         messagebox.showwarning("Aviso", "Por favor, selecione uma base de dados.")
+        return
+    
+    if file_name2 == "Selecione a planilha com os horários livres das salas":
+        # Se nenhum arquivo foi selecionado, uma janela avisando o ocorrido
+        # aparece, pedindo para o usuário fornecer uma base de dados.
+        messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os horários livres das salas.")
         return
 
 
@@ -1357,8 +1404,8 @@ def Novo_edit_config(file_name):
         # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
         # então só resta rodar o script com elas.
         roda_script(script="Modelo Universal-Copy1_pos.py",
-                nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
-                alpha=aux_a, pref=aux_p)
+                nome=file_name1, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
+                alpha=aux_a, pref=aux_p, df_livre=file_name2)
 
 
 
@@ -1370,8 +1417,9 @@ def Novo_edit_config(file_name):
     # parâmetros recomendados diretamente.
     ttk.Button(frame2, text="Executar com Recomendados",
                 command=lambda: roda_script(script="Modelo Universal-Copy1_pos.py",
-                                            nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                            peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
+                                            nome=file_name1, peso_x='1', peso_y='500', peso_v="",
+                                            peso_z='10', alpha='0.85', pref='500', 
+                                            df_livre=file_name2)).grid(row=24, column=0, sticky='w', pady=5)
 
     # Defino o botão de Executar o Modelo com os parâmetros Personalizados, que chama a função definida anteriormente
     # para checar as configurações personalizadas pelo usuário.
