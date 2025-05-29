@@ -49,7 +49,7 @@ sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arq
 
 df = pd.read_excel("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Dados da Pós/Elenco CCMC 202501.xlsx", skiprows=2)
 df = df.rename(columns={"Sala (a definir)": "Sala"})
-print(df.columns)
+# print(df.columns)
 # print(df)
 # Dataframe com os dados das salas
 # salas = pd.read_excel(file_path, sheet_name="Salas")
@@ -62,6 +62,8 @@ cap_s = salas['Lugares'].tolist()
 tam_t = df['Vagas por disciplina'].tolist()
 # print(tam_t)
 
+# Dataframe com os dados dos horários livros
+df_livres = pd.read_excel(sys.argv[9])
 print('Base de Dados lida.')
 
 """## Tratamento dos Dados"""
@@ -394,7 +396,7 @@ for a in range(lenA):
 # No df_livres, cada linha tem uma sala, e essa sala tem um index no eta_as.
 # Além disso, na mesma linha, há um dia da semana e um horário vago.
 # Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
-df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
+
 for idx, row in df_livres.iterrows():
     sala = row['Sala']
     dia = row['Dia da semana']
