@@ -30,8 +30,7 @@ from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 
 """## Leitura dos dados"""
 
-sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
-# sheet_names = df_completo.sheet_names
+sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
 # Diferentes arquivos de teste que foram utilizados
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_copia.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia.xlsx'
@@ -39,17 +38,20 @@ sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arq
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas semigual ao 202401.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 copia.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 pior caso.xlsx'
-file_path = sys.argv[1]
+# file_path = sys.argv[1]
 
-# Criação e mescla do dataframe (dados das aulas)
-df = pd.read_excel(file_path, sheet_name=sheets)
+# # Criação e mescla do dataframe (dados das aulas)
+# df = pd.read_excel(file_path, sheet_name=sheets)
+# df = pd.concat(df.values(), ignore_index=True)
 
-# df = pd.read_excel(file_path, sheet_name=sheet_names[1:])
+df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós.xlsx', sheet_name=sheets)
 df = pd.concat(df.values(), ignore_index=True)
-
+# df = df.rename(columns={"Sala (a definir)": "Sala"})
+# print(df.columns)
 # print(df)
 # Dataframe com os dados das salas
-salas = pd.read_excel(file_path, sheet_name="Salas")
+# salas = pd.read_excel(file_path, sheet_name="Salas")
+salas = pd.read_excel("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Interface/Planilha das salas.xlsx", sheet_name="Salas")
 # print(salas)
 # Lista da capacidade de cada sala do dataframe
 cap_s = salas['Lugares'].tolist()
@@ -59,9 +61,8 @@ tam_t = df['Vagas por disciplina'].tolist()
 # print(tam_t)
 
 # Dataframe com os dados dos horários livros
-df_livres = pd.read_excel(sys.argv[9])
-print('Base de Dados lida.')
-
+# df_livres = pd.read_excel(sys.argv[9])
+df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
 print('Base de Dados lida.')
 
 """## Tratamento dos Dados"""
@@ -146,9 +147,9 @@ for s in range(len(df['Sala'])):
 #                 )
 #             # print(tam_t[d])
 
-for d in range(len(tam_t)):
-    if pd.isna(df.loc[d, 'Turma']):
-        df.loc[d, 'Turma'] = 1
+# for d in range(len(tam_t)):
+#     if pd.isna(df.loc[d, 'Turma']):
+#         df.loc[d, 'Turma'] = 1
 
 """## Dados de Entrada"""
 
@@ -174,32 +175,32 @@ lenT = len(T)
 lenA = len(A)
 lenS = len(S)
 
-# Lista dos cursos, ou currículos, do ICMC
-curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
-# Faço o mesmo esquema de salvar o comprimento da lista de cursos
-lenC = len(curriculos)
-# Crio uma dicionário em formato de matriz para identificar quais turmas/disciplinas são ministradas para cada curso do instituto
-# Inicio todos os valores da matriz como 0 para atualizá-los
-Y_tc = {(t,c): 0 for t in range(lenT) for c in range(lenC)}
-# Para cada turma/disciplina
-for t in range(lenT):
-    # Analiso a célula de curso daquela turma/disciplina
-    celula = df.loc[t, 'Curso(s)']
-    # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
-    if ',' in celula:
-        # print(df['Curso(s)'][int(a % lenT)].split(', '))
-        # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
-        # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
-        for c in celula.split(', '):
-            # Se aquela curso está na lista dos cursos do instituto
-            if c in curriculos:
-                # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-                Y_tc.update({(t,curriculos.index(c)): 1})
-    else:
-        # Se há um único curso para o qual aquela turma/disciplina é ministrada, verifico se é um dos cursos do ICMC
-        if celula in curriculos:
-            # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-            Y_tc.update({(t,curriculos.index(celula)): 1})
+# # Lista dos cursos, ou currículos, do ICMC
+# curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
+# # Faço o mesmo esquema de salvar o comprimento da lista de cursos
+# lenC = len(curriculos)
+# # Crio uma dicionário em formato de matriz para identificar quais turmas/disciplinas são ministradas para cada curso do instituto
+# # Inicio todos os valores da matriz como 0 para atualizá-los
+# Y_tc = {(t,c): 0 for t in range(lenT) for c in range(lenC)}
+# # Para cada turma/disciplina
+# for t in range(lenT):
+#     # Analiso a célula de curso daquela turma/disciplina
+#     celula = df.loc[t, 'Curso(s)']
+#     # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
+#     if ',' in celula:
+#         # print(df['Curso(s)'][int(a % lenT)].split(', '))
+#         # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
+#         # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
+#         for c in celula.split(', '):
+#             # Se aquela curso está na lista dos cursos do instituto
+#             if c in curriculos:
+#                 # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
+#                 Y_tc.update({(t,curriculos.index(c)): 1})
+#     else:
+#         # Se há um único curso para o qual aquela turma/disciplina é ministrada, verifico se é um dos cursos do ICMC
+#         if celula in curriculos:
+#             # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
+#             Y_tc.update({(t,curriculos.index(celula)): 1})
 
 # print(Y_tc)
 
@@ -251,12 +252,12 @@ for t in A_t:
 
 # print("A_s =", A_s)
 
-# A variável A_c é uma lista onde cada elemento é uma lista das turmas/disciplinas que são ministradas para um determinado curso 'c' do instituto.
-A_c = []
-for c in range(lenC):
-    # A ideia é semelhante à criação das listas anteriores, utilizando uma conta "esperta" para simbolizar o índice correto,
-    # com a condição de colocar na lista as turmas/disciplinas corretas (Y_tc = 1).
-    A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t,c] == 1])
+# # A variável A_c é uma lista onde cada elemento é uma lista das turmas/disciplinas que são ministradas para um determinado curso 'c' do instituto.
+# A_c = []
+# for c in range(lenC):
+#     # A ideia é semelhante à criação das listas anteriores, utilizando uma conta "esperta" para simbolizar o índice correto,
+#     # com a condição de colocar na lista as turmas/disciplinas corretas (Y_tc = 1).
+#     A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t,c] == 1])
 
 # print("A_c =", A_c[0])
 
@@ -402,8 +403,8 @@ for idx, row in df_livres.iterrows():
                 # Se a aula caberia na sala, marco como 0 (não cabe),
                 # pois o horário não está livre para aquela aula
                 eta_as[(a, s)] = 0
-                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+                # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
 """## Modelo Principal"""
 
@@ -415,7 +416,8 @@ model = Model("Alocação de aulas", solver_name="CBC")
 # Ela está na forma de um dicionário na forma de matriz para facilitar o código, simulando uma matriz de variáveis x00, x01, x02,..., xnm.
 x_as = {(a, s): model.add_var(var_type=BINARY) for a in range(lenA) for s in range(lenS)}
 # A variável peso_x é o quanto a variável x_as afeta o modelo, ou seja, o valor de peso_x descreve a importância de x_as no modelo.
-peso_x = int(sys.argv[2])
+# peso_x = int(sys.argv[2])
+peso_x = 1
 
 
 # y_t é uma variável inteira que contabiliza o número de trocas de sala de uma turma/disciplina.
@@ -423,7 +425,8 @@ peso_x = int(sys.argv[2])
 # Ela está na forma de uma lista para facilitar o código, simulando um vetor de variáveis y0, y1, y2,..., yt.
 y_t = [model.add_var(var_type=INTEGER, lb=0) for t in range(len(T))]
 # A variável peso_y é o quanto a variável y_t afeta o modelo, ou seja, o valor de peso_y descreve a importância de y_t no modelo.
-peso_y = int(sys.argv[3])
+# peso_y = int(sys.argv[3])
+peso_y = 500
 
 # c_st é uma variável binária que ganha o valor 1 se a sala 's' é utilizada pela turma/disciplina 't', e ganha o valor 0 no caso contrário.
 # Como a variável x_as, o uso do dicionário na forma de matriz é para facilitar o código, simulando uma matriz de variáveis c00, c01,..., cmt.
@@ -432,21 +435,23 @@ c_st = {(s, t): model.add_var(var_type=BINARY) for s in range(lenS) for t in ran
 
 obj = peso_x * xsum(uso_as[a,s] * x_as[a,s] for a in range(lenA) for s in range(lenS)) + peso_y*xsum(y_t[t] for t in range(lenT))
 
-if sys.argv[4]:
-    # w_cs é uma variável binária que ganha o valor 1 se o curso 'c' tem ao menos uma aula na sala 's', e ganha 0 caso contrário.
-    # Ela está na forma de um dicionário na forma de matriz para facilitar o código, simulando uma matriz de variáveis w00, w01,...,wkm
-    w_cs = {(c, s): model.add_var(var_type=BINARY) for c in range(lenC) for s in range(lenS)}
+# if sys.argv[4]:
+#     # w_cs é uma variável binária que ganha o valor 1 se o curso 'c' tem ao menos uma aula na sala 's', e ganha 0 caso contrário.
+#     # Ela está na forma de um dicionário na forma de matriz para facilitar o código, simulando uma matriz de variáveis w00, w01,...,wkm
+#     w_cs = {(c, s): model.add_var(var_type=BINARY) for c in range(lenC) for s in range(lenS)}
     
     
-    # v_cssl é uma variável binária que ganha o valor 1 se o curso 'c' tem ao menos uma aula na sala 's' e na sala 'sl', e ganha 0 caso contrário.
-    # Ela está na forma de um dicionário na forma de uma matriz tridimensional para facilitar o código, simulando uma matriz de variáveis
-    # v000, v001,..., v00m, v010, v011,..., vkmm
-    v_cssl = {(c, s, sl): model.add_var(var_type=BINARY) for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl}
-    # A variável peso_v é o quanto a variável v_cssl afeta o modelo, ou seja, o valor de peso_v descreve a importância de v_cssl no modelo.
-    peso_v = int(sys.argv[4])
+#     # v_cssl é uma variável binária que ganha o valor 1 se o curso 'c' tem ao menos uma aula na sala 's' e na sala 'sl', e ganha 0 caso contrário.
+#     # Ela está na forma de um dicionário na forma de uma matriz tridimensional para facilitar o código, simulando uma matriz de variáveis
+#     # v000, v001,..., v00m, v010, v011,..., vkmm
+#     v_cssl = {(c, s, sl): model.add_var(var_type=BINARY) for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl}
+#     # A variável peso_v é o quanto a variável v_cssl afeta o modelo, ou seja, o valor de peso_v descreve a importância de v_cssl no modelo.
+#     peso_v = int(sys.argv[4])
 
-    obj += peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl)
-if sys.argv[5] and sys.argv[6]:
+#     obj += peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl)
+
+# if sys.argv[5] and sys.argv[6]:
+if True:
     # Variável de superlotação.
     # z_as é uma variável binária que ganha o valor 1 se a aula 'a', ao ser alocada à sala 's', ultrapassa uma certa quantia do espaço.
     # Ex: Se o fator de superlotação for 0.85, então a variável ganhará o valor 1 se a aula 'a' ocupar mais de 85% do espaço disponível da sala 's'.
@@ -454,12 +459,17 @@ if sys.argv[5] and sys.argv[6]:
     # aumento de inscritos na segunda interação de matrícula e no período de requerimento.
     z_as = {(a, s): model.add_var(var_type=BINARY) for a in range(lenA) for s in range(lenS)}
     # A variável peso_z é o quanto a variável z_as afeta o modelo, ou seja, o valor de peso_z descreve a importância de z_as no modelo.
-    peso_z = int(sys.argv[5])
-    alpha = float(sys.argv[6])
+    # peso_z = int(sys.argv[5])
+    peso_z = 10
+    # alpha = float(sys.argv[6])
+    alpha = 0.85
 
     obj += peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS))
-if sys.argv[7]:
-    peso_pref = int(sys.argv[7])
+
+# if sys.argv[7]:
+if True:
+    # peso_pref = int(sys.argv[7])
+    peso_pref = 500
 
     obj += peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS))
 # Função Objetivo.
