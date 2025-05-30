@@ -44,7 +44,7 @@ sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"] # Planilhas a serem lidas no arqu
 # df = pd.read_excel(file_path, sheet_name=sheets)
 # df = pd.concat(df.values(), ignore_index=True)
 
-df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós.xlsx', sheet_name=sheets)
+df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós sem online.xlsx', sheet_name=sheets)
 df = pd.concat(df.values(), ignore_index=True)
 # df = df.rename(columns={"Sala (a definir)": "Sala"})
 # print(df.columns)
@@ -349,7 +349,7 @@ for a in aula_labs:
 # sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
-    sala_valor = str(df.loc[a % lenT, 'Sala'])
+    sala_valor = str(int(df.loc[a % lenT, 'Sala']))
     if ', ' in sala_valor:
         if not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
             if len(sala_valor.split(', ')) >= (int(a / lenT) + 1):
@@ -403,8 +403,8 @@ for idx, row in df_livres.iterrows():
                 # Se a aula caberia na sala, marco como 0 (não cabe),
                 # pois o horário não está livre para aquela aula
                 eta_as[(a, s)] = 0
-                # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-                # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
 """## Modelo Principal"""
 
@@ -632,7 +632,8 @@ for t in A_s:
 
 # Restrição de superlotação de uma sala.
 # Para cada aula 'a'.
-if sys.argv[5] and sys.argv[6]:
+# if sys.argv[5] and sys.argv[6]:
+if True:
     for a in range(len(A)):
         # Para cada sala 's'.
         for s in range(len(S)):
@@ -646,7 +647,8 @@ if sys.argv[5] and sys.argv[6]:
             # Por conta dessa penalidade, o modelo tentará evitar fazer esse tipo de alocação.
             model += tam_t[int((a % lenT ))] * x_as[a, s] <= alpha * cap_s[s] + z_as[a, s] * cap_s[s]
 
-if sys.argv[4]:
+# if sys.argv[4]:
+if False:
     # (3.13) - Relação entre w_cs e x_as
     # Restrição que estabelece a relação entre w_cs e x_as, isto é, que identifica se o curso 'c' terá uma aula alocada na sala 's'.
     # Para cada sala 's'.
@@ -785,7 +787,7 @@ for a in range(lenA):
         # Salvo a sala onde a aula 'a' foi alocada.
         salas_alocadas.append('6-307')
         # Salvo os cursos para os quais a disciplina que 'a' pertence é ministrada.
-        curso_aula.append(df['Curso(s)'][index])
+        # curso_aula.append(df['Curso(s)'][index])
         nusp.append(df['NUSP'][index])
         ano_dados.append(df['Ano dos dados'][index])
 
@@ -807,7 +809,7 @@ for a in range(lenA):
                 # Salvo a sala onde a aula 'a' foi alocada.
                 salas_alocadas.append(salas['Sala'][s])
                 # Salvo os cursos para os quais a disciplina que 'a' pertence é ministrada.
-                curso_aula.append(df['Curso(s)'][index])
+                # curso_aula.append(df['Curso(s)'][index])
                 nusp.append(df['NUSP'][index])
                 ano_dados.append(df['Ano dos dados'][index])
 
@@ -824,7 +826,7 @@ for a in range(lenA):
 dados_solucao = {
     'Disciplina': codigos,
     'Nomes': nomes,
-    'Cursos': curso_aula,
+    # 'Cursos': curso_aula,
     'Horário': horarios,
     'Sala': salas_alocadas,
     'Inscritos': inscritos,
@@ -1232,258 +1234,260 @@ wb.save(file_path)
 print(f"Arquivo '{full_name}' salvo com sucesso!")
 print("Número de aulas alocadas:", aulas)
 
-"""### Visualização por Curso"""
 
-# Cria o workbook, isto é, um objeto de planilha do Excel.
-wb = Workbook()
+if False:
+    """### Visualização por Curso"""
 
-# Para cada curso do ICMC
-for c in curriculos:
-    # Crio uma planilha com o nome do curso.
-    ws = wb.create_sheet(title=c)
+    # Cria o workbook, isto é, um objeto de planilha do Excel.
+    wb = Workbook()
 
-    # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-    start_row = 1 # Linha de início.
-    start_column = 2 # Coluna de início.
-    end_row = 1 # Linha de término.
-    end_column = 1 + sala_colunas # Coluna de término.
-    start = start_row + 2 # Linha de início para listar os dias da semana.
-    space_between = 3 # Número de linhas entre a tabela de uma sala para a de outra sala.
+    # Para cada curso do ICMC
+    for c in curriculos:
+        # Crio uma planilha com o nome do curso.
+        ws = wb.create_sheet(title=c)
 
-    # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
-    aulas = 0
+        # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
+        start_row = 1 # Linha de início.
+        start_column = 2 # Coluna de início.
+        end_row = 1 # Linha de término.
+        end_column = 1 + sala_colunas # Coluna de término.
+        start = start_row + 2 # Linha de início para listar os dias da semana.
+        space_between = 3 # Número de linhas entre a tabela de uma sala para a de outra sala.
 
-    # A variável df_filtrado, neste caso, é um dataframe com um filtro de curso.
-    # Em outras palavras, é um dataframe com as aulas que são ministradas para o curso atual.
-    df_filtrado = dfv[dfv['Cursos'].str.contains(c, na=False)]
+        # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
+        aulas = 0
 
-    # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por curso.
-    salas1 = df_filtrado['Sala'].unique().tolist()
+        # A variável df_filtrado, neste caso, é um dataframe com um filtro de curso.
+        # Em outras palavras, é um dataframe com as aulas que são ministradas para o curso atual.
+        df_filtrado = dfv[dfv['Cursos'].str.contains(c, na=False)]
 
-    # Para cada sala utilizada na solução.
-    for sala in salas1:
-        # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
-        # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são ministradas para o curso atual.
-        df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
+        # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por curso.
+        salas1 = df_filtrado['Sala'].unique().tolist()
 
-        # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
-        aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
+        # Para cada sala utilizada na solução.
+        for sala in salas1:
+            # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
+            # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são ministradas para o curso atual.
+            df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
 
-        # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
-        disciplina = df_filtrado_aux['Disciplina'].tolist()
+            # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
+            aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
 
-        # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
-        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
+            # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
+            disciplina = df_filtrado_aux['Disciplina'].tolist()
 
-        # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
-        start_row = start_row + 2 + len(dias_semana) + space_between
-        end_row = start_row
+            # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
+            aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
+
+            # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
+            start_row = start_row + 2 + len(dias_semana) + space_between
+            end_row = start_row
+            start = start_row + 2
+
+        # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
+        ajusta_largura(ws)
+        print(f"Número de aulas alocadas do curso {c}: {aulas}")
+
+    # Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
+    wb.remove(wb.active)
+    # Por fim, salvo o arquivo.
+    # Por fim, salva o arquivo.
+    full_name = f"Visualização por curso.xlsx"
+
+    file_path = os.path.join(pasta_dados, full_name)
+
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
+
+    """### Visualização por Departamento"""
+
+    # Cria o workbook, isto é, um objeto de planilha do Excel.
+    wb = Workbook()
+
+    # Crio uma lista dos departamentos do ICMC, além de considerar disciplinas de outros departamentos que precisam de alocação.
+    departamentos = ['SME', 'SMA', 'SCC', 'SSC', 'Outras']
+
+    # Para cada departamento da lista.
+    for d in departamentos:
+        # Crio uma planilha com o nome do departamento.
+        ws = wb.create_sheet(title=d)
+
+        # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
+        start_row = 1
+        start_column = 2
+        end_row = 1
+        end_column = 1 + sala_colunas
         start = start_row + 2
+        space_between = 3
 
-    # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
-    ajusta_largura(ws)
-    print(f"Número de aulas alocadas do curso {c}: {aulas}")
+        # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
+        aulas = 0
 
-# Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
-wb.remove(wb.active)
-# Por fim, salvo o arquivo.
-# Por fim, salva o arquivo.
-full_name = f"Visualização por curso.xlsx"
-
-file_path = os.path.join(pasta_dados, full_name)
-
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
-
-"""### Visualização por Departamento"""
-
-# Cria o workbook, isto é, um objeto de planilha do Excel.
-wb = Workbook()
-
-# Crio uma lista dos departamentos do ICMC, além de considerar disciplinas de outros departamentos que precisam de alocação.
-departamentos = ['SME', 'SMA', 'SCC', 'SSC', 'Outras']
-
-# Para cada departamento da lista.
-for d in departamentos:
-    # Crio uma planilha com o nome do departamento.
-    ws = wb.create_sheet(title=d)
-
-    # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-    start_row = 1
-    start_column = 2
-    end_row = 1
-    end_column = 1 + sala_colunas
-    start = start_row + 2
-    space_between = 3
-
-    # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
-    aulas = 0
-
-    # Verifico se o departamento atual não é do ICMC
-    if d == 'Outras':
-        # Caso o departamento atual não seja nenhum departamento do ICMC, eu crio um filtro especial com todas as linhas das aulas
-        # que não são dos departamentos do ICMC.
-        filtro = ~(
-            dfv['Disciplina'].str.startswith('SME', na=False) |
-            dfv['Disciplina'].str.startswith('SMA', na=False) |
-            dfv['Disciplina'].str.startswith('SCC', na=False) |
-            dfv['Disciplina'].str.startswith('SSC', na=False)
-        )
-        # Após isso, aplico o filtro no dataframe para deixar os dados salvos na variável df_filtrado.
-        df_filtrado = dfv[filtro]
-    else:
-        # Caso o departamento atual seja um dos do ICMC, adiciono os dados à variável df_filtrado.
-        # Neste caso, ela é um dataframe com um filtro de departamento.
-        df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
-
-    # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por departamento.
-    salas1 = df_filtrado['Sala'].unique().tolist()
-
-    # Para cada sala utilizada na solução.
-    for sala in salas1:
-        # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
-        # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são oferecidas pelo departamento atual.
-        df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
-
-        # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
-        aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
-
-        # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
-        disciplina = df_filtrado_aux['Disciplina'].tolist()
-
-        # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
-        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-
-        # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
-        start_row = start_row + 2 + len(dias_semana) + space_between
-        end_row = start_row
-        start = start_row + 2
-
-    # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
-    ajusta_largura(ws)
-    print(f"Número de aulas alocadas do departamento {d}: {aulas}")
-
-# Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
-wb.remove(wb.active)
-# Por fim, salvo o arquivo.
-full_name = f"Visualização por departamento.xlsx"
-
-file_path = os.path.join(pasta_dados, full_name)
-
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
-
-"""## Planilha de Distribuição"""
-
-# Cria uma paleta de cores para utilizar como preenchimento.
-cores = [
-    "FF5733",  # Laranja brilhante
-    "33FF57",  # Verde brilhante
-    "3357FF",  # Azul forte
-    "F3FF33",  # Amarelo
-    "FF33A1",  # Rosa forte
-    "FF8C33",  # Laranja queimado
-    "A133FF",  # Roxo
-    "33FFF3",  # Ciano
-
-]
-
-# A variável dict é um dicionário na forma de matriz que é inicialmente repleta de 0's.
-# Cada valor dela identifica o número de aulas em uma determinada sala que um determinado curso tem, ou seja,
-# para cada curso 'c' e sala 's', o par (c,s) mostra o número de aulas que o curso 'c' possui em 's'.
-dict = {(c,s): 0 for c in range(lenC) for s in range(lenS)}
-
-# A variável naulas_s é uma lista que contém o número de aulas total de cada sala.
-naulas_s = []
-
-# Para cada sala 's'.
-for s in range(lenS):
-    # Defino uma variável que conta o número de aulas de cada sala.
-    naulas = 0
-    # Para cada aula 'a'.
-    for a in range(lenA):
-        # Verifico se a aula 'a' foi alocada na sala 's'.
-        if x_as[a,s].x >= 0.5:
-            # Em caso positivo, obtenho a turma/disciplina para a qual a aula 'a' pertence.
-            t = int(a % lenT)
-            # Contabilizo a aula na variável contadora.
-            naulas += 1
-            # Para curso 'c'.
-            for c in range(lenC):
-                # Atualizo o valor de dict correspondente a contagem de aulas que o curso 'c' possui na sala 's'.
-                dict.update({(c,s): dict[c,s] + Y_tc[t,c]})
-
-    # Adiciono o número de aulas alocadas na sala 's' na lista naulas_s.
-    naulas_s.append(naulas)
-
-# A variável curso é uma lista contendo os índices dos cursos do ICMC.
-curso = [t[0] for t in list(dict.keys())]
-# A variável room é uma lista contendo os índices dos salas do ICMC.
-room = [t[1] for t in list(dict.keys())]
-
-
-# Cria o workbook, isto é, um objeto de planilha do Excel.
-wb = Workbook()
-ws = wb.active
-ws.title = "Distribuição de Cursos"
-
-# Começo a montara tabela colocando o nome das salas na primeira coluna da planilha.
-for row in room:
-    ws.cell(row=row+2,column=1).value = salas.loc[row, 'Sala']
-
-# Feito isso, adiciono o nome dos cursos do ICMC na primeira linha da planilha.
-for col in curso:
-    ws.cell(row=1,column=col+2).value = curriculos[col]
-
-# Para cada curso na lista de cursos, que serão vistos como as colunas da planilha.
-for col in curso:
-    # Para cada sala na lista de salas, que serão vistas como as linhas da planilha.
-    for row in room:
-        # Defino o valor da célula na linha e coluna atual (sala e curso atual, respectivamente) como o valor equivalente de dict.
-        ws.cell(row=row+2,column=col+2).value = dict[col,row]
-
-        # Defino o valor mínimo de uma barra de progresso como 0.
-        min_obj = FormatObject(type="num", val=0)
-
-        # Verifico se o número de aulas alocadas na sala 'row' é 0.
-        if naulas_s[row] == 0:
-            # Se for, defino o valor máximo de uma barra de progresso como 1, apenas para visualização.
-            max_obj = FormatObject(type="num", val=1)
+        # Verifico se o departamento atual não é do ICMC
+        if d == 'Outras':
+            # Caso o departamento atual não seja nenhum departamento do ICMC, eu crio um filtro especial com todas as linhas das aulas
+            # que não são dos departamentos do ICMC.
+            filtro = ~(
+                dfv['Disciplina'].str.startswith('SME', na=False) |
+                dfv['Disciplina'].str.startswith('SMA', na=False) |
+                dfv['Disciplina'].str.startswith('SCC', na=False) |
+                dfv['Disciplina'].str.startswith('SSC', na=False)
+            )
+            # Após isso, aplico o filtro no dataframe para deixar os dados salvos na variável df_filtrado.
+            df_filtrado = dfv[filtro]
         else:
-            # Se não for, defino o valor máximo de uma barra de progresso como o esse número.
-            max_obj = FormatObject(type="num", val=naulas_s[row])
+            # Caso o departamento atual seja um dos do ICMC, adiciono os dados à variável df_filtrado.
+            # Neste caso, ela é um dataframe com um filtro de departamento.
+            df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
 
-        # A variável cor recebe uma das cores da paleta criada anteriormente. O cálculo para determinar isso não é muito importante,
-        # ele só foi feito assim para garantir que as cores não se repetiriam muito próximas umas das outras.
-        cor = cores[int(row % lenC)]
+        # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por departamento.
+        salas1 = df_filtrado['Sala'].unique().tolist()
 
-        # Defino, então, a barra de progresso, utilizando os valor mínimo e máximo definidos anteriormente, e definimos a cor da mesma.
-        data_bar = DataBar(cfvo=[min_obj, max_obj], color=cor, showValue="None")
+        # Para cada sala utilizada na solução.
+        for sala in salas1:
+            # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
+            # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são oferecidas pelo departamento atual.
+            df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
 
-        # Defino uma regra para colocar em uma linha da planilha, representando uma sala.
-        rule = Rule(type="dataBar", dataBar=data_bar)
+            # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
+            aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
 
-        # Adiciona a barra de progresso na linha correspondente.
-        # Note que a "linha" é considerada como a célula da segunda coluna (coluna B) da planilha, até a célula da mesma linha
-        # com a coluna sendo a do último curso da lista de cursos.
-        ws.conditional_formatting.add(f"B{str(row+2)}:{chr(64+lenC+1)}{str(row+2)}", rule)
+            # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
+            disciplina = df_filtrado_aux['Disciplina'].tolist()
 
-# Com as barras de progresso no lugar certo, adiciono uma coluna com o número de aulas de cada sala após a coluna do último curso.
-ws.cell(row=1,column=int(len(curso)/lenS)+2).value = 'Nº Aulas'
-# Para cada sala na lista de salas.
-for row in room:
-    # Coloco o número de aulas alocadas naquela sala.
-    ws.cell(row=row+2,column=int(len(curso)/lenS)+2).value = naulas_s[row]
+            # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
+            aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
 
-# Logo abaixo da última sala adicionada, eu coloco o valor da ocupação total e do tempo de execução do modelo em segundos.
-ws.cell(row=lenS+2,column=1).value = ocupacao
-ws.cell(row=lenS+3,column=1).value = exec
+            # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
+            start_row = start_row + 2 + len(dias_semana) + space_between
+            end_row = start_row
+            start = start_row + 2
 
-# Por fim, salvo o arquivo.
-full_name = f"Distribuição de Cursos.xlsx"
+        # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
+        ajusta_largura(ws)
+        print(f"Número de aulas alocadas do departamento {d}: {aulas}")
 
-file_path = os.path.join(pasta_dados, full_name)
+    # Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
+    wb.remove(wb.active)
+    # Por fim, salvo o arquivo.
+    full_name = f"Visualização por departamento.xlsx"
 
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
+    file_path = os.path.join(pasta_dados, full_name)
+
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
+
+    """## Planilha de Distribuição"""
+
+    # Cria uma paleta de cores para utilizar como preenchimento.
+    cores = [
+        "FF5733",  # Laranja brilhante
+        "33FF57",  # Verde brilhante
+        "3357FF",  # Azul forte
+        "F3FF33",  # Amarelo
+        "FF33A1",  # Rosa forte
+        "FF8C33",  # Laranja queimado
+        "A133FF",  # Roxo
+        "33FFF3",  # Ciano
+
+    ]
+
+    # A variável dict é um dicionário na forma de matriz que é inicialmente repleta de 0's.
+    # Cada valor dela identifica o número de aulas em uma determinada sala que um determinado curso tem, ou seja,
+    # para cada curso 'c' e sala 's', o par (c,s) mostra o número de aulas que o curso 'c' possui em 's'.
+    dict = {(c,s): 0 for c in range(lenC) for s in range(lenS)}
+
+    # A variável naulas_s é uma lista que contém o número de aulas total de cada sala.
+    naulas_s = []
+
+    # Para cada sala 's'.
+    for s in range(lenS):
+        # Defino uma variável que conta o número de aulas de cada sala.
+        naulas = 0
+        # Para cada aula 'a'.
+        for a in range(lenA):
+            # Verifico se a aula 'a' foi alocada na sala 's'.
+            if x_as[a,s].x >= 0.5:
+                # Em caso positivo, obtenho a turma/disciplina para a qual a aula 'a' pertence.
+                t = int(a % lenT)
+                # Contabilizo a aula na variável contadora.
+                naulas += 1
+                # Para curso 'c'.
+                for c in range(lenC):
+                    # Atualizo o valor de dict correspondente a contagem de aulas que o curso 'c' possui na sala 's'.
+                    dict.update({(c,s): dict[c,s] + Y_tc[t,c]})
+
+        # Adiciono o número de aulas alocadas na sala 's' na lista naulas_s.
+        naulas_s.append(naulas)
+
+    # A variável curso é uma lista contendo os índices dos cursos do ICMC.
+    curso = [t[0] for t in list(dict.keys())]
+    # A variável room é uma lista contendo os índices dos salas do ICMC.
+    room = [t[1] for t in list(dict.keys())]
+
+
+    # Cria o workbook, isto é, um objeto de planilha do Excel.
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Distribuição de Cursos"
+
+    # Começo a montara tabela colocando o nome das salas na primeira coluna da planilha.
+    for row in room:
+        ws.cell(row=row+2,column=1).value = salas.loc[row, 'Sala']
+
+    # Feito isso, adiciono o nome dos cursos do ICMC na primeira linha da planilha.
+    for col in curso:
+        ws.cell(row=1,column=col+2).value = curriculos[col]
+
+    # Para cada curso na lista de cursos, que serão vistos como as colunas da planilha.
+    for col in curso:
+        # Para cada sala na lista de salas, que serão vistas como as linhas da planilha.
+        for row in room:
+            # Defino o valor da célula na linha e coluna atual (sala e curso atual, respectivamente) como o valor equivalente de dict.
+            ws.cell(row=row+2,column=col+2).value = dict[col,row]
+
+            # Defino o valor mínimo de uma barra de progresso como 0.
+            min_obj = FormatObject(type="num", val=0)
+
+            # Verifico se o número de aulas alocadas na sala 'row' é 0.
+            if naulas_s[row] == 0:
+                # Se for, defino o valor máximo de uma barra de progresso como 1, apenas para visualização.
+                max_obj = FormatObject(type="num", val=1)
+            else:
+                # Se não for, defino o valor máximo de uma barra de progresso como o esse número.
+                max_obj = FormatObject(type="num", val=naulas_s[row])
+
+            # A variável cor recebe uma das cores da paleta criada anteriormente. O cálculo para determinar isso não é muito importante,
+            # ele só foi feito assim para garantir que as cores não se repetiriam muito próximas umas das outras.
+            cor = cores[int(row % lenC)]
+
+            # Defino, então, a barra de progresso, utilizando os valor mínimo e máximo definidos anteriormente, e definimos a cor da mesma.
+            data_bar = DataBar(cfvo=[min_obj, max_obj], color=cor, showValue="None")
+
+            # Defino uma regra para colocar em uma linha da planilha, representando uma sala.
+            rule = Rule(type="dataBar", dataBar=data_bar)
+
+            # Adiciona a barra de progresso na linha correspondente.
+            # Note que a "linha" é considerada como a célula da segunda coluna (coluna B) da planilha, até a célula da mesma linha
+            # com a coluna sendo a do último curso da lista de cursos.
+            ws.conditional_formatting.add(f"B{str(row+2)}:{chr(64+lenC+1)}{str(row+2)}", rule)
+
+    # Com as barras de progresso no lugar certo, adiciono uma coluna com o número de aulas de cada sala após a coluna do último curso.
+    ws.cell(row=1,column=int(len(curso)/lenS)+2).value = 'Nº Aulas'
+    # Para cada sala na lista de salas.
+    for row in room:
+        # Coloco o número de aulas alocadas naquela sala.
+        ws.cell(row=row+2,column=int(len(curso)/lenS)+2).value = naulas_s[row]
+
+    # Logo abaixo da última sala adicionada, eu coloco o valor da ocupação total e do tempo de execução do modelo em segundos.
+    ws.cell(row=lenS+2,column=1).value = ocupacao
+    ws.cell(row=lenS+3,column=1).value = exec
+
+    # Por fim, salvo o arquivo.
+    full_name = f"Distribuição de Cursos.xlsx"
+
+    file_path = os.path.join(pasta_dados, full_name)
+
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
 
