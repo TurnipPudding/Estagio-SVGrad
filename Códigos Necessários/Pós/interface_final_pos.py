@@ -72,7 +72,7 @@ def padroniza_dataframe(file_name, header_row, ano):
     #     return None
 
     # Adiciono mais duas colunas no dataframe, uma para colocar o número de inscritos das disciplinas, e outra para o ano dos dados.
-    df.insert(df.columns.get_loc(headers[-1]), "Vagas por disciplina", "")
+    # df.insert(df.columns.get_loc(headers[-1]), "Vagas por disciplina", "")
     df.insert(df.columns.get_loc(headers[-1]), "Ano dos dados", ano)
 
     # Alguns horários das disciplinas podem ter sido definidos com um traço diferente do usual do teclado.

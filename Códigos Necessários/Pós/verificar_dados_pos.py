@@ -33,7 +33,7 @@ import networkx as nx # Biblioteca para utilizar redes de grafos.
 
 """## Leitura dos dados"""
 
-sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
+sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
 # Diferentes arquivos de teste que foram utilizados
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_copia.xlsx'
 # file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia.xlsx'
@@ -47,8 +47,9 @@ sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arq
 # df = pd.read_excel(file_path, sheet_name=sheets)
 # df = pd.concat(df.values(), ignore_index=True)
 
-df = pd.read_excel("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Dados da Pós/Elenco CCMC 202501.xlsx", skiprows=2)
-df = df.rename(columns={"Sala (a definir)": "Sala"})
+df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós.xlsx', sheet_name=sheets)
+df = pd.concat(df.values(), ignore_index=True)
+# df = df.rename(columns={"Sala (a definir)": "Sala"})
 # print(df.columns)
 # print(df)
 # Dataframe com os dados das salas
@@ -63,7 +64,8 @@ tam_t = df['Vagas por disciplina'].tolist()
 # print(tam_t)
 
 # Dataframe com os dados dos horários livros
-df_livres = pd.read_excel(sys.argv[9])
+# df_livres = pd.read_excel(sys.argv[9])
+df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
 print('Base de Dados lida.')
 
 """## Tratamento dos Dados"""
@@ -415,8 +417,8 @@ for idx, row in df_livres.iterrows():
                 # Se a aula caberia na sala, marco como 0 (não cabe),
                 # pois o horário não está livre para aquela aula
                 eta_as[(a, s)] = 0
-                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+                # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
 # for s in range(lenS):
 #     print(f"Aula {df.loc[0, 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(0, s)]}")
