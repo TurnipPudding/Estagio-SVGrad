@@ -1707,7 +1707,13 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
                 # As condições dadas anteriormente são para garantir que o código não inclua as salas de laboratório avulsas
                 # quando apenas as em conjunto foram utilizadas. Por exemplo, se o modelo tiver alocado apenas os laboratórios
                 # do bloco 6 (6-303/6-304 e 6-305/6-306), o algoritmo pode incluir, erroneamente, que a sala 6-303 não foi usada.
-                df_vazio.loc[len(df_vazio)+1, 'Sala'] = f"A sala {sala} não foi usada pela graduação."
+                weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+                
+                for i in range(len(weekdays)):
+                    last_line = df_vazio.shape[0] + 1
+                    df_vazio.loc[last_line, 'Sala'] = f"{sala}"
+                    df_vazio.loc[last_line, 'Dia da semana'] = weekdays[i]
+                    df_vazio.loc[last_line, 'Horário vago'] = "07:00 - 23:30"
 
 
     ## Verifico se o nome da nova base de dados termina com '.xlsx':
