@@ -137,3 +137,5 @@ for idx, row in df_livres.iterrows():
                 eta_as[(a, s)] = 0
 
 print(eta_as)
+df = pd.read_csv("C:/Users/gabri/Estágio/Códigos/Demonstração/Files/Jupiter/SMA vinculacao_vagas 2024021.csv", on_bad_lines='skip', sep=';', encoding='latin-1')
+print(df.columns)
