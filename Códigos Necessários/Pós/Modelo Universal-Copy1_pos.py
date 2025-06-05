@@ -44,8 +44,21 @@ sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"] # Planilhas a serem lidas no arqu
 # df = pd.read_excel(file_path, sheet_name=sheets)
 # df = pd.concat(df.values(), ignore_index=True)
 
+# df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós sem online sem espelho.xlsx', sheet_name=sheets)
+# df = pd.concat(df.values(), ignore_index=True)
 df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós sem online.xlsx', sheet_name=sheets)
 df = pd.concat(df.values(), ignore_index=True)
+for idx, row in df.iterrows():
+    # print(f"Row {idx}: {df.loc[idx, 'Disciplina (código)']} - {df.loc[idx, 'Observações']}")
+    if 'Espelho' in df.loc[idx, 'Observações']:
+        # print("a")
+        df = df.drop(index=[idx])
+
+df = df.drop_duplicates(subset='Disciplina (código)', keep='first').reset_index(drop=True)
+
+# for idx, row in df.iterrows():
+#     print(f"Row {idx}: {df.loc[idx, 'Disciplina (código)']} - {df.loc[idx, 'Observações']}")
+
 # df = df.rename(columns={"Sala (a definir)": "Sala"})
 # print(df.columns)
 # print(df)
@@ -385,27 +398,59 @@ for a in range(lenA):
 # Além disso, na mesma linha, há um dia da semana e um horário vago.
 # Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
 
-for idx, row in df_livres.iterrows():
-    sala = row['Sala']
-    dia = row['Dia da semana']
-    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
-    inicio = horario_para_decimal(inicio_str.strip())
-    fim = horario_para_decimal(fim_str.strip())
+# for idx, row in df_livres.iterrows():
+#     sala = row['Sala']
+#     dia = row['Dia da semana']
+#     inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+#     inicio = horario_para_decimal(inicio_str.strip())
+#     fim = horario_para_decimal(fim_str.strip())
     
-    # Verifico se a sala está livre para cada aula
-    for a in range(lenA):
-        # Se o dia da aula for o mesmo que o dia do horário livre
-        # e o horário da aula não estiver completamente dentro do horário livre,
-        if dia_a[a] == dia and not start_a[a] >= inicio and not end_a[a] <= fim:
-            # Verifico se a aula caberia na sala
-            s = salas[salas['Sala'] == sala].index[0]
-            if eta_as[(a, s)] == 1:
-                # Se a aula caberia na sala, marco como 0 (não cabe),
-                # pois o horário não está livre para aquela aula
-                eta_as[(a, s)] = 0
-                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+#     # Verifico se a sala está livre para cada aula
+#     for a in range(lenA):
+#         # Se o dia da aula for o mesmo que o dia do horário livre
+#         # e o horário da aula não estiver completamente dentro do horário livre,
+#         if dia_a[a] == dia and not (start_a[a] >= inicio and end_a[a] <= fim):
+#             # Verifico se a aula caberia na sala
+#             s = salas[salas['Sala'] == sala].index[0]
+#             if eta_as[(a, s)] == 1:
+#                 # Se a aula caberia na sala, marco como 0 (não cabe),
+#                 # pois o horário não está livre para aquela aula
+#                 eta_as[(a, s)] = 0
+#                 print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+#                 print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
+
+for s in range(lenS):
+    # print(eta_as[(0, s)])
+    df_livres_f = df_livres[df_livres['Sala'] == salas.loc[s, 'Sala']]
+    lista_v = [False for _ in range(lenA)]  # Lista para verificar se o horário está livre
+    for idx, row in df_livres_f.iterrows():
+        dia = row['Dia da semana']
+        inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+        inicio = horario_para_decimal(inicio_str.strip())
+        fim = horario_para_decimal(fim_str.strip())
+        
+        # Verifico se a sala está livre para cada aula
+        for a in range(lenA):
+            if eta_as[(a, s)] == 1:
+                if dia_a[a] == dia and start_a[a] >= inicio and end_a[a] <= fim:
+                    # Se o dia da aula for o mesmo que o dia do horário livre
+                    # e o horário da aula estiver completamente dentro do horário livre,
+                    # marco como True (está livre)
+                    lista_v[a] = True
+                    # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                    # print(f"Horário {dia} - {inicio} a {fim} está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+    for a in range(lenA):
+        if not lista_v[a]:
+            # Se o horário não está livre para a aula, marco como 0 (não cabe),
+            # pois o horário não está livre para aquela aula
+            eta_as[(a, s)] = 0
+            # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+            # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+
+# Verificando se algum valor de eta_as é 1, ou seja, se alguma aula cabe em alguma sala
+# if any(value == 1 for value in eta_as.values()):
+#     print("Há pelo menos uma aula que cabe em alguma sala.")
 """## Modelo Principal"""
 
 # Criação do Modelo.
@@ -486,7 +531,8 @@ if True:
 #                           peso_y*xsum(y_t[t] for t in range(lenT)))
 model.objective = minimize(obj)
 
-
+model.optimize()
+assert model.status == OptimizationStatus.OPTIMAL
 
 # Restrições
 # Para toda aula que não tem um horário ou número de matriculados definido, faço com que ela não seja alocada em nenhuma sala.
@@ -554,6 +600,7 @@ for a in range(lenA):
         # Garanto que a aula 'a' deva ser alocada em uma sala 's' que a suporta.
         model += x_as[a,s] <= eta_as[a,s]
 
+
 # (3.4) - Aulas de mesmo horário não podem estar alocadas na mesma sala
 # Essa restrição garante que as aulas com conflito de horário sejam alocadas em salas diferentes.
 # Para cada sala 'a'.
@@ -561,10 +608,20 @@ for a in range(lenA):
     # Para cada sala 'al'.
     for al in range(lenA):
         # Verifico se as aulas 'a' e 'al' possuem conflito de horário.
-        if theta_aal[a, al] == 1:
+        if theta_aal[a, al] == 1 and int(a % lenT) != int(al % lenT):
+            # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']} e aula {df.loc[int(al % lenT), 'Disciplina (código)']} possuem conflito de horário.")
             # Se elas possuem conflito de horário, então garanto que as duas não possam ser alocadas para a mesma sala.
             for s in range(lenS):
-                model += x_as[a,s] + x_as[al,s] <= 1
+                constr = x_as[a,s] + x_as[al,s] <= 1
+                
+                model += constr
+                # model += x_as[a,s] + x_as[al,s] <= 1
+                # model.optimize()
+                # if model.status == OptimizationStatus.INFEASIBLE:
+                #     print(f"Última restrição causou infactibilidade: {constr}")
+                    
+                #     model.write("modelo_infactivel_1.lp")
+                #     sys.exit(1)
             # Caso ambas as disciplinas sejam de laboratório, também é necessário considerar o conflito de horários entre as
             # salas de laboratório que podem ser conjuntas, isto é, se uma aula for alocada na sala 6-303, ela terá que exibir
             # conflito com uma aula que acontece no mesmo horário nas salas 6-303/6-304
@@ -591,6 +648,11 @@ for a in range(lenA):
                 model += x_as[al, salas['Sala'].to_list().index('6-305/6-306')] + \
                 x_as[a, salas['Sala'].to_list().index('6-306')] <= 1
 
+# Aula SMA5993 e aula SME5781 possuem conflito de horário.
+# Aula SMA5993 e aula SSC5888 possuem conflito de horário.
+# Aula SMA5993 e aula SCC5908 possuem conflito de horário.
+# Aula SMA5993 e aula SMA5947 possuem conflito de horário.
+# Aula SMA5993 e aula SMA5706 possuem conflito de horário.
 # nr = 0
 # (3.5) - Controla o número de trocas de salas por
 # Para cada turma/disciplina 't'.
@@ -684,7 +746,7 @@ if False:
 model.opt_tol = 0.1
 # Desabilito as saídas de execução do modelo.
 # set_solver_log(False)
-model.verbose = 0
+model.verbose = 1
 # Começo a cronometrar o tempo gasto na execução do modelo.
 start = time.time()
 # O modelo começa a fazer a alocação, com tempo limite de 7200 segundos (2 horas) de tempo limite.

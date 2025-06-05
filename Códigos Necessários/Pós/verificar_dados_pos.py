@@ -47,8 +47,20 @@ sheets = ["CCMC", "PPGMAT", "MECAI", "PIPGES"] # Planilhas a serem lidas no arqu
 # df = pd.read_excel(file_path, sheet_name=sheets)
 # df = pd.concat(df.values(), ignore_index=True)
 
-df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós.xlsx', sheet_name=sheets)
+# df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós sem online sem espelho.xlsx', sheet_name=sheets)
+# df = pd.concat(df.values(), ignore_index=True)
+df = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/Teste pra pós sem online.xlsx', sheet_name=sheets)
 df = pd.concat(df.values(), ignore_index=True)
+for idx, row in df.iterrows():
+    # print(f"Row {idx}: {df.loc[idx, 'Disciplina (código)']} - {df.loc[idx, 'Observações']}")
+    if 'Espelho' in df.loc[idx, 'Observações']:
+        # print("a")
+        df = df.drop(index=[idx])
+
+df = df.drop_duplicates(subset='Disciplina (código)', keep='first').reset_index(drop=True)
+
+# for idx, row in df.iterrows():
+#     print(f"Row {idx}: {df.loc[idx, 'Disciplina (código)']} - {df.loc[idx, 'Observações']}")
 # df = df.rename(columns={"Sala (a definir)": "Sala"})
 # print(df.columns)
 # print(df)
@@ -65,7 +77,7 @@ tam_t = df['Vagas por disciplina'].tolist()
 
 # Dataframe com os dados dos horários livros
 # df_livres = pd.read_excel(sys.argv[9])
-df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
+df_livres = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/PlanLivre.xlsx')
 print('Base de Dados lida.')
 
 """## Tratamento dos Dados"""
@@ -399,27 +411,63 @@ for a in range(lenA):
 # Além disso, na mesma linha, há um dia da semana e um horário vago.
 # Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
 
-for idx, row in df_livres.iterrows():
-    sala = row['Sala']
-    dia = row['Dia da semana']
-    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
-    inicio = horario_para_decimal(inicio_str.strip())
-    fim = horario_para_decimal(fim_str.strip())
+# verify = [False for _ in range(lenA)] # Lista para verificar se o horário está livre
+# for idx, row in df_livres.iterrows():
+#     sala = row['Sala']
+#     dia = row['Dia da semana']
+#     inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+#     inicio = horario_para_decimal(inicio_str.strip())
+#     fim = horario_para_decimal(fim_str.strip())
     
-    # Verifico se a sala está livre para cada aula
-    for a in range(lenA):
-        # Se o dia da aula for o mesmo que o dia do horário livre
-        # e o horário da aula não estiver completamente dentro do horário livre,
-        if dia_a[a] == dia and not start_a[a] >= inicio and not end_a[a] <= fim:
-            # Verifico se a aula caberia na sala
-            s = salas[salas['Sala'] == sala].index[0]
-            if eta_as[(a, s)] == 1:
-                # Se a aula caberia na sala, marco como 0 (não cabe),
-                # pois o horário não está livre para aquela aula
-                eta_as[(a, s)] = 0
-                # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-                # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+#     # Verifico se a sala está livre para cada aula
+#     for a in range(lenA):
+#         # Se o dia da aula for o mesmo que o dia do horário livre
+#         # e o horário da aula não estiver completamente dentro do horário livre,
+#         if dia_a[a] == dia and \
+#         not verify[a] and \
+#         not (start_a[a] >= inicio and \
+#              end_a[a] <= fim):
+#             # Verifico se a aula caberia na sala
+#             s = salas[salas['Sala'] == sala].index[0]
+#             if eta_as[(a, s)] == 1:
+#                 # Se a aula caberia na sala, marco como 0 (não cabe),
+#                 # pois o horário não está livre para aquela aula
+#                 eta_as[(a, s)] = 0
+#                 print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+#                 print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
+
+for s in range(lenS):
+    # print(eta_as[(0, s)])
+    df_livres_f = df_livres[df_livres['Sala'] == salas.loc[s, 'Sala']]
+    lista_v = [False for _ in range(lenA)]  # Lista para verificar se o horário está livre
+    for idx, row in df_livres_f.iterrows():
+        dia = row['Dia da semana']
+        inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+        inicio = horario_para_decimal(inicio_str.strip())
+        fim = horario_para_decimal(fim_str.strip())
+        
+        # Verifico se a sala está livre para cada aula
+        for a in range(lenA):
+            if eta_as[(a, s)] == 1:
+                if dia_a[a] == dia and start_a[a] >= inicio and end_a[a] <= fim:
+                    # Se o dia da aula for o mesmo que o dia do horário livre
+                    # e o horário da aula estiver completamente dentro do horário livre,
+                    # marco como True (está livre)
+                    lista_v[a] = True
+                    # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                    # print(f"Horário {dia} - {inicio} a {fim} está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+    for a in range(lenA):
+        if not lista_v[a]:
+            # Se o horário não está livre para a aula, marco como 0 (não cabe),
+            # pois o horário não está livre para aquela aula
+            eta_as[(a, s)] = 0
+            # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+            # print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+
+# Verificando se algum valor de eta_as é 1, ou seja, se alguma aula cabe em alguma sala
+# if any(value == 1 for value in eta_as.values()):
+#     print("Há pelo menos uma aula que cabe em alguma sala.")
 # for s in range(lenS):
 #     print(f"Aula {df.loc[0, 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(0, s)]}")
 
