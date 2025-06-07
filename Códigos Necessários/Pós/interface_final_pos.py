@@ -23,6 +23,24 @@ from openpyxl.utils import get_column_letter
 from openpyxl import load_workbook
 from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 from datetime import datetime, timedelta # Funções para a leitura de horários de aula
+import sys
+
+# pandas: 2.0.3
+# openpyxl: 3.0.10
+# Python (para subprocess, os, datetime, tkinter): 3.11.5
+# tkinter: embutido no Python — versão do Tcl/Tk: 8.6.12
+# Bibliotecas com __version__
+# print(f"pandas: {pd.__version__}")
+# print(f"openpyxl: {openpyxl.__version__}")
+
+# # Biblioteca padrão do Python
+# print(f"Python (para subprocess, os, datetime, tkinter): {sys.version.split()[0]}")
+
+# # Tkinter (informação limitada)
+# print(f"tkinter: embutido no Python — versão do Tcl/Tk: {tk.Tk().tk.eval('info patchlevel')}")
+
+# # Confirmação de que outras bibliotecas são da biblioteca padrão
+# print("\nAs bibliotecas 'subprocess', 'os', 'datetime', 'tkinter.ttk', etc., são embutidas na versão do Python.")
 
 """# Teste de Interface mais Clara
 
