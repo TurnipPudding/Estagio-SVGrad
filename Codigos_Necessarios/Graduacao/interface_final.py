@@ -739,7 +739,7 @@ def base_dados(pior_caso):
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(
                     # ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
-                    [sys.executable, "jupiter_sheet_maker.py", file1, file2, file3, file4, nome],
+                    [sys.executable, "jupiter sheet maker.py", file1, file2, file3, file4, nome],
                     check=True,
                     capture_output=True,
                     text=True
@@ -752,12 +752,14 @@ def base_dados(pior_caso):
             # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
             except subprocess.CalledProcessError as e:
                 if e.returncode == 1:
-                    messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\n{msg}")
                 elif e.returncode == 2:
-                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\n{msg}")
                 elif e.returncode == 4:
                     msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
-                    messagebox.showerror("Erro", f"Erro ao executar o script:\n{msg}")
+                    messagebox.showerror("Erro", f"Erro ao executar o script:\n\n{msg}")
                 else:
                     messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
@@ -964,7 +966,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
         if e.returncode == 1:
             messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\nErro: {e}")
         elif e.returncode == 2:
-            messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+            messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\nErro: {e}")
         else:
             messagebox.showerror("Erro", f"Erro inesperado: {e}")
         return

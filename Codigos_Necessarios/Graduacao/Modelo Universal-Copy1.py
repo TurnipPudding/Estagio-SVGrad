@@ -814,12 +814,15 @@ try:
 except PermissionError as e:
         if e.errno == 13:
             print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+            traceback.print_exc(file=sys.stderr)
             sys.exit(2)
         else:
             print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            traceback.print_exc(file=sys.stderr)
             sys.exit(1)
 except Exception as e:
     print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+    traceback.print_exc(file=sys.stderr)
     sys.exit(1)
 
 """## Conversão de tabela"""
@@ -897,9 +900,24 @@ file_path = os.path.join(pasta_dados, full_name)
 # Crio um novo arquivo Excel e escrevo os dados.
 # with pd.ExcelWriter(file_path1, engine='openpyxl') as writer:
 #     sti_planilha.to_csv(writer, sheet_name='Resultados', index=False, sep=';', encoding='latin-1')
-sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+try:
+    sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+    print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+except PermissionError as e:
+    if e.errno == 13:
+        print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(2)
+    else:
+        print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+except Exception as e:
+    print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(1)
 
-print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+
 
 for sala in sti_planilha['Sala'].unique():
     sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
@@ -908,8 +926,23 @@ for sala in sti_planilha['Sala'].unique():
 
     file_path = os.path.join(pasta_dados, full_name)
 
-    sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-    print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+    try:        
+        sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+        print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
+    except PermissionError as e:
+        if e.errno == 13:
+            print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(2)
+        else:
+            print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            traceback.print_exc(file=sys.stderr)
+            sys.exit(1)
+    except Exception as e:
+        print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+
 
 """## Factibilidade e Verificação"""
 
@@ -1254,8 +1287,22 @@ full_name = f"Visualização por curso.xlsx"
 
 file_path = os.path.join(pasta_dados, full_name)
 
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
+try:
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
+except PermissionError as e:
+    if e.errno == 13:
+        print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(2)
+    else:
+        print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+except Exception as e:
+    print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(1)
 
 """### Visualização por Departamento"""
 
@@ -1332,8 +1379,22 @@ full_name = f"Visualização por departamento.xlsx"
 
 file_path = os.path.join(pasta_dados, full_name)
 
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
+try:
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
+except PermissionError as e:
+    if e.errno == 13:
+        print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(2)
+    else:
+        print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+except Exception as e:
+    print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(1)
 
 """## Planilha de Distribuição"""
 
@@ -1446,6 +1507,20 @@ full_name = f"Distribuição de Cursos.xlsx"
 
 file_path = os.path.join(pasta_dados, full_name)
 
-wb.save(file_path)
-print(f"Arquivo '{full_name}' salvo com sucesso!")
+try:
+    wb.save(file_path)
+    print(f"Arquivo '{full_name}' salvo com sucesso!")
+except PermissionError as e:
+    if e.errno == 13:
+        print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(2)
+    else:
+        print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)
+except Exception as e:
+    print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(1)
 

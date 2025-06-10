@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import sys
+import traceback
 
 
 # salas = pd.read_excel('C:/Users/gabri/Estágio/Dados/Dados_das_salas.xlsx', sheet_name="Salas")
@@ -283,11 +284,15 @@ try:
 
 except PermissionError as e:
     if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+        traceback.print_exc(file=sys.stderr)
         sys.exit(2)
         
     else:
+        traceback.print_exc(file=sys.stderr)
         sys.exit(3)
         
 except Exception as e:
     # Para qualquer outro erro
+    # Retorno o erro para o console
+    traceback.print_exc(file=sys.stderr)
     sys.exit(1)
