@@ -23,6 +23,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl import load_workbook
 from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 from datetime import datetime, timedelta # Funções para a leitura de horários de aula
+import sys
 
 """# Teste de Interface mais Clara
 
@@ -737,7 +738,8 @@ def base_dados(pior_caso):
                 file4 = arquivo_esp.get()
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(
-                    ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
+                    # ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
+                    [sys.executable, "jupiter_sheet_maker.py", file1, file2, file3, file4, nome],
                     check=True,
                     capture_output=True,
                     text=True
@@ -926,7 +928,8 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
     try:
         # Executo o script utilizando subprocess.
         process = subprocess.Popen(
-            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
+            # ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
+            [sys.executable, script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -959,7 +962,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
     # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
     except subprocess.CalledProcessError as e:
         if e.returncode == 1:
-            messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+            messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\nErro: {e}")
         elif e.returncode == 2:
             messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
         else:
