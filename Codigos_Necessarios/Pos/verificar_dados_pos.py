@@ -1019,6 +1019,39 @@ for node in articulation_points:
 # Salvo o nome das disciplinas cujas aulas criam pontes (pontos de articulação ) entre clusters.
 disciplinas_problematicas = [df.loc[node % lenT, 'Disciplina (código)'] for node in important_connectors]
 
+# print([df.loc[node % lenT, 'Disciplina (código)'] for node in articulation_points])
+
+# Função para checar se dois intervalos se sobrepõem
+# def sobrepoe(a_ini, a_fim, i_ini, i_fim):
+#     return max(a_ini, i_ini) < min(a_fim, i_fim)
+
+group = [0 for _ in range(lenA)]
+intervalos = [[8, 9.9], [10, 13], [13, 16.4], [16, 18], [19, 20.9], [21, 22.9]]  # Intervalos padrão
+
+# Para cada aula, veja quantos intervalos ela intersecta
+for a in range(lenA):
+    for i_ini, i_fim in intervalos:
+        # if sobrepoe(start_a[a], end_a[a], i_ini, i_fim):
+        if (start_a[a] >= i_ini or start_a[a] == 18) and end_a[a] <= i_fim and (start_a[a] > 0):
+            # print(f"Aula {a}, {df.loc[a % lenT, 'Disciplina (código)']} {start_a[a]}-{end_a[a]} está no intervalo [{i_ini}, {i_fim}]")
+            group[a] += 1
+        
+
+# Se uma aula estiver em mais de um intervalo, consideramos problemática
+disciplinas_problematicas2 = []
+for a in range(lenA):
+    if group[a] < 1 and start_a[a] > 0:
+        # print(f"Aula {a}, {df.loc[a % lenT, 'Disciplina (código)']} {start_a[a]}-{end_a[a]} está fora dos intervalos padrão.")
+        nome_disciplina = df.loc[a % lenT, 'Disciplina (código)']
+        if nome_disciplina not in disciplinas_problematicas2:
+            disciplinas_problematicas2.append(nome_disciplina)
+
+# for aula in disciplinas_problematicas2:
+#     print(aula)
+# sys.exit(0)
+disciplinas_problematicas = disciplinas_problematicas2.copy()
+
+
 # A variável grupos_de_conflitos é uma importante lista que irá conter listas de aulas que possuem conflito entre si,
 # possibilitando uma análise prévia dos dados caso tenha algo de errado com eles.
 grupos_de_conflitos = []
