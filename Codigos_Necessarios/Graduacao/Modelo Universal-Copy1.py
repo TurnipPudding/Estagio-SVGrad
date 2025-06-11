@@ -291,7 +291,7 @@ uso_as = {(a, s): 100 * (1 - (tam_t[int((a % lenT))]/cap_s[s])) for a in range(l
 # até uma sala do bloco 4 é de 1 unidade de distância.
 
 # dis = {(s, sl): salas.iloc[s, sl+3] for s in range(salas.shape[0]) for sl in range(salas.shape[1]-3)}
-dis = {(s, sl): salas.loc[s, sl] for s in range(len(salas)) for sl in salas.columns[3:-1]}
+dis = {(s, sl): salas.loc[s, salas.columns[sl+3]] for s in range(lenS) for sl in range(lenS)}
 # print("dis =", dis)
 
 pref = salas['Preferencialmente Vazia'].tolist()
