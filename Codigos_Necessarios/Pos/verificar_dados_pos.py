@@ -61,7 +61,7 @@ for idx, row in df1.iterrows():
 
 df1 = df1.drop_duplicates(subset='Disciplina (código)', keep='first').reset_index(drop=True)
 
-df2 = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Base Modelo.xlsx', sheet_name=['SME', 'SMA', 'SCC', 'SSC'])
+df2 = pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Base Modelo Preenchido.xlsx', sheet_name=['SME', 'SMA', 'SCC', 'SSC'])
 df2 = pd.concat(df2.values(), ignore_index=True)
 
 df = pd.concat([df1, df2], ignore_index=True)
