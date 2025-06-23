@@ -118,7 +118,7 @@ end_a = A['end_a'].to_list()
 # Para cada célula vazia na coluna 'Sala' do dataframe principal, eu coloco o valor da célula como 0
 for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
-        df.loc[s, 'Sala'] = 0
+        df.loc[s, 'Sala'] = '0'
 
 # if sys.argv[7]:
 #     # Variável com o número suposto de alunos da pós.
@@ -342,7 +342,7 @@ for a in aula_labs:
 # sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
-    sala_valor = str(int(df.loc[a % lenT, 'Sala']))
+    sala_valor = str((df.loc[a % lenT, 'Sala']))
     if ', ' in sala_valor:
         if not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
             if len(sala_valor.split(', ')) >= (int(a / lenT) + 1):
