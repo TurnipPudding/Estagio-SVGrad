@@ -119,7 +119,7 @@ end_a = A['end_a'].to_list()
 # Para cada célula vazia na coluna 'Sala' do dataframe principal, eu coloco o valor da célula como 0
 for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
-        df.loc[s, 'Sala'] = 0
+        df.loc[s, 'Sala'] = '0'
 
 # if sys.argv[7]:
 #     # Variável com o número suposto de alunos da pós.
@@ -344,7 +344,7 @@ for a in aula_labs:
 # sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
-    sala_valor = str(int(df.loc[a % lenT, 'Sala']))
+    sala_valor = str((df.loc[a % lenT, 'Sala']))
     if ', ' in sala_valor:
         if not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
             if len(sala_valor.split(', ')) >= (int(a / lenT) + 1):
@@ -417,7 +417,7 @@ if sys.argv[4]:
     # A variável peso_v é o quanto a variável v_cssl afeta o modelo, ou seja, o valor de peso_v descreve a importância de v_cssl no modelo.
     peso_v = int(sys.argv[4])
 
-    obj += peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl)
+    obj = obj + peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl)
 if sys.argv[5] and sys.argv[6]:
     # Variável de superlotação.
     # z_as é uma variável binária que ganha o valor 1 se a aula 'a', ao ser alocada à sala 's', ultrapassa uma certa quantia do espaço.
@@ -429,11 +429,11 @@ if sys.argv[5] and sys.argv[6]:
     peso_z = int(sys.argv[5])
     alpha = float(sys.argv[6])
 
-    obj += peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS))
+    obj = obj + peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS))
 if sys.argv[7]:
     peso_pref = int(sys.argv[7])
 
-    obj += peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS))
+    obj = obj + peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS))
 # Função Objetivo.
 # Queremos minimizar o espaço vazio das salas, descrito pela somatória de (uso_as * x_as), que contabiliza o uso da sala 's' pela aula 'a'.
 # Além disso, queremos também minimizar o número de trocas de sala, descrito pela somatória de y_t, que contabiliza
