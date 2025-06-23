@@ -317,7 +317,7 @@ ind_labs = []
 for l in labs:
     # Adiciono os valores da célula separados por vírgula, ou seja, se na célula está escrito 'Sim,1,2',
     # a lista adicionada é ['Sim', '1', '2']
-    ind_labs.append(df.loc[l, 'Utilizará laboratório? (sim ou não)'].split(','))
+    ind_labs.append((df.loc[l, 'Utilizará laboratório? (sim ou não)'].replace(' ', '')).split(','))
     # Removo o 'Sim' da última lista adicionada, então no nosso exemplo, a lista adicionada agora é dada por ['1', '2']
     ind_labs[-1].remove("Sim")
     # Por fim, converto os elementos dessa lista para serem valores inteiros
