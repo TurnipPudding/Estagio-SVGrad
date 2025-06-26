@@ -28,6 +28,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl import load_workbook
 from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 
+# os.environ["CBC_PATH"] = "C:/Users/SeuUsuario/miniconda3/envs/nome_do_ambiente/Library/bin/cbc.exe"
 """## Leitura dos dados"""
 
 sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
