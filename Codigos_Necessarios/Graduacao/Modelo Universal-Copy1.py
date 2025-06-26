@@ -58,7 +58,7 @@ cap_s = salas['Lugares'].tolist()
 tam_t = df['Vagas por disciplina'].tolist()
 # print(tam_t)
 
-print('Base de Dados lida.')
+print('\nBase de Dados lida.')
 
 """## Tratamento dos Dados"""
 
@@ -120,7 +120,7 @@ end_a = A['end_a'].to_list()
 for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
         df.loc[s, 'Sala'] = '0'
-
+# print(df['Sala'])
 # if sys.argv[7]:
 #     # Variável com o número suposto de alunos da pós.
 #     qtd_pos = int(sys.argv[7])
@@ -644,7 +644,9 @@ if sys.argv[4]:
 model.opt_tol = 0.1
 # Desabilito as saídas de execução do modelo.
 # set_solver_log(False)
-model.verbose = 0
+model.verbose = 1
+model.tol = 1e-6
+model.integer_tol = 1e-6
 # Começo a cronometrar o tempo gasto na execução do modelo.
 start = time.time()
 # O modelo começa a fazer a alocação, com tempo limite de 7200 segundos (2 horas) de tempo limite.
