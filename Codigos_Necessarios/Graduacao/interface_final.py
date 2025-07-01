@@ -60,6 +60,11 @@ def padroniza_dataframe(file_name, header_row, ano):
         # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
         df.insert(df.columns.get_loc("Horário 3") + 1, "Horário 4", "")
 
+    if "observações" in df.columns:
+        df = df.rename(columns={"observações" : "Observações"})
+
+    if "Observações" not in df.columns:
+        df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", "")
     # Salvo o nome dos cabeçalhos do dataframe após as edições.
     headers = df.columns
 
