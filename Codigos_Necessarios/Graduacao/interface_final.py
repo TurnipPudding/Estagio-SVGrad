@@ -34,7 +34,7 @@ import sys
 def padroniza_dataframe(file_name, header_row, ano):
     # Leio o dataframe correto, com a linha do cabeçalho.
     df = pd.read_excel(file_name, header=header_row)
-
+    # print(df)
     # Primeiramente, para cada cabeçalho/coluna 'col' do dataframe.
     for col in range(len(df.columns)):
         # Verifico se tem um "\n" no texto do dataframe.
@@ -49,6 +49,11 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
     # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
     df = df[df['Deve ser alocada no ICMC?'] == 'X']
+
+    # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
+    if "Horário 3" not in df.columns:
+        # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
+        df.insert(df.columns.get_loc("Horário 2") + 1, "Horário 3", "")
 
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
     if "Horário 4" not in df.columns:
@@ -67,8 +72,12 @@ def padroniza_dataframe(file_name, header_row, ano):
     turmas0 = df[df['Turma'].isna()].index.tolist()
     # Se existirem tais disciplinas, uma janela é aberta para indicar as linhas do arquivo que possuem turmas vazias.
     if len(turmas0) != 0:
-        messagebox.showwarning(f"Aviso!", f"A(s) linha(s) {[d + header_row + 2 for d in turmas0]} do arquivo {file_name} \
-        possuem turmas não identificadas. Verifique qual a turma da disciplina.")
+        messagebox.showwarning(f"Aviso!", 
+                               (
+                                   f"A(s) linha(s) {[d + header_row + 2 for d in turmas0]} do arquivo {file_name} "
+                                   f"possuem turmas não identificadas. Verifique qual a turma da disciplina."
+                                )
+                            )
         return None
 
     # Adiciono mais duas colunas no dataframe, uma para colocar o número de inscritos das disciplinas, e outra para o ano dos dados.
@@ -442,6 +451,12 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                         files.append(df_padronizado)
                     # Caso tenha ocorrido um erro, retorno para a função anterior, onde o usuário verificará os arquivos selecionados.
                     else:
+                        messagebox.showerror(f"Erro no arquivo",
+                                                (
+                                                    f"O arquivo '{name}' não pode ser lido, está vazio, ou não foram marcadas as "
+                                                    f"disciplinas a serem alocadas. Verifique-o."
+                                                )
+                                             )
                         return
 
                     # Se o cabeçalho foi encontrado, não há motivo para continuar buscando, então encerro o loop dessa busca.
