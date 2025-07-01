@@ -1332,6 +1332,8 @@ for grupo in grupos_de_conflitos:
     for aula in grupo:
         if lab_tal[aula] == 1:
             grupo.remove(aula)
+    if len(grupo) == 0:
+        grupos_de_conflitos.remove(grupo)
     # Nesta etapa, eu verifico quais listas foram construídas com as aulas do grupo sendo analisado.
     # Como na etapa anterior o grupo é atualizado para ficar sem as aulas de laboratório
     # não há a necessidade de alterá-lo aqui.
@@ -1385,6 +1387,7 @@ for grupo in grupos_de_conflitos:
 # existem aulas que não estão em conflito com nenhuma outra, mas não conseguem ser alocadas em nenhuma sala.
 # Esse erro já deveria ter acontecido na construção desses grupos, então nem deveria chegar aqui.
 # Caso chegue neste ponto, envio uma mensagem de erro e interrompo o código.
+
 if len(grupos_de_conflitos) > len(salas_de_aula):
     print("Há um problema entre os conjuntos de aulas conflitantes e as salas disponíveis para estes conjuntos.")
     # print("System exit 5.\n")
