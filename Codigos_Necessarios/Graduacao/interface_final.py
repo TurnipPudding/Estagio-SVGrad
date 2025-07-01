@@ -35,11 +35,7 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Leio o dataframe correto, com a linha do cabeçalho.
     df = pd.read_excel(file_name, header=header_row)
 
-    # Primeiramente, filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
-    # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
-    df = df[df['Deve ser alocada no ICMC?'] == 'X']
-
-    # Para cada cabeçalho/coluna 'col' do dataframe.
+    # Primeiramente, para cada cabeçalho/coluna 'col' do dataframe.
     for col in range(len(df.columns)):
         # Verifico se tem um "\n" no texto do dataframe.
         if "\n" in df.columns[col]:
@@ -49,6 +45,10 @@ def padroniza_dataframe(file_name, header_row, ano):
         if "Sala" in df.columns[col]:
             # Se estiver, substituo o nome da coluna por apenas "Sala".
             df = df.rename(columns={df.columns[col] : "Sala"})
+
+    # Filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
+    # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
+    df = df[df['Deve ser alocada no ICMC?'] == 'X']
 
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
     if "Horário 4" not in df.columns:
