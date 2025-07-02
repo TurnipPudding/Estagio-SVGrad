@@ -359,6 +359,13 @@ for a in range(lenA):
         sala_fixa.append('0')
 # print(sala_fixa)
 
+for aula in range(lenA):
+    if sala_fixa[aula] != '0':
+        fixada = salas['Sala'].tolist().index(sala_fixa[aula])
+        for sala in range(lenS):
+            eta_as[aula, sala] = 0
+        eta_as[aula, fixada] = 1
+
 sala_proibida = {}
 for a in range(lenA):
     
@@ -451,45 +458,45 @@ model.objective = minimize(obj)
 
 
 
-# Restrições
-# Para toda aula que não tem um horário ou número de matriculados definido, faço com que ela não seja alocada em nenhuma sala.
-for a in range(lenA):
-    if start_a[a] == 0 or tam_t[a % lenT] == 0:
-        model += xsum(x_as[a,s] for s in range(lenS)) == 0
+# # Restrições
+# # Para toda aula que não tem um horário ou número de matriculados definido, faço com que ela não seja alocada em nenhuma sala.
+# for a in range(lenA):
+#     if start_a[a] == 0 or tam_t[a % lenT] == 0:
+#         model += xsum(x_as[a,s] for s in range(lenS)) == 0
 
-# Para toda aula que tem um horário e número de matriculados definido, faço com que ela seja alocada em alguma sala.
-for a in range(lenA):
-    if start_a[a] != 0 and tam_t[a % lenT] != 0:
-        # Se a aula possuir uma sala fixada, garanto que ela será fixada naquela sala.
-        if sala_fixa[a] != '0':
-            # A variável fixa possui o valor da sala onde a sala 'a' está fixada.
-            # if ', ' in df.loc[a % lenT, 'Sala']:
-            #     fixa = df.loc[a % lenT, 'Sala'].split(', ')
-            # fixa = df.loc[a % lenT, 'Sala']
-            # # Caso a aula seja ministrada no LEM, eu a desconsidero do modelo, atribuindo o valor 0 para a variável em todas as salas.
-            # if fixa == '6-307':
-            #     model += xsum(x_as[a,s] for s in range(lenS)) == 0
-            # # Caso contrário ela esteja fixada em uma sala comum.
-            # else:
-            #     s = salas['Sala'].tolist().index(fixa)
-            #     # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-            #     model += xsum(x_as[a,s] for s in range(lenS)) == 1
-            #     # E garanto que a sala alocada pela aula 'a' é a que ela está fixada.
-            #     model += x_as[a,s] == 1
-            model += xsum(x_as[a,s] for s in range(lenS)) == 1
-            aux_s = salas['Sala'].tolist().index(sala_fixa[a])
-            model += x_as[a,aux_s] == 1
-        # Se a aula 'a' não está fixada em uma sala, verifico se ela é de laboratório.
-        elif lab_tal[a] == 0: # Se a aula não é de laboratório, garanto que ela não seja alocada em um laboratório.
-            # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-            model += xsum(x_as[a,s] for s in range(lenS)) == 1
-            # E garanto que a aula 'a' não poderá ser alocada em nenhuma sala de laboratório.
-            model += xsum(x_as[a,s] for s in salas_labs) == 0
-        else: # Se ela é de laboratório, garanto que ela só pode ser alocada em um laboratório
-            # Garanto que a aula 'a' poderá ser alocada em alguma sala de laboratório.
-            model += xsum(x_as[a,s] for s in salas_labs) == 1
-            # E garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-            model += xsum(x_as[a,s] for s in range(lenS)) == 1
+# # Para toda aula que tem um horário e número de matriculados definido, faço com que ela seja alocada em alguma sala.
+# for a in range(lenA):
+#     if start_a[a] != 0 and tam_t[a % lenT] != 0:
+#         # Se a aula possuir uma sala fixada, garanto que ela será fixada naquela sala.
+#         if sala_fixa[a] != '0':
+#             # A variável fixa possui o valor da sala onde a sala 'a' está fixada.
+#             # if ', ' in df.loc[a % lenT, 'Sala']:
+#             #     fixa = df.loc[a % lenT, 'Sala'].split(', ')
+#             # fixa = df.loc[a % lenT, 'Sala']
+#             # # Caso a aula seja ministrada no LEM, eu a desconsidero do modelo, atribuindo o valor 0 para a variável em todas as salas.
+#             # if fixa == '6-307':
+#             #     model += xsum(x_as[a,s] for s in range(lenS)) == 0
+#             # # Caso contrário ela esteja fixada em uma sala comum.
+#             # else:
+#             #     s = salas['Sala'].tolist().index(fixa)
+#             #     # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
+#             #     model += xsum(x_as[a,s] for s in range(lenS)) == 1
+#             #     # E garanto que a sala alocada pela aula 'a' é a que ela está fixada.
+#             #     model += x_as[a,s] == 1
+#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
+#             aux_s = salas['Sala'].tolist().index(sala_fixa[a])
+#             model += x_as[a,aux_s] == 1
+#         # Se a aula 'a' não está fixada em uma sala, verifico se ela é de laboratório.
+#         elif lab_tal[a] == 0: # Se a aula não é de laboratório, garanto que ela não seja alocada em um laboratório.
+#             # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
+#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
+#             # E garanto que a aula 'a' não poderá ser alocada em nenhuma sala de laboratório.
+#             model += xsum(x_as[a,s] for s in salas_labs) == 0
+#         else: # Se ela é de laboratório, garanto que ela só pode ser alocada em um laboratório
+#             # Garanto que a aula 'a' poderá ser alocada em alguma sala de laboratório.
+#             model += xsum(x_as[a,s] for s in salas_labs) == 1
+#             # E garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
+#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
 
         # if a in sala_proibida.keys():
         #     proibir_sala = sala_proibida.get(a)
@@ -512,6 +519,10 @@ for a in range(lenA):
 # utilizando a variável eta_as, que possui o valor 1 se 's' suporta 'a', e 0 caso contrário.
 # Para toda aula 'a'.
 for a in range(lenA):
+    if start_a[a] == 0 or tam_t[a % lenT] == 0:
+        model += xsum(x_as[a,s] for s in range(lenS)) == 0
+    if start_a[a] != 0 and tam_t[a % lenT] != 0:
+        model += xsum(x_as[a,s] for s in range(lenS)) == 1
     # Para toda aula 's'.
     for s in range(lenS):
         # Garanto que a aula 'a' deva ser alocada em uma sala 's' que a suporta.
