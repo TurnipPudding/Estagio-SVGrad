@@ -561,10 +561,10 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
             grupo = aux_verificar_aulas[i].copy()
             # if 4 in grupo:
             #     print(grupo)
-            for aula in grupo:
+            for aula in grupo[:]:
                 if sala_fixa[aula] != '0':
                     sala_fixada = salas.index[salas['Sala'] == sala_fixa[aula]].tolist()[0]
-                    for s in aux_verificar_salas:
+                    for s in aux_verificar_salas[:]:
                         if sala_fixada in s:
                             s.remove(sala_fixada)
                     grupo.remove(aula)
@@ -789,10 +789,10 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
             grupo = aux_verificar_aulas[i].copy()
             # if 4 in grupo:
             #     print(grupo)
-            for aula in grupo:
+            for aula in grupo[:]:
                 if sala_fixa[aula] != '0':
                     sala_fixada = salas.index[salas['Sala'] == sala_fixa[aula]].tolist()[0]
-                    for s in aux_verificar_salas:
+                    for s in aux_verificar_salas[:]:
                         if sala_fixada in s:
                             s.remove(sala_fixada)
                     grupo.remove(aula)
@@ -1003,7 +1003,7 @@ salas_de_laboratorio = []
 
 
 # Com essas novas listas criadas, passamos a analisar cada grupo em grupos_de_conflitos
-for grupo in grupos_de_conflitos:
+for grupo in grupos_de_conflitos[:]:
     # A variável aula_lab é uma lista que será usada para formar a lista de laboratorios_conflito
     aula_lab = []
     # A variável salas_de_aula_conflito é uma lista que será usada para formar a lista de salas_de_aula
@@ -1011,7 +1011,7 @@ for grupo in grupos_de_conflitos:
     # A variável salas_de_laboratorio_conflito é uma lista que será usada para formar a lista de salas_de_laboratorio
     salas_de_laboratorio_conflito = []
     # Para cada aula do grupo de conflito que estamos analisando
-    for aula in grupo:
+    for aula in grupo[:]:
         # Verifico se é uma aula de laboratório
         if lab_tal[aula] == 1:
             # print(f"Aula de lab: {df.loc[aula % lenT, 'Disciplina (código)']}")
@@ -1039,7 +1039,7 @@ for grupo in grupos_de_conflitos:
                 else:
                     # if df.loc[aula % lenT, 'Sala'] == '6-303/6-304':
                     if sala_fixa[aula] == '6-303/6-304':
-                        for aula2 in grupo:
+                        for aula2 in grupo[:]:
                             if aula != aula2 and sala_fixa[aula2] != '0':
                                 if sala_fixa[aula] == sala_fixa[aula2] \
                                 or \
@@ -1059,7 +1059,7 @@ for grupo in grupos_de_conflitos:
                                     custom_exit()
                     # elif df.loc[aula % lenT, 'Sala'] == '6-305/6-306':
                     elif sala_fixa[aula] == '6-305/6-306':
-                        for aula2 in grupo:
+                        for aula2 in grupo[:]:
                             if aula != aula2 and sala_fixa[aula2] != '0':
                                 if sala_fixa[aula] == sala_fixa[aula2] \
                                 or \
@@ -1078,7 +1078,7 @@ for grupo in grupos_de_conflitos:
                                     )
                                     custom_exit()
                     else:
-                        for aula2 in grupo:
+                        for aula2 in grupo[:]:
                             if aula != aula2 and sala_fixa[aula2] == 1:
                                 # if (df.loc[aula % lenT, 'Sala']) == (df.loc[aula2 % lenT, 'Sala']):
                                 if sala_fixa[aula] == sala_fixa[aula2]:
@@ -1142,7 +1142,7 @@ for grupo in grupos_de_conflitos:
                 # Verifico se a aula foi fixada em uma sala onde outra aula de conflito também foi fixada.
                 else:
                     # Verifico as demais aulas do grupo de conflito atual.
-                    for aula2 in grupo:
+                    for aula2 in grupo[:]:
                         # Se houver uma outra aula (aula2) deste grupo que está fixada na mesma sala da aula atual.
                         # if aula != aula2 and theta_aal[aula, aula2] == 1 and \
                         if aula != aula2 and \
@@ -1217,7 +1217,7 @@ for grupo in grupos_de_conflitos:
                 # print("System exit 3.\n")
                 # sys.exit()
                 custom_exit()
-    for aula in grupo:
+    for aula in grupo[:]:
         if lab_tal[aula] == 1:
             grupo.remove(aula)
     # Nesta etapa, eu verifico quais listas foram construídas com as aulas do grupo sendo analisado.
