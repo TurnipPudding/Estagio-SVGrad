@@ -931,9 +931,11 @@ disciplinas_problematicas2 = []
 for a in range(lenA):
     if group[a] < 1 and start_a[a] > 0:
         # print(f"Aula {a}, {df.loc[a % lenT, 'Disciplina (código)']} {start_a[a]}-{end_a[a]} está fora dos intervalos padrão.")
-        nome_disciplina = df.loc[a % lenT, 'Disciplina (código)']
-        if nome_disciplina not in disciplinas_problematicas2:
-            disciplinas_problematicas2.append(nome_disciplina)
+        # nome_disciplina = df.loc[a % lenT, 'Disciplina (código)']
+        # if nome_disciplina not in disciplinas_problematicas2:
+        #     disciplinas_problematicas2.append(nome_disciplina)
+        if a not in disciplinas_problematicas2:
+            disciplinas_problematicas2.append(a)
 
 # for aula in disciplinas_problematicas2:
 #     print(aula)
@@ -947,7 +949,8 @@ grupos_de_conflitos = []
 # Para cada aula 'a'
 for a in range(lenA):
     # # Verifico se a aula 'a' não tem um horário problemático, isto é, se ela não conecta dois grupos de horário separados em um único.
-    if df.loc[a % lenT, 'Disciplina (código)'] not in disciplinas_problematicas:
+    # if df.loc[a % lenT, 'Disciplina (código)'] not in disciplinas_problematicas:
+    if a not in disciplinas_problematicas2:
         # Se ela não tem um horário problemático
         # Verifico se já fiz outras listas de conflitos
         if len(grupos_de_conflitos) > 0:
@@ -1220,6 +1223,9 @@ for grupo in grupos_de_conflitos[:]:
     for aula in grupo[:]:
         if lab_tal[aula] == 1:
             grupo.remove(aula)
+
+    if len(grupo) == 0:
+        grupos_de_conflitos.remove(grupo)
     # Nesta etapa, eu verifico quais listas foram construídas com as aulas do grupo sendo analisado.
     # Como na etapa anterior o grupo é atualizado para ficar sem as aulas de laboratório
     # não há a necessidade de alterá-lo aqui.
