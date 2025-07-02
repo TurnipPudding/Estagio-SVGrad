@@ -367,7 +367,7 @@ for aula in range(lenA):
         eta_as[aula, fixada] = 1
 
 for aula in range(lenA):
-    if lab_tal[a] == 1:
+    if lab_tal[aula] == 1:
         for sala in range(lenS):
             if sala not in salas_labs:
                 eta_as[aula, sala] = 0
