@@ -1009,7 +1009,9 @@ salas_de_laboratorio = []
 
 
 # Com essas novas listas criadas, passamos a analisar cada grupo em grupos_de_conflitos
+# Com essas novas listas criadas, passamos a analisar cada grupo em grupos_de_conflitos
 for grupo in grupos_de_conflitos[:]:
+    # print(f"Grupo {grupos_de_conflitos.index(grupo)}: {grupo}")
     # A variável aula_lab é uma lista que será usada para formar a lista de laboratorios_conflito
     aula_lab = []
     # A variável salas_de_aula_conflito é uma lista que será usada para formar a lista de salas_de_aula
@@ -1017,7 +1019,7 @@ for grupo in grupos_de_conflitos[:]:
     # A variável salas_de_laboratorio_conflito é uma lista que será usada para formar a lista de salas_de_laboratorio
     salas_de_laboratorio_conflito = []
     # Para cada aula do grupo de conflito que estamos analisando
-    for aula in grupo[:]:
+    for aula in grupo:
         # Verifico se é uma aula de laboratório
         if lab_tal[aula] == 1:
             # print(f"Aula de lab: {df.loc[aula % lenT, 'Disciplina (código)']}")
@@ -1045,7 +1047,7 @@ for grupo in grupos_de_conflitos[:]:
                 else:
                     # if df.loc[aula % lenT, 'Sala'] == '6-303/6-304':
                     if sala_fixa[aula] == '6-303/6-304':
-                        for aula2 in grupo[:]:
+                        for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] != '0':
                                 if sala_fixa[aula] == sala_fixa[aula2] \
                                 or \
@@ -1065,7 +1067,7 @@ for grupo in grupos_de_conflitos[:]:
                                     custom_exit()
                     # elif df.loc[aula % lenT, 'Sala'] == '6-305/6-306':
                     elif sala_fixa[aula] == '6-305/6-306':
-                        for aula2 in grupo[:]:
+                        for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] != '0':
                                 if sala_fixa[aula] == sala_fixa[aula2] \
                                 or \
@@ -1084,7 +1086,7 @@ for grupo in grupos_de_conflitos[:]:
                                     )
                                     custom_exit()
                     else:
-                        for aula2 in grupo[:]:
+                        for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] == 1:
                                 # if (df.loc[aula % lenT, 'Sala']) == (df.loc[aula2 % lenT, 'Sala']):
                                 if sala_fixa[aula] == sala_fixa[aula2]:
@@ -1148,7 +1150,7 @@ for grupo in grupos_de_conflitos[:]:
                 # Verifico se a aula foi fixada em uma sala onde outra aula de conflito também foi fixada.
                 else:
                     # Verifico as demais aulas do grupo de conflito atual.
-                    for aula2 in grupo[:]:
+                    for aula2 in grupo:
                         # Se houver uma outra aula (aula2) deste grupo que está fixada na mesma sala da aula atual.
                         # if aula != aula2 and theta_aal[aula, aula2] == 1 and \
                         if aula != aula2 and \
@@ -1163,6 +1165,7 @@ for grupo in grupos_de_conflitos[:]:
                         
                             # Envio uma mensagem de erro e interrompo o código.
                             print(
+                                # f"aula {aula} e aula2 {aula2}\n" \
                                 f"Uma aula da disciplina {df['Disciplina (código)'][aula % lenT]} foi fixada " \
                                 f"na mesma sala onde uma aula da disciplina {df['Disciplina (código)'][aula2 % lenT]} foi fixada."
                             )
