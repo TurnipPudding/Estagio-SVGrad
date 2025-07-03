@@ -46,6 +46,9 @@ def padroniza_dataframe(file_name, header_row, ano):
             # Se estiver, substituo o nome da coluna por apenas "Sala".
             df = df.rename(columns={df.columns[col] : "Sala"})
 
+    for idx, row in df.iterrows():
+        if df.loc[idx, 'Deve ser alocada no ICMC?'] == 'x':
+            df.loc[idx, 'Deve ser alocada no ICMC?'] = 'X'
     # Filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
     # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
     df = df[df['Deve ser alocada no ICMC?'] == 'X']
