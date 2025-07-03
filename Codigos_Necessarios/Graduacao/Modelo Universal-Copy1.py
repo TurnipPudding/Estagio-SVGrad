@@ -320,7 +320,10 @@ for l in labs:
     # a lista adicionada é ['Sim', '1', '2']
     ind_labs.append((df.loc[l, 'Utilizará laboratório? (sim ou não)'].replace(' ', '')).split(','))
     # Removo o 'Sim' da última lista adicionada, então no nosso exemplo, a lista adicionada agora é dada por ['1', '2']
-    ind_labs[-1].remove("Sim")
+    if "Sim" in ind_labs[-1]:
+        ind_labs[-1].remove("Sim")
+    elif "sim" in ind_labs[-1]:
+        ind_labs[-1].remove("sim")
     # Por fim, converto os elementos dessa lista para serem valores inteiros
     ind_labs[-1] = [int(item) for item in ind_labs[-1]]
 
