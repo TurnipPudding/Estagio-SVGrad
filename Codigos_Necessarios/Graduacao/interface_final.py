@@ -797,11 +797,11 @@ def base_dados(pior_caso):
         # Caso esteja fazendo a base de pior caso:
         else:
             # Leio os dois dataframes fornecidos pelo usuário.
-            df1 = pd.read_excel(arquivo_base1.get())
-            df2 = pd.read_excel(arquivo_base2.get())
+            df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+            df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
 
             # Chamo a função que faz um dataframe com o maior número de inscritos de cada ano.
-            df_pior_caso = base_pior_caso(df1, df2)
+            df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
             try:
                 # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
                 with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
@@ -841,13 +841,14 @@ def base_dados(pior_caso):
 
 # Função que faz a análise de pior caso.
 # Note que df1 deve sempre ser a base de dados mais recente, enquanto df2 deve sempre ser a base de dados mais antiga.
-def base_pior_caso(df1, df2):
+def base_pior_caso(df1, df2, sheets):
 
     # df1 = pd.read_excel(df1_name, sheet_name=sheets)
     # df2 = pd.read_excel(df1_name, sheet_name=sheets)
     try:
     # Para cada planilha na base de dados mais recente:
-        for sh in df1.sheet_names[1:]:
+        # for sh in df1.sheet_names[1:]:
+        for sh in sheets[1:]:
             # Considerando que df1 e df2 possuem as mesmas planilhas (ou, pelo menos, deveriam), crio duas variáveis auxiliares
             # para salvar os dados a mesma planilha de ambas as bases.
             df1_sh = df1[sh]
