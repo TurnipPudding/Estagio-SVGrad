@@ -52,11 +52,7 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Leio o dataframe correto, com a linha do cabeçalho.
     df = pd.read_excel(file_name, header=header_row)
 
-    # Primeiramente, filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
-    # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
-    df = df[df['Deve ser alocada no ICMC?'] == 'X']
-
-    # Para cada cabeçalho/coluna 'col' do dataframe.
+    # Primeiramente, para cada cabeçalho/coluna 'col' do dataframe.
     for col in range(len(df.columns)):
         # Verifico se tem um "\n" no texto do dataframe.
         if "\n" in df.columns[col]:
@@ -67,10 +63,31 @@ def padroniza_dataframe(file_name, header_row, ano):
             # Se estiver, substituo o nome da coluna por apenas "Sala".
             df = df.rename(columns={df.columns[col] : "Sala"})
 
+    
+    for idx, row in df.iterrows():
+        df.loc[idx, 'Deve ser alocada no ICMC?'] = str(df.loc[idx, 'Deve ser alocada no ICMC?']).replace(' ', '')
+        if df.loc[idx, 'Deve ser alocada no ICMC?'] == 'x':
+            df.loc[idx, 'Deve ser alocada no ICMC?'] = 'X'
+
+    # Filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
+    # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
+    df = df[df['Deve ser alocada no ICMC?'] == 'X']
+
+    # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
+    if "Horário 3" not in df.columns:
+        # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
+        df.insert(df.columns.get_loc("Horário 2") + 1, "Horário 3", "")
+
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
     if "Horário 4" not in df.columns:
         # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
         df.insert(df.columns.get_loc("Horário 3") + 1, "Horário 4", "")
+
+    if "observações" in df.columns:
+        df = df.rename(columns={"observações" : "Observações"})
+
+    if "Observações" not in df.columns:
+        df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", "")
 
     # Salvo o nome dos cabeçalhos do dataframe após as edições.
     headers = df.columns
@@ -80,6 +97,17 @@ def padroniza_dataframe(file_name, header_row, ano):
     df['Utilizará laboratório? (sim ou não)'] = df['Utilizará laboratório? (sim ou não)'].fillna("Não")
     # print(df['Utilizará laboratório? (sim ou não)'])
 
+    # Busco e listo por disciplinas cuja Turma não foi definida.
+    turmas0 = df[df['Turma'].isna()].index.tolist()
+    # Se existirem tais disciplinas, uma janela é aberta para indicar as linhas do arquivo que possuem turmas vazias.
+    if len(turmas0) != 0:
+        messagebox.showwarning(f"Aviso!", 
+                               (
+                                   f"A(s) linha(s) {[d + header_row + 2 for d in turmas0]} do arquivo {file_name} "
+                                   f"possuem turmas não identificadas. Verifique qual a turma da disciplina."
+                                )
+                            )
+        return None
     # Talvez precise descomentar as linhas a seguir, caso queira verificar se existem turmas não definidas no arquivo.
     # # Busco e listo por disciplinas cuja Turma não foi definida.
     # turmas0 = df[df['Turma'].isna()].index.tolist()
@@ -103,7 +131,23 @@ def padroniza_dataframe(file_name, header_row, ano):
             if "–" in str(df.loc[d, header]):
                 # Se estiver, substituo-o pelo traço normal.
                 df.loc[d, header] = df.loc[d, header].replace('–', '-')
-
+            if "-" not in str(df.loc[d, header]):
+                messagebox.warning(f"Aviso! Há um horário de aula não padronizado!",
+                                   (
+                                       f"Verifique a linha {d} da coluna {header} do arquivo {file_name}.\n"
+                                       f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+                                       f"Provavelmente, falta um '-' entre o dia da semana e o horário da aula."
+                                   )
+                                )
+            if len(str(df.loc[d, header]).strip("-")):
+                messagebox.warning(f"Aviso! Há um horário de aula não padronizado!",
+                                   (
+                                       f"Verifique a linha {d} da coluna {header} do arquivo {file_name}.\n"
+                                       f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+                                       f"Provavelmente, há mais de um '-' na célula."
+                                   )
+                                )
+                
     # Adiciono 4 colunas para anotar possíveis salas onde as aulas ficam PROIBIDAS de serem alocadas.
     # Cada coluna refere-se a uma coluna de horários, fazendo com que as salas listadas em uma coluna afetem apenas a aula de mesma coluna.
     # Ex: Adicionar a sala 3-009 na segunda coluna de proibição faz com que a aula do Horário 2 de uma disciplina não possa ser na 3-009.
@@ -763,7 +807,7 @@ def base_dados(pior_caso):
                 file4 = arquivo_esp.get()
                 # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(
-                    ["python", "jupiter sheet maker_pos.py", file1, file2, file3, file4, nome],
+                    [sys.executable, "jupiter sheet maker_pos.py", file1, file2, file3, file4, nome],
                     check=True,
                     capture_output=True,
                     text=True
@@ -776,9 +820,11 @@ def base_dados(pior_caso):
             # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
             except subprocess.CalledProcessError as e:
                 if e.returncode == 1:
-                    messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\n{msg}")
                 elif e.returncode == 2:
-                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\n{msg}")
                 elif e.returncode == 4:
                     msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
                     messagebox.showerror("Erro", f"Erro ao executar o script:\n{msg}")
@@ -795,11 +841,11 @@ def base_dados(pior_caso):
         # Caso esteja fazendo a base de pior caso:
         else:
             # Leio os dois dataframes fornecidos pelo usuário.
-            df1 = pd.read_excel(arquivo_base1.get())
-            df2 = pd.read_excel(arquivo_base2.get())
+            df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+            df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
 
             # Chamo a função que faz um dataframe com o maior número de inscritos de cada ano.
-            df_pior_caso = base_pior_caso(df1, df2)
+            df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
             try:
                 # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
                 with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
@@ -839,13 +885,14 @@ def base_dados(pior_caso):
 
 # Função que faz a análise de pior caso.
 # Note que df1 deve sempre ser a base de dados mais recente, enquanto df2 deve sempre ser a base de dados mais antiga.
-def base_pior_caso(df1, df2):
+def base_pior_caso(df1, df2, sheets):
 
     # df1 = pd.read_excel(df1_name, sheet_name=sheets)
     # df2 = pd.read_excel(df1_name, sheet_name=sheets)
     try:
     # Para cada planilha na base de dados mais recente:
-        for sh in df1.sheet_names[1:]:
+        # for sh in df1.sheet_names[1:]:
+        for sh in sheets[1:]:
             # Considerando que df1 e df2 possuem as mesmas planilhas (ou, pelo menos, deveriam), crio duas variáveis auxiliares
             # para salvar os dados a mesma planilha de ambas as bases.
             df1_sh = df1[sh]
@@ -986,7 +1033,7 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_li
     try:
         # Executo o script utilizando subprocess.
         process = subprocess.Popen(
-            ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_livre],
+            [sys.executable, script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_livre],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
@@ -1019,9 +1066,9 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref, df_li
     # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
     except subprocess.CalledProcessError as e:
         if e.returncode == 1:
-            messagebox.showerror("Erro", "Erro ao executar o script. Verifique os arquivos de entrada.")
+            messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\nErro: {e}")
         elif e.returncode == 2:
-            messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.")
+            messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\nErro: {e}")
         else:
             messagebox.showerror("Erro", f"Erro inesperado: {e}")
         return
