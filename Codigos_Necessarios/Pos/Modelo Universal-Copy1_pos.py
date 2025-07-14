@@ -954,7 +954,7 @@ except PermissionError as e:
             print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
             sys.exit(1)
 except Exception as e:
-    print(f"Ocorreu um erro nesperado ao criar o arquivo '{full_name}': {e}")
+    print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
     sys.exit(1)
 
 """## Conversão de tabela"""
