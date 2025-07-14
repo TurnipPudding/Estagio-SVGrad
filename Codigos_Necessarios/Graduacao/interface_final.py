@@ -69,6 +69,7 @@ def padroniza_dataframe(file_name, header_row, ano):
 
     if "Observações" not in df.columns:
         df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", "")
+
     # Salvo o nome dos cabeçalhos do dataframe após as edições.
     headers = df.columns
 
@@ -103,6 +104,27 @@ def padroniza_dataframe(file_name, header_row, ano):
             if "–" in str(df.loc[d, header]):
                 # Se estiver, substituo-o pelo traço normal.
                 df.loc[d, header] = df.loc[d, header].replace('–', '-')
+            # if not pd.isna(df.loc[d, header]) \
+            #     and "-" not in str(df.loc[d, header]) \
+            #         and not pd.isnull(df.loc[d, header]):
+            #     messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
+            #                        (
+            #                            f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
+            #                            f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+            #                            f"Provavelmente, falta um '-' entre o dia da semana e o horário da aula."
+            #                        )
+            #                     )
+            #     return None
+            # print(len(str(df.loc[d, header]).split("-")))
+            # if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
+            #     messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
+            #                        (
+            #                            f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
+            #                            f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+            #                            f"Provavelmente, há mais de um '-' na célula."
+            #                        )
+            #                     )
+            #     return None
 
     # Adiciono 4 colunas para anotar possíveis salas onde as aulas ficam PROIBIDAS de serem alocadas.
     # Cada coluna refere-se a uma coluna de horários, fazendo com que as salas listadas em uma coluna afetem apenas a aula de mesma coluna.
