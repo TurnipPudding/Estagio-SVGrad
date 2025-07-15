@@ -34,7 +34,7 @@ import sys
 def padroniza_dataframe(file_name, header_row, ano):
     # Leio o dataframe correto, com a linha do cabeçalho.
     df = pd.read_excel(file_name, header=header_row)
-    # print(df)
+    # print(df['Horário 4'])
     # Primeiramente, para cada cabeçalho/coluna 'col' do dataframe.
     for col in range(len(df.columns)):
         # Verifico se tem um "\n" no texto do dataframe.
@@ -57,18 +57,18 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
     if "Horário 3" not in df.columns:
         # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
-        df.insert(df.columns.get_loc("Horário 2") + 1, "Horário 3", "")
+        df.insert(df.columns.get_loc("Horário 2") + 1, "Horário 3", pd.NA)
 
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
     if "Horário 4" not in df.columns:
         # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
-        df.insert(df.columns.get_loc("Horário 3") + 1, "Horário 4", "")
+        df.insert(df.columns.get_loc("Horário 3") + 1, "Horário 4", pd.NA)
 
     if "observações" in df.columns:
         df = df.rename(columns={"observações" : "Observações"})
 
     if "Observações" not in df.columns:
-        df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", "")
+        df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", pd.NA)
 
     # Salvo o nome dos cabeçalhos do dataframe após as edições.
     headers = df.columns
@@ -104,27 +104,28 @@ def padroniza_dataframe(file_name, header_row, ano):
             if "–" in str(df.loc[d, header]):
                 # Se estiver, substituo-o pelo traço normal.
                 df.loc[d, header] = df.loc[d, header].replace('–', '-')
-            # if not pd.isna(df.loc[d, header]) \
-            #     and "-" not in str(df.loc[d, header]) \
-            #         and not pd.isnull(df.loc[d, header]):
-            #     messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
-            #                        (
-            #                            f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
-            #                            f"Padrão correto: 'Segunda - 08:10/09:50'\n"
-            #                            f"Provavelmente, falta um '-' entre o dia da semana e o horário da aula."
-            #                        )
-            #                     )
-            #     return None
-            # print(len(str(df.loc[d, header]).split("-")))
-            # if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
-            #     messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
-            #                        (
-            #                            f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
-            #                            f"Padrão correto: 'Segunda - 08:10/09:50'\n"
-            #                            f"Provavelmente, há mais de um '-' na célula."
-            #                        )
-            #                     )
-            #     return None
+            if not pd.isna(df.loc[d, header]) \
+                and "-" not in str(df.loc[d, header]) \
+                    and not (df.loc[d, header] == ""):
+                # print((df.loc[d, header]) == "")
+                messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
+                                   (
+                                       f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
+                                       f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+                                       f"Provavelmente, falta um '-' entre o dia da semana e o horário da aula."
+                                   )
+                                )
+                return None
+            print(len(str(df.loc[d, header]).split("-")))
+            if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
+                messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
+                                   (
+                                       f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
+                                       f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+                                       f"Provavelmente, há mais de um '-' na célula."
+                                   )
+                                )
+                return None
 
     # Adiciono 4 colunas para anotar possíveis salas onde as aulas ficam PROIBIDAS de serem alocadas.
     # Cada coluna refere-se a uma coluna de horários, fazendo com que as salas listadas em uma coluna afetem apenas a aula de mesma coluna.
