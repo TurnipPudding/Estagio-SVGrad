@@ -8,10 +8,9 @@ Original file is located at
 
 ## Imports
 """
+from google.colab import files
+from IPython.display import clear_output
 
-import tkinter as tk # Biblioteca Tkinter para fazer a interface.
-# Objetos e classes importantes da biblioteca Tkinter para fazer a interface.
-from tkinter import ttk, simpledialog, filedialog, messagebox, scrolledtext, Checkbutton, Entry, IntVar, DISABLED, NORMAL
 import pandas as pd # Biblioteca Pandas para trabalhar com dataframes e planilhas do Excel.
 import subprocess # Biblioteca Subprocess para chamar a execução de scripts/outros códigos em Python.
 import os # Biblioteca OS para auxiliar na criação e salvamento de arquivos.
@@ -184,234 +183,335 @@ class Tooltip:
 # Função para criar a base de dados das aulas e a dos dados do JúpiterWeb.
 # Seu parâmetro 'jupiter' refere-se a uma variável booleana, que recebe o valor True caso seja o momento de criar a Base de Dados do Júpiter,
 # e False caso contrário.
+
 def planilha_dep(jupiter):
-
-    # Crio uma nova janela em cima da janela principal da interface.
-    nova_janela = tk.Toplevel(root)
-
-    # Baseado em qual base de dados será criada, defino um nome diferente para a janela.
+    """
+    Função para construção de planilhas de dados usando upload interativo no Colab
+    Parâmetro:
+    - jupiter: booleano que indica se é para dados do JúpiterWeb (True) ou das Aulas (False)
+    """
+    
+    clear_output(wait=True)
+    print(f"=== CONSTRUIR {'BASE DE DADOS DO JÚPITERWEB' if jupiter else 'BASE DE DADOS DAS AULAS'} ===")
+    
+    # Dicionário para armazenar os arquivos carregados
+    arquivos_carregados = {}
+    
+    # Função auxiliar para upload com mensagem específica
+    def fazer_upload(mensagem):
+        print(f"\n{mensagem}")
+        print("Por favor, faça o upload do arquivo:")
+        uploaded = files.upload()
+        if not uploaded:
+            print("Nenhum arquivo foi selecionado!")
+            return None
+        # Retorna o primeiro arquivo carregado
+        return next(iter(uploaded))
+    
+    # Solicitar arquivos obrigatórios
+    arquivos_carregados['sme'] = fazer_upload("1. Planilha do SME (arquivo Excel)")
+    arquivos_carregados['sma'] = fazer_upload("2. Planilha do SMA (arquivo Excel)")
+    arquivos_carregados['scc'] = fazer_upload("3. Planilha do SCC (arquivo Excel)")
+    arquivos_carregados['ssc'] = fazer_upload("4. Planilha do SSC (arquivo Excel)")
+    
     if not jupiter:
-        nova_janela.title("Construir Base de Dados das Aulas")
-
+        # Arquivos específicos para dados das aulas
+        arquivos_carregados['outros'] = fazer_upload("5. Planilha dos Outros Institutos (arquivo Excel)")
+        arquivos_carregados['salas'] = fazer_upload("6. Planilha dos dados das salas (arquivo Excel)")
+        ano_dados = input("\n7. Digite o ano dos dados: ").strip()
     else:
-        nova_janela.title("Construir Base de Dados do JúpiterWeb")
-
-    # Crio o frame para armazenar os botões e outros campos da nova janela.
-    frame = tk.Frame(nova_janela)
-    frame.pack(pady=10, padx=10)
-
-    # Defino várias variáveis para armazenar os nomes dos arquivos para criar a base de dados.
-    arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
-    arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
-    arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
-    arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
-    arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
-    arquivo_salas = tk.StringVar(value="Selecione a planilha dos dados das salas")
-    # Defino uma variável para conter o ano dos dados fornecidos.
-    ano_dados = IntVar()
-    # Defino uma variável para conter o nome da nova base de dados.
-    nome_arquivo = tk.StringVar()
-    # Defino uma lista que irá conter os nomes de outros arquivos necessários para criar uma base de dados.
-    lista_outros = []
-
-    # Defino as funções para selecionar arquivos.
-    def selecionar_sme():
-        # A classe filedialog faz com que o gerenciador de arquivos seja aberto para selecionar um arquivo.
-        # O usuário seleciona o arquivo contendo a base de dados das aulas.
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
-
-        # Se um arquivo foi selecionado:
-        if arquivo:
-            # Salvo o caminho do arquivo.
-            arquivo_sme.set(arquivo)
-    def selecionar_sma():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
-        if arquivo:
-            arquivo_sma.set(arquivo)
-    def selecionar_scc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
-        if arquivo:
-            arquivo_scc.set(arquivo)
-    def selecionar_ssc():
-        arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
-        if arquivo:
-            arquivo_ssc.set(arquivo)
-    # Se não estiver criando a base de dados do Júpiter:
+        # Lógica para múltiplos arquivos no modo Júpiter
+        lista_outros = []
+        print("\n5. Arquivos dos Outros Institutos (faça upload de cada arquivo separadamente)")
+        while True:
+            print(f"\nArquivo {len(lista_outros)+1} (deixe vazio e pressione Enter para parar):")
+            uploaded = files.upload()
+            if not uploaded:
+                break
+            lista_outros.append(next(iter(uploaded)))
+    
+    nome_arquivo = input("\nDigite o nome para a base de dados (sem extensão): ").strip()
+    
+    # Validação dos inputs
+    def validar_arquivo(arquivo, nome):
+        if arquivo is None:
+            print(f"Erro: Por favor, forneça o {nome}")
+            return False
+        return True
+    
+    # Verifica arquivos obrigatórios
+    if not all([
+        validar_arquivo(arquivos_carregados['sme'], "arquivo do SME"),
+        validar_arquivo(arquivos_carregados['sma'], "arquivo do SMA"),
+        validar_arquivo(arquivos_carregados['scc'], "arquivo do SCC"),
+        validar_arquivo(arquivos_carregados['ssc'], "arquivo do SSC")
+    ]):
+        input("\nPressione Enter para tentar novamente...")
+        return planilha_dep(jupiter)
+    
     if not jupiter:
-        # Também defino as funções necessárias para salvar outros arquivos.
-        def selecionar_outros():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
-            if arquivo:
-                arquivo_outros.set(arquivo)
-        def selecionar_salas():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das salas")
-            if arquivo:
-                arquivo_salas.set(arquivo)
-
-
-
-    # Crio uma legenda para ficar ao lado do botão.
-    lbl_sme = tk.Label(frame, text="Selecione a planilha do SME:")
-    # Defino a posição do texto na janela.
-    lbl_sme.grid(row=0, column=0, pady=5, sticky="w")
-    # Crio o botão para salvar o arquivo do SME.
-    btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
-    # Defino a posição do botão na janela.
-    btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
-
-    # As linhas a seguir são análogas.
-    lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA:")
-    lbl_sma.grid(row=1, column=0, pady=5, sticky="w")
-    btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
-    btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
-
-    lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC:")
-    lbl_scc.grid(row=2, column=0, pady=5, sticky="w")
-    btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
-    btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
-
-    lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC:")
-    lbl_ssc.grid(row=3, column=0, pady=5, sticky="w")
-    btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
-    btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
-
-    # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
-    if not jupiter:
-        # Defino algumas legendas e botões adicionais.
-        lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
-        lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
-        btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
-        btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
-
-        lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas:")
-        lbl_salas.grid(row=5, column=0, pady=5, sticky="w")
-        btn_selecionar_salas = tk.Button(frame, textvariable=arquivo_salas, command=selecionar_salas, wraplength=250, width=40)
-        btn_selecionar_salas.grid(row=5, column=1, padx=5, pady=5)
-
-
-        # Campo para inserir o valor
-        lbl_ano = tk.Label(frame, text="Insira o ano dos dados:")
-        lbl_ano.grid(row=6, column=0, sticky="w", pady=5)
-        campo_ano = tk.Entry(frame, textvariable=ano_dados)
-        campo_ano.grid(row=6, column=1, pady=5)
-
-    # Caso esteja sendo criada a base de dados do Júpiter:
+        if not all([
+            validar_arquivo(arquivos_carregados['outros'], "arquivo dos Outros Institutos"),
+            validar_arquivo(arquivos_carregados['salas'], "arquivo dos dados das salas"),
+            ano_dados
+        ]):
+            input("\nPressione Enter para tentar novamente...")
+            return planilha_dep(jupiter)
     else:
-        # Defino um frame adicional na janela.
-        frame2 = tk.Frame(nova_janela)
-        frame2.pack(pady=10, padx=10)
+        if not lista_outros:
+            print("Erro: Por favor, adicione pelo menos um arquivo dos Outros Institutos")
+            input("\nPressione Enter para tentar novamente...")
+            return planilha_dep(jupiter)
+    
+    if not nome_arquivo:
+        print("Erro: Por favor, forneça um nome para a base de dados")
+        input("\nPressione Enter para tentar novamente...")
+        return planilha_dep(jupiter)
+    
+    # Chamar a função de concatenação
+    if not jupiter:
+        concat_df(
+            arquivos_carregados['sme'], arquivos_carregados['sma'], arquivos_carregados['scc'],
+            arquivos_carregados['ssc'], arquivos_carregados['salas'], nome_arquivo, 
+            ano_dados, jupiter, arquivos_carregados['outros']
+        )
+    else:
+        concat_df(
+            arquivos_carregados['sme'], arquivos_carregados['sma'], arquivos_carregados['scc'],
+            arquivos_carregados['ssc'], None, nome_arquivo, 
+            None, jupiter, lista_outros
+        )
+    
+    print("\n✅ Base de dados criada com sucesso!")
+    input("\nPressione Enter para voltar ao menu principal...")
+# def planilha_dep(jupiter):
 
-        # Defino algumas funções especiais para utilizar nesse novo frame.
+#     # Crio uma nova janela em cima da janela principal da interface.
+#     nova_janela = tk.Toplevel(root)
 
-        # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
-        def add_file():
-            file_path = filedialog.askopenfilename(title="Selecione um arquivo")
-            # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
-            if file_path:
-                lista_outros.append(file_path)
-                # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
-                update_listbox()
+#     # Baseado em qual base de dados será criada, defino um nome diferente para a janela.
+#     if not jupiter:
+#         nova_janela.title("Construir Base de Dados das Aulas")
 
-        # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
-        def remove_selected():
-            # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
-            try:
-                # Salvo o índice do arquivo selecionado pelo usuário.
-                selected_index = file_listbox.curselection()[0]
-                # Removo o arquivo de mesmo índice da lista.
-                lista_outros.pop(selected_index)
-                # E atualizo a lista visualizada no frame.
-                update_listbox()
-            # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
-            except IndexError:
-                pass
+#     else:
+#         nova_janela.title("Construir Base de Dados do JúpiterWeb")
 
-        # Defino uma função que atualiza a visualização da lista no frame.
-        def update_listbox():
-            # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
-            file_listbox.delete(0, tk.END)
-            # Depois disso, adiciono os arquivos da lista no visor.
-            for file in lista_outros:
-                file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+#     # Crio o frame para armazenar os botões e outros campos da nova janela.
+#     frame = tk.Frame(nova_janela)
+#     frame.pack(pady=10, padx=10)
 
-        # Defino um botão para adicionar arquivos, e sua posição na janela.
-        add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
-        add_file_button.grid(row=0, column=0, pady=5, sticky="w")
+#     # Defino várias variáveis para armazenar os nomes dos arquivos para criar a base de dados.
+#     arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
+#     arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
+#     arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
+#     arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
+#     arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
+#     arquivo_salas = tk.StringVar(value="Selecione a planilha dos dados das salas")
+#     # Defino uma variável para conter o ano dos dados fornecidos.
+#     ano_dados = IntVar()
+#     # Defino uma variável para conter o nome da nova base de dados.
+#     nome_arquivo = tk.StringVar()
+#     # Defino uma lista que irá conter os nomes de outros arquivos necessários para criar uma base de dados.
+#     lista_outros = []
 
-        # Defino uma lista para aparecer no visor do frame.
-        file_listbox = tk.Listbox(frame2, width=100, height=10)
-        file_listbox.grid(row=1, column=0, pady=5)
+#     # Defino as funções para selecionar arquivos.
+#     def selecionar_sme():
+#         # A classe filedialog faz com que o gerenciador de arquivos seja aberto para selecionar um arquivo.
+#         # O usuário seleciona o arquivo contendo a base de dados das aulas.
+#         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
 
-        # Defino um botão para remover arquivos, e sua posição na janela.
-        remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
-        remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
-
-
-    # Defino uma legenda e sua posição na janela, que indicará o campo onde o usuário digitará o nome do arquivo da base de dados.
-    lbl_arq = tk.Label(frame, text="Insira o nome para a base de dados:")
-    lbl_arq.grid(row=7, column=0, sticky="w", pady=5)
-    campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
-    campo_arq.grid(row=7, column=1, pady=5)
-
-
-    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-    def salvar_valores():
-        # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-        # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
-        if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
-            return
-        if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
-            return
-        if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
-            return
-        if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-            messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
-            return
-
-        # Caso não seja a base dos dados do Júpiter que está sendo feita:
-        if not jupiter:
-            # Verifico se os arquivos foram selecionados, e os campos preenchidos, novamente alertando se algo estiver faltando.
-            if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-                return
-            if not arquivo_salas.get() or arquivo_salas.get() == "Selecione a planilha dos dados das salas":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das salas.")
-                return
-            if not ano_dados.get():
-                messagebox.showwarning("Aviso", "Por favor, insira o ano dos dados.")
-                return
-        # Caso seja a base dos dados do Júpiter que está sendo feita:
-        else:
-            # Verifico se foram adicionados arquivos com os dados dos outros institutos, alertando a ausência deles.
-            if len(lista_outros) == 0:
-                messagebox.showwarning("Aviso", "Por favor, selecione a(s) planilha(s) dos Outros Institutos.")
-                return
-
-        # Faço o mesmo alerta de antes caso o usuário não tenha fornecido o nome para a nova base de dados.
-        if not nome_arquivo.get():
-            messagebox.showwarning("Aviso", "Por favor, insira o nome da base de dados.")
-            return
+#         # Se um arquivo foi selecionado:
+#         if arquivo:
+#             # Salvo o caminho do arquivo.
+#             arquivo_sme.set(arquivo)
+#     def selecionar_sma():
+#         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
+#         if arquivo:
+#             arquivo_sma.set(arquivo)
+#     def selecionar_scc():
+#         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
+#         if arquivo:
+#             arquivo_scc.set(arquivo)
+#     def selecionar_ssc():
+#         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
+#         if arquivo:
+#             arquivo_ssc.set(arquivo)
+#     # Se não estiver criando a base de dados do Júpiter:
+#     if not jupiter:
+#         # Também defino as funções necessárias para salvar outros arquivos.
+#         def selecionar_outros():
+#             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
+#             if arquivo:
+#                 arquivo_outros.set(arquivo)
+#         def selecionar_salas():
+#             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das salas")
+#             if arquivo:
+#                 arquivo_salas.set(arquivo)
 
 
-        # Baseando-se em qual base de dados está sendo criada, chamo uma função para concatenar os dados dos arquivos fornecidos.
-        if not jupiter:
-            concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
-                      arquivo_ssc.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
-        else:
-            concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
-                      arquivo_ssc.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
-        # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
 
-        # Terminada a concatenação, destruo a janela de seleção.
-        nova_janela.destroy()
+#     # Crio uma legenda para ficar ao lado do botão.
+#     lbl_sme = tk.Label(frame, text="Selecione a planilha do SME:")
+#     # Defino a posição do texto na janela.
+#     lbl_sme.grid(row=0, column=0, pady=5, sticky="w")
+#     # Crio o botão para salvar o arquivo do SME.
+#     btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
+#     # Defino a posição do botão na janela.
+#     btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
 
-    # Defino um botão e seu espaço na janela para chamar a função que salva os nomes dos arquivos.
-    btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
-    btn_salvar.pack(pady=10)
+#     # As linhas a seguir são análogas.
+#     lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA:")
+#     lbl_sma.grid(row=1, column=0, pady=5, sticky="w")
+#     btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
+#     btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
+
+#     lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC:")
+#     lbl_scc.grid(row=2, column=0, pady=5, sticky="w")
+#     btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
+#     btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
+
+#     lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC:")
+#     lbl_ssc.grid(row=3, column=0, pady=5, sticky="w")
+#     btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
+#     btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
+
+#     # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
+#     if not jupiter:
+#         # Defino algumas legendas e botões adicionais.
+#         lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
+#         lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
+#         btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
+#         btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
+
+#         lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas:")
+#         lbl_salas.grid(row=5, column=0, pady=5, sticky="w")
+#         btn_selecionar_salas = tk.Button(frame, textvariable=arquivo_salas, command=selecionar_salas, wraplength=250, width=40)
+#         btn_selecionar_salas.grid(row=5, column=1, padx=5, pady=5)
+
+
+#         # Campo para inserir o valor
+#         lbl_ano = tk.Label(frame, text="Insira o ano dos dados:")
+#         lbl_ano.grid(row=6, column=0, sticky="w", pady=5)
+#         campo_ano = tk.Entry(frame, textvariable=ano_dados)
+#         campo_ano.grid(row=6, column=1, pady=5)
+
+#     # Caso esteja sendo criada a base de dados do Júpiter:
+#     else:
+#         # Defino um frame adicional na janela.
+#         frame2 = tk.Frame(nova_janela)
+#         frame2.pack(pady=10, padx=10)
+
+#         # Defino algumas funções especiais para utilizar nesse novo frame.
+
+#         # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
+#         def add_file():
+#             file_path = filedialog.askopenfilename(title="Selecione um arquivo")
+#             # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
+#             if file_path:
+#                 lista_outros.append(file_path)
+#                 # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
+#                 update_listbox()
+
+#         # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
+#         def remove_selected():
+#             # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
+#             try:
+#                 # Salvo o índice do arquivo selecionado pelo usuário.
+#                 selected_index = file_listbox.curselection()[0]
+#                 # Removo o arquivo de mesmo índice da lista.
+#                 lista_outros.pop(selected_index)
+#                 # E atualizo a lista visualizada no frame.
+#                 update_listbox()
+#             # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
+#             except IndexError:
+#                 pass
+
+#         # Defino uma função que atualiza a visualização da lista no frame.
+#         def update_listbox():
+#             # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
+#             file_listbox.delete(0, tk.END)
+#             # Depois disso, adiciono os arquivos da lista no visor.
+#             for file in lista_outros:
+#                 file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+
+#         # Defino um botão para adicionar arquivos, e sua posição na janela.
+#         add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
+#         add_file_button.grid(row=0, column=0, pady=5, sticky="w")
+
+#         # Defino uma lista para aparecer no visor do frame.
+#         file_listbox = tk.Listbox(frame2, width=100, height=10)
+#         file_listbox.grid(row=1, column=0, pady=5)
+
+#         # Defino um botão para remover arquivos, e sua posição na janela.
+#         remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
+#         remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
+
+
+#     # Defino uma legenda e sua posição na janela, que indicará o campo onde o usuário digitará o nome do arquivo da base de dados.
+#     lbl_arq = tk.Label(frame, text="Insira o nome para a base de dados:")
+#     lbl_arq.grid(row=7, column=0, sticky="w", pady=5)
+#     campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
+#     campo_arq.grid(row=7, column=1, pady=5)
+
+
+#     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+#     def salvar_valores():
+#         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
+#         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
+
+#         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
+#             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+#             return
+#         if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
+#             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+#             return
+#         if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
+#             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+#             return
+#         if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
+#             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+#             return
+
+#         # Caso não seja a base dos dados do Júpiter que está sendo feita:
+#         if not jupiter:
+#             # Verifico se os arquivos foram selecionados, e os campos preenchidos, novamente alertando se algo estiver faltando.
+#             if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
+#                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
+#                 return
+#             if not arquivo_salas.get() or arquivo_salas.get() == "Selecione a planilha dos dados das salas":
+#                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das salas.")
+#                 return
+#             if not ano_dados.get():
+#                 messagebox.showwarning("Aviso", "Por favor, insira o ano dos dados.")
+#                 return
+#         # Caso seja a base dos dados do Júpiter que está sendo feita:
+#         else:
+#             # Verifico se foram adicionados arquivos com os dados dos outros institutos, alertando a ausência deles.
+#             if len(lista_outros) == 0:
+#                 messagebox.showwarning("Aviso", "Por favor, selecione a(s) planilha(s) dos Outros Institutos.")
+#                 return
+
+#         # Faço o mesmo alerta de antes caso o usuário não tenha fornecido o nome para a nova base de dados.
+#         if not nome_arquivo.get():
+#             messagebox.showwarning("Aviso", "Por favor, insira o nome da base de dados.")
+#             return
+
+
+#         # Baseando-se em qual base de dados está sendo criada, chamo uma função para concatenar os dados dos arquivos fornecidos.
+#         if not jupiter:
+#             concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
+#                       arquivo_ssc.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
+#         else:
+#             concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
+#                       arquivo_ssc.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
+#         # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
+
+#         # Terminada a concatenação, destruo a janela de seleção.
+#         nova_janela.destroy()
+
+#     # Defino um botão e seu espaço na janela para chamar a função que salva os nomes dos arquivos.
+#     btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
+#     btn_salvar.pack(pady=10)
 
     # Uma importante ressalva. Por conta da maneira que os botões, textos e campos podem ser colocados na janela,
     # é possível deixar certos botões com uma ordem, mesmo que "o espaço entre eles deveria estar vazio".
@@ -2297,56 +2397,79 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
         - {os.path.basename(file_path_sol)}\n\
         - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
 
-"""# Interface"""
+import os
+from google.colab import drive
+from IPython.display import clear_output
 
-# Nome da pasta que você quer verificar/criar
-nome_pasta = "Saídas da Interface"
+# 1. Configuração do Google Drive
+def setup_drive():
+    """Monta o Google Drive e cria a estrutura de pastas"""
+    # Monta o Google Drive
+    drive.mount('/content/drive')
+    
+    # Caminho base no Drive (pode ser ajustado)
+    drive_path = '/content/drive/MyDrive/Estagio-SVGrad'
+    
+    # Cria a pasta principal se não existir
+    os.makedirs(drive_path, exist_ok=True)
+    
+    # Cria a estrutura de pastas
+    saidas_path = os.path.join(drive_path, "Saídas da Interface")
+    subpastas = ["Planilhas de Dados", "Saídas do Modelo"]
+    
+    os.makedirs(saidas_path, exist_ok=True)
+    for subpasta in subpastas:
+        os.makedirs(os.path.join(saidas_path, subpasta), exist_ok=True)
+    
+    return saidas_path
 
-# Caminho completo da pasta, relativo ao diretório atual
-caminho_pasta = os.path.join(os.getcwd(), nome_pasta)
+# Iniciar a interface
 
-# Verifica se a pasta existe
-if not os.path.exists(caminho_pasta):
-    os.makedirs(caminho_pasta)
+"""Exibe o menu principal e gerencia as opções"""
+saida = setup_drive()
+executando = True
 
-# Caminho da pasta principal
-pasta_principal = os.path.join(os.getcwd(), "Saídas da Interface")
+while executando:
+    clear_output(wait=True)
+    print("=== MENU PRINCIPAL ===")
+    print("1. Construir Planilha com os dados das Aulas")
+    print("2. Construir Planilha com os dados do JúpiterWeb")
+    print("3. Construir Base de Dados do Modelo")
+    print("4. Construir Base de Dados de Pior Caso")
+    print("5. Verificar Dados e Executar Modelo")
+    print("6. Relatório de Espaços Livres")
+    print("7. Preencher planilhas com Dados da Solução")
+    print("S. Sair")
+    print("======================")
+    
+    opcao = input("Digite o número da opção desejada: ").strip().upper()
+    
+    if opcao == '1':
+        planilha_dep(jupiter=False)
+        input("\nPressione Enter para continuar...")
+    elif opcao == '2':
+        planilha_dep(jupiter=True)
+        input("\nPressione Enter para continuar...")
+    elif opcao == '3':
+        base_dados(pior_caso=False)
+        input("\nPressione Enter para continuar...")
+    elif opcao == '4':
+        base_dados(pior_caso=True)
+        input("\nPressione Enter para continuar...")
+    elif opcao == '5':
+        execute()
+        input("\nPressione Enter para continuar...")
+    elif opcao == '6':
+        analise_vazios()
+        input("\nPressione Enter para continuar...")
+    elif opcao == '7':
+        preencher_planilha_dados()
+        input("\nPressione Enter para continuar...")
+    elif opcao == 'S':
+        executando = False
+    else:
+        print("Opção inválida! Tente novamente.")
+        input("\nPressione Enter para continuar...")
 
-# Subpastas a serem criadas
-subpastas = ["Planilhas de Dados", "Saídas do Modelo"]
-
-# Criar cada subpasta dentro da pasta principal
-for nome in subpastas:
-    caminho_subpasta = os.path.join(pasta_principal, nome)
-    if not os.path.exists(caminho_subpasta):
-        os.makedirs(caminho_subpasta)
-
-# Crio uma variável para conter o caminho da pasta "Saídas da Interface"
-saidas = os.path.join(os.getcwd(), "Saídas da Interface", "Planilhas de Dados")
-
-# Aqui é onde a janela principal da interface (root) é montada.
-# Defino ela com a variável root, e dou-lhe um título.
-root = tk.Tk()
-root.title("Menu Principal")
-
-# Após isso, adiciono um frame para a janela.
-frm = ttk.Frame(root, padding=10)
-frm.grid()
-
-# E adiciono os botões que chamam as funções definidas até então.
-# Como eu não preciso que os botões salvem algo aqui, não é necessário adicioná-los como variáveis com nome.
-# Vale também comentar que algumas funções chamadas pelos botões possuem parâmetros, e para passá-los, é necessário
-# usar a "função lambda".
-ttk.Button(frm, text="Construir Planilha com os dados das Aulas", command=lambda: planilha_dep(jupiter=False)).grid(column=0, row=0, sticky="w", pady=5)
-ttk.Button(frm, text="Construir Planilha com os dados do JúpiterWeb", command=lambda: planilha_dep(jupiter=True)).grid(column=0, row=1, sticky="w", pady=5)
-ttk.Button(frm, text="Construir Base de Dados do Modelo", command=lambda: base_dados(pior_caso=False)).grid(column=0,row=2,sticky="w", pady=5)
-ttk.Button(frm, text="Construir Base de Dados de Pior Caso", command=lambda: base_dados(pior_caso=True)).grid(column=0,row=3,sticky="w", pady=5)
-ttk.Button(frm, text="Verificar Dados e Executar Modelo", command=execute).grid(column=0,row=4,sticky="w", pady=5)
-ttk.Button(frm, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0,row=5,sticky="w",pady=5)
-ttk.Button(frm, text="Preencher planilhas com Dados da Solução", command=preencher_planilha_dados).grid(column=0, row=6, sticky="w", pady=5)
-ttk.Button(frm, text="Sair", command=root.destroy).grid(column=0, row=7, sticky="w", pady=5)
-# ttk.Button(frm, text="Teste", command=lambda: Novo_edit_config(file_name='C:/Users/gabri/Estágio/Códigos/Endgame/Newest completa (1).xlsx')).grid(column=0, row=8, sticky="w", pady=5)
-
-# Com ela definida, basta colocá-la para rodar.
-root.mainloop()
+print("\nObrigado por utilizar a interface!")
 
