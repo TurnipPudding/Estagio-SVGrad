@@ -525,10 +525,11 @@ def planilha_dep(jupiter):
 
 # Função que lê um dado arquivo.
 def ler_df(caminho_arquivo):
-    # Tento ler um arquivo.
+    """
+    Função para ler arquivos de dados (Excel ou CSV) no Google Colab
+    Retorna um DataFrame pandas ou None em caso de erro
+    """
     try:
-        # Dependendo do tipo de arquivo, precisa utilizar leituras de dados diferentes. Vale ressaltar que essa função lê apenas arquivos
-        # de planilha, como '.xlsx', '.xls' e '.csv'. Com o arquivo lido, retorno o dataframe correspondente.
         if caminho_arquivo.endswith(('.xlsx', '.xls')):
             df = pd.read_excel(caminho_arquivo)
             return df
@@ -536,171 +537,282 @@ def ler_df(caminho_arquivo):
             df = pd.read_csv(caminho_arquivo, on_bad_lines='skip', sep=';', encoding='latin-1')
             return df
         else:
-            # Caso o arquivo fornecido seja incompatível, alerto o usuário.
-            raise ValueError("Formato de arquivo não suportado!")
-
-    # No caso de algum erro inesperado ocorrer, alerto o usuário com uma mensagem e o nome do erro.
+            print("❌ Erro: Formato de arquivo não suportado!")
+            print("Por favor, use arquivos .xlsx, .xls ou .csv")
+            return None
+            
     except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao carregar o arquivo:\n{e}")
-    # return df
+        print(f"❌ Erro ao carregar o arquivo {caminho_arquivo}:\n\n{e}")
+        return None
+    
+# def ler_df(caminho_arquivo):
+#     # Tento ler um arquivo.
+#     try:
+#         # Dependendo do tipo de arquivo, precisa utilizar leituras de dados diferentes. Vale ressaltar que essa função lê apenas arquivos
+#         # de planilha, como '.xlsx', '.xls' e '.csv'. Com o arquivo lido, retorno o dataframe correspondente.
+#         if caminho_arquivo.endswith(('.xlsx', '.xls')):
+#             df = pd.read_excel(caminho_arquivo)
+#             return df
+#         elif caminho_arquivo.endswith('.csv'):
+#             df = pd.read_csv(caminho_arquivo, on_bad_lines='skip', sep=';', encoding='latin-1')
+#             return df
+#         else:
+#             # Caso o arquivo fornecido seja incompatível, alerto o usuário.
+#             raise ValueError("Formato de arquivo não suportado!")
+
+#     # No caso de algum erro inesperado ocorrer, alerto o usuário com uma mensagem e o nome do erro.
+#     except Exception as e:
+#             messagebox.showerror("Erro", f"Erro ao carregar o arquivo:\n{e}")
+#     # return df
 
 """### Concatenar"""
 
 # Função que concatena as planilhas em um único arquivo.
+# import os
+
 def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
-    # Crio uma variável para listar os arquivos que serão concatenados.
+    """
+    Função para concatenar planilhas em um único arquivo no Google Colab
+    """
     files = []
-    # Caso eu não esteja concatenando os arquivos para a base do JúpiterWeb:
+    
     if not jupiter:
-        # Leio a planilha com os dados das salas e salvo em um dataframe separado.
+        # Lê a planilha de salas
+        print("\n📂 Lendo dados das salas...")
         df_salas = ler_df(salas)
+        if df_salas is None:
+            print("❌ Erro na leitura do arquivo de salas. Operação cancelada.")
+            return
 
-        # Defino uma lista com os nomes dos arquivos a serem concatenados.
         name_files = [SME, SMA, SCC, SSC, outros]
-
-        # Para cada nome de arquivo:
-        for name in name_files:
-            # Leio e salvo o arquivo em uma variável.
-            df = ler_df(name)
-
-            # Defino uma variável com o nome de um cabeçalho para ser encontrado, caso o cabeçalho não seja a primeira linha da planilha.
-            header_name = 'Disciplina (código)'
-
-            header_found = False
-            # Para cada linha e célula da primeira coluna do dataframe:
-            for i, valor in enumerate(df.loc[:,df.columns[0]]):
-                # Se o valor da célula for o nome do cabeçalho que estou procurando:
-                if valor == header_name:
-                    # Salvo o número da linha do cabeçalho.
-                    header_row = i+1
-
-                    # Chamo a função que lerá o dataframe da forma correta e o deixará no formato padronizado.
-                    df_padronizado = padroniza_dataframe(name, header_row, ano)
-
-                    # Caso o dataframe não esteja vazio, isto é, se o arquivo foi lido corretamente e não tinha nenhum erro aparente:
-                    if not df_padronizado.empty:
-                        # Adiciono o dataframe na lista dos que serão concatenados.
-                        files.append(df_padronizado)
-                    # Caso tenha ocorrido um erro, retorno para a função anterior, onde o usuário verificará os arquivos selecionados.
-                    else:
-                        messagebox.showerror(f"Erro no arquivo",
-                                                (
-                                                    f"O arquivo '{name}' não pode ser lido, está vazio, ou não foram marcadas as "
-                                                    f"disciplinas a serem alocadas. Verifique-o."
-                                                )
-                                             )
-                        return
-
-                    # Se o cabeçalho foi encontrado, não há motivo para continuar buscando, então encerro o loop dessa busca.
-                    header_found = True
-                    break
-
-            if not header_found:
-                messagebox.showerror("Erro de Cabeçalho", 
-                                        (
-                                            f"A coluna '{header_name}' não foi encontrada no arquivo {os.path.basename(name)}. "
-                                            "Verifique o cabeçalho do arquivo de entrada."
-                                        )
-                                    )
-                return
-        # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
         sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
-
-    # Para o caso de concatenando os arquivos para a base do Júpiter:
     else:
-        # Defino uma lista com os nomes dos arquivos a serem concatenados.
         name_files = [SME, SMA, SCC, SSC]
-
-        # Adiciono os nomes dos arquivos dos outros institutos a essa lista de nomes.
         name_files.extend(outros)
-
         sheets = []
 
-        
-    # Para cada nome de arquivo de outros institutos:
-        for name in name_files:
-            # Leio e salvo o arquivo em uma variável.
-            df = ler_df(name)
+    # Processa cada arquivo
+    for i, name in enumerate(name_files):
+        # print(f"\n📂 Processando arquivo {i+1}/{len(name_files)}...")
+        df = ler_df(name)
+        if df is None:
+            print(f"❌ Erro no arquivo {name}. Operação cancelada.")
+            return
 
+        if not jupiter:
+            header_name = 'Disciplina (código)'
+            header_found = False
+            
+            for i, valor in enumerate(df.loc[:,df.columns[0]]):
+                if valor == header_name:
+                    header_row = i+1
+                    df_padronizado = padroniza_dataframe(name, header_row, ano)
+                    
+                    if df_padronizado.empty:
+                        print(f"❌ O arquivo '{os.path.basename(name)}' não pode ser lido ou está vazio.")
+                        print("Verifique se as disciplinas a serem alocadas estão marcadas.")
+                        return
+                        
+                    files.append(df_padronizado)
+                    header_found = True
+                    break
+                    
+            if not header_found:
+                print(f"❌ A coluna '{header_name}' não foi encontrada no arquivo {os.path.basename(name)}")
+                print("Verifique o cabeçalho do arquivo de entrada.")
+                return
+        else:
             try:
-                # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
-                # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
                 new_name = str(df.loc[0, 'Disciplina'])[:3]
-
-            except KeyError as e:
-                coluna_faltando = str(e).strip("'")
-                messagebox.showerror("Erro de Cabeçalho", 
-                                        (
-                                            f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
-                                            "Verifique o cabeçalho do arquivo de entrada."
-                                        )
-                                    )
+                sheets.append(new_name)
+                files.append(df)
+            except KeyError:
+                print(f"❌ A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}")
+                print("Verifique o cabeçalho do arquivo de entrada.")
                 return
-
             except Exception as e:
-                # Caso ocorra algum erro, alerto o usuário.
-                messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
+                print(f"❌ Ocorreu um erro inesperado:\n{e}")
                 return
-        
-            # Com o arquivo lido, salvo a sigla do instituto na lista de siglas.
-            sheets.append(new_name)
 
-            # Salvo o dataframe em na lista dos arquivos que serão concatenados.
-            files.append(df)
-
-
-    # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
+    # Garante a extensão .xlsx
     if not nome_arquivo.endswith(".xlsx"):
-        # Em caso negativo, adiciono essa terminologia.
-        nome_arquivo = nome_arquivo + ".xlsx"
+        nome_arquivo += ".xlsx"
 
-
-    # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
-    if not nome_arquivo.endswith(".xlsx"):
-        # Em caso negativo, adiciono essa terminologia.
-        nome_arquivo = nome_arquivo + ".xlsx"
-
+    # Caminho de saída no Google Drive
+    
+    output_path = os.path.join('/content/drive/MyDrive/Estagio-SVGrad/Saídas da Interface/Planilhas de Dados', nome_arquivo)
+    
     try:
-        # Para finalmente concatenar os arquivos lidos, defino o nome da base de dados com o nome disponível.
-        with pd.ExcelWriter(os.path.join(saidas, nome_arquivo), engine="openpyxl") as writer:
-            # Caso a base sendo definida não for a do Júpiter, preciso incluir a planilha de salas no arquivo.
+        # print("\n🔄 Salvando arquivo concatenado...")
+        with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
             if not jupiter:
                 df_salas.to_excel(writer, sheet_name="Salas", index=False)
-    
-            # Incluo todas as planilhas com as aulas dos departamentos no arquivo.
+            
             for sh in range(len(files)):
                 files[sh].to_excel(writer, sheet_name=sheets[sh], index=False)
-    
-        # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
-        messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
-
-    except PermissionError as e:
-        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
-            messagebox.showerror("Erro de Permissão", 
-                                    (
-                                        f"Não foi possível salvar o arquivo {nome_arquivo}. "
-                                        "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
-                                    )
-                                )
-            return
-        else:
-            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
-            return
-
-    except KeyError as e:
-        coluna_faltando = str(e).strip("'")
-        messagebox.showerror("Erro de Cabeçalho", 
-                                        (
-                                            f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
-                                            "Verifique o cabeçalho do arquivo de entrada."
-                                        )
-                                    )
-        return
-    
+        
+        print(f"\n✅ Arquivo {nome_arquivo} criado com sucesso!")
+        print(f"Local: {output_path}")
+        
+    except PermissionError:
+        print(f"❌ Não foi possível salvar o arquivo {nome_arquivo}")
+        print("Verifique se ele está aberto em outro programa e tente novamente.")
     except Exception as e:
-        # Para qualquer outro erro
-        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
-        return
+        print(f"❌ Ocorreu um erro inesperado:\n{e}")
+# def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
+#     # Crio uma variável para listar os arquivos que serão concatenados.
+#     files = []
+#     # Caso eu não esteja concatenando os arquivos para a base do JúpiterWeb:
+#     if not jupiter:
+#         # Leio a planilha com os dados das salas e salvo em um dataframe separado.
+#         df_salas = ler_df(salas)
+
+#         # Defino uma lista com os nomes dos arquivos a serem concatenados.
+#         name_files = [SME, SMA, SCC, SSC, outros]
+
+#         # Para cada nome de arquivo:
+#         for name in name_files:
+#             # Leio e salvo o arquivo em uma variável.
+#             df = ler_df(name)
+
+#             # Defino uma variável com o nome de um cabeçalho para ser encontrado, caso o cabeçalho não seja a primeira linha da planilha.
+#             header_name = 'Disciplina (código)'
+
+#             header_found = False
+#             # Para cada linha e célula da primeira coluna do dataframe:
+#             for i, valor in enumerate(df.loc[:,df.columns[0]]):
+#                 # Se o valor da célula for o nome do cabeçalho que estou procurando:
+#                 if valor == header_name:
+#                     # Salvo o número da linha do cabeçalho.
+#                     header_row = i+1
+
+#                     # Chamo a função que lerá o dataframe da forma correta e o deixará no formato padronizado.
+#                     df_padronizado = padroniza_dataframe(name, header_row, ano)
+
+#                     # Caso o dataframe não esteja vazio, isto é, se o arquivo foi lido corretamente e não tinha nenhum erro aparente:
+#                     if not df_padronizado.empty:
+#                         # Adiciono o dataframe na lista dos que serão concatenados.
+#                         files.append(df_padronizado)
+#                     # Caso tenha ocorrido um erro, retorno para a função anterior, onde o usuário verificará os arquivos selecionados.
+#                     else:
+#                         messagebox.showerror(f"Erro no arquivo",
+#                                                 (
+#                                                     f"O arquivo '{name}' não pode ser lido, está vazio, ou não foram marcadas as "
+#                                                     f"disciplinas a serem alocadas. Verifique-o."
+#                                                 )
+#                                              )
+#                         return
+
+#                     # Se o cabeçalho foi encontrado, não há motivo para continuar buscando, então encerro o loop dessa busca.
+#                     header_found = True
+#                     break
+
+#             if not header_found:
+#                 messagebox.showerror("Erro de Cabeçalho", 
+#                                         (
+#                                             f"A coluna '{header_name}' não foi encontrada no arquivo {os.path.basename(name)}. "
+#                                             "Verifique o cabeçalho do arquivo de entrada."
+#                                         )
+#                                     )
+#                 return
+#         # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
+#         sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
+
+#     # Para o caso de concatenando os arquivos para a base do Júpiter:
+#     else:
+#         # Defino uma lista com os nomes dos arquivos a serem concatenados.
+#         name_files = [SME, SMA, SCC, SSC]
+
+#         # Adiciono os nomes dos arquivos dos outros institutos a essa lista de nomes.
+#         name_files.extend(outros)
+
+#         sheets = []
+
+        
+#     # Para cada nome de arquivo de outros institutos:
+#         for name in name_files:
+#             # Leio e salvo o arquivo em uma variável.
+#             df = ler_df(name)
+
+#             try:
+#                 # Salvo a sigla das disciplinas daquele instituto. Eu considerei como sigla os 3 primeiros caracteres do nome de uma disciplina.
+#                 # Ex: SME0230 pertence ao departamento do SME, 7600005 pertence ao departamento 760, e assim por diante.
+#                 new_name = str(df.loc[0, 'Disciplina'])[:3]
+
+#             except KeyError as e:
+#                 coluna_faltando = str(e).strip("'")
+#                 messagebox.showerror("Erro de Cabeçalho", 
+#                                         (
+#                                             f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
+#                                             "Verifique o cabeçalho do arquivo de entrada."
+#                                         )
+#                                     )
+#                 return
+
+#             except Exception as e:
+#                 # Caso ocorra algum erro, alerto o usuário.
+#                 messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
+#                 return
+        
+#             # Com o arquivo lido, salvo a sigla do instituto na lista de siglas.
+#             sheets.append(new_name)
+
+#             # Salvo o dataframe em na lista dos arquivos que serão concatenados.
+#             files.append(df)
+
+
+#     # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
+#     if not nome_arquivo.endswith(".xlsx"):
+#         # Em caso negativo, adiciono essa terminologia.
+#         nome_arquivo = nome_arquivo + ".xlsx"
+
+
+#     # Com todos os dados obtidos e padronizados, verifico se o nome da base de dados termina com '.xlsx':
+#     if not nome_arquivo.endswith(".xlsx"):
+#         # Em caso negativo, adiciono essa terminologia.
+#         nome_arquivo = nome_arquivo + ".xlsx"
+
+#     try:
+#         # Para finalmente concatenar os arquivos lidos, defino o nome da base de dados com o nome disponível.
+#         with pd.ExcelWriter(os.path.join(saidas, nome_arquivo), engine="openpyxl") as writer:
+#             # Caso a base sendo definida não for a do Júpiter, preciso incluir a planilha de salas no arquivo.
+#             if not jupiter:
+#                 df_salas.to_excel(writer, sheet_name="Salas", index=False)
+    
+#             # Incluo todas as planilhas com as aulas dos departamentos no arquivo.
+#             for sh in range(len(files)):
+#                 files[sh].to_excel(writer, sheet_name=sheets[sh], index=False)
+    
+#         # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+#         messagebox.showinfo("Sucesso!", f"Arquivo {nome_arquivo} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+
+#     except PermissionError as e:
+#         if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+#             messagebox.showerror("Erro de Permissão", 
+#                                     (
+#                                         f"Não foi possível salvar o arquivo {nome_arquivo}. "
+#                                         "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+#                                     )
+#                                 )
+#             return
+#         else:
+#             messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+#             return
+
+#     except KeyError as e:
+#         coluna_faltando = str(e).strip("'")
+#         messagebox.showerror("Erro de Cabeçalho", 
+#                                         (
+#                                             f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
+#                                             "Verifique o cabeçalho do arquivo de entrada."
+#                                         )
+#                                     )
+#         return
+    
+#     except Exception as e:
+#         # Para qualquer outro erro
+#         messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+#         return
 
 """## Construir base de dados completa"""
 
@@ -2426,7 +2538,7 @@ def setup_drive():
 # Iniciar a interface
 
 """Exibe o menu principal e gerencia as opções"""
-saida = setup_drive()
+saidas = setup_drive()
 executando = True
 
 while executando:
