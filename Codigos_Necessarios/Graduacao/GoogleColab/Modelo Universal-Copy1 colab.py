@@ -744,7 +744,7 @@ print(f"Valor das salas ocupadas: {ocupacao}.")
 # a salvar os dados de maneiras específicas, fazer certas verificações, visualizações e relatórios com os dados obtidos.
 
 # Crio uma variável para conter o diretório da pasta que irá conter os arquivos gerados.
-pasta_dados = os.path.join(os.getcwd(), "Saídas da Interface", "Saídas do Modelo")
+pasta_dados = os.path.join(sys.argv[8], "Saídas da Interface", "Saídas do Modelo")
 
 # Crio listas para guardar os dados importantes das aulas, como o código da disciplina, o horário da aula, o número de inscritos, etc.
 codigos = []
