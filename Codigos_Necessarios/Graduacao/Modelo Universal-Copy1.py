@@ -552,7 +552,7 @@ for a in range(lenA):
     # Para cada sala 'al'.
     for al in range(lenA):
         # Verifico se as aulas 'a' e 'al' possuem conflito de horário.
-        if theta_aal[a, al] == 1:
+        if theta_aal[a, al] == 1 and a != al:
             # Se elas possuem conflito de horário, então garanto que as duas não possam ser alocadas para a mesma sala.
             for s in range(lenS):
                 model += x_as[a,s] + x_as[al,s] <= 1
