@@ -116,13 +116,22 @@ def padroniza_dataframe(file_name, header_row, ano):
                                    )
                                 )
                 return None
-            print(len(str(df.loc[d, header]).split("-")))
+            # print(len(str(df.loc[d, header]).split("-")))
             if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
                 messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
                                    (
                                        f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
                                        f"Padrão correto: 'Segunda - 08:10/09:50'\n"
                                        f"Provavelmente, há mais de um '-' na célula."
+                                   )
+                                )
+                return None
+            if "\n" in str(df.loc[d, header]):
+                messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
+                                   (
+                                       f"Verifique a linha {d+header_row+2} da coluna {header} do arquivo {file_name}.\n"
+                                       f"Padrão correto: 'Segunda - 08:10/09:50'\n"
+                                       f"Provavelmente, há uma quebra de linha na célula."
                                    )
                                 )
                 return None
