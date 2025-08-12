@@ -421,6 +421,11 @@ for a in range(lenA):
             s = salas[salas['Sala'] == cell].index[0]
             eta_as[a,s] = 0
         
+
+seguidas = [1 for _ in range(lenT)]
+for t in A_s:
+    # print(df.loc[int(t[0] % lenT), 'Disciplina (código)'])
+    seguidas[int(t[0] % lenT)] = 2
 # Preciso usar o dataframe df_livres para verificar os horários livres de cada sala
 # No df_livres, cada linha tem uma sala, e essa sala tem um index no eta_as.
 # Além disso, na mesma linha, há um dia da semana e um horário vago.
@@ -506,7 +511,7 @@ peso_y = 500
 # Caso esta variável esteja sendo usada, a interpretação de y_t é alterada para ser o número de salas usadas pela turma/disciplina 't'.
 c_st = {(s, t): model.add_var(var_type=BINARY) for s in range(lenS) for t in range(lenT)}
 
-obj = peso_x * xsum(uso_as[a,s] * x_as[a,s] for a in range(lenA) for s in range(lenS)) + peso_y*xsum(y_t[t] for t in range(lenT))
+obj = peso_x * xsum(uso_as[a,s] * x_as[a,s] for a in range(lenA) for s in range(lenS)) + peso_y*xsum(seguidas[t] * y_t[t] for t in range(lenT))
 
 # if sys.argv[4]:
 #     # w_cs é uma variável binária que ganha o valor 1 se o curso 'c' tem ao menos uma aula na sala 's', e ganha 0 caso contrário.
@@ -641,13 +646,13 @@ for a in range(lenA):
     # Para cada sala 'al'.
     for al in range(lenA):
         # Verifico se as aulas 'a' e 'al' possuem conflito de horário.
-        if theta_aal[a, al] == 1 and int(a % lenT) != int(al % lenT):
+        if theta_aal[a, al] == 1 and a != al:
             # print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']} e aula {df.loc[int(al % lenT), 'Disciplina (código)']} possuem conflito de horário.")
             # Se elas possuem conflito de horário, então garanto que as duas não possam ser alocadas para a mesma sala.
             for s in range(lenS):
-                constr = x_as[a,s] + x_as[al,s] <= 1
+                model += x_as[a,s] + x_as[al,s] <= 1
                 
-                model += constr
+                
                 # model += x_as[a,s] + x_as[al,s] <= 1
                 # model.optimize()
                 # if model.status == OptimizationStatus.INFEASIBLE:
@@ -720,9 +725,9 @@ for t in range(lenT):
 
 # Para cada turma/disciplina com horários seguidos um do outro, garanto que ambas sejam alocadas na mesma sala.
 # Novamente, assumo que não tem aulas seguidas em mais de 2 horários.
-for t in A_s:
-    for s in range(lenS):
-        model += x_as[t[0],s] == x_as[t[1],s]
+# for t in A_s:
+#     for s in range(lenS):
+#         model += x_as[t[0],s] == x_as[t[1],s]
 
 
 # Restrição de superlotação de uma sala.
@@ -779,7 +784,9 @@ if False:
 model.opt_tol = 0.1
 # Desabilito as saídas de execução do modelo.
 # set_solver_log(False)
-model.verbose = 1
+model.verbose = 0
+model.tol = 1e-6
+model.integer_tol = 1e-6
 # Começo a cronometrar o tempo gasto na execução do modelo.
 start = time.time()
 # O modelo começa a fazer a alocação, com tempo limite de 7200 segundos (2 horas) de tempo limite.
