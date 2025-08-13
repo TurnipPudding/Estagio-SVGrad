@@ -2909,7 +2909,7 @@ def gerar_relatorios():
     ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=2, sticky="w", pady=5)
     ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=3, sticky="w", pady=5)
     ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=4, sticky="w", pady=5)
-    ttk.Button(frame, text="Sair", command=nova_janela.destroy).grid(column=0, row=5, sticky="w", pady=5)
+    # ttk.Button(frame, text="Sair", command=nova_janela.destroy).grid(column=0, row=5, sticky="w", pady=5)
 
 """# Interface"""
 
