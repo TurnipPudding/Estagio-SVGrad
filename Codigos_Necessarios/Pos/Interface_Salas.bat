@@ -1,4 +1,3 @@
-
 @ECHO OFF
 cd %~dp0
 set venv_path=%~dp0\..\.venv

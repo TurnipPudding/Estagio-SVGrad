@@ -1,3 +1,4 @@
+@ECHO OFF
 NET SESSION >nul 2>&1
 
 IF %ERRORLEVEL% EQU 0 (
@@ -12,3 +13,4 @@ IF %ERRORLEVEL% EQU 0 (
 :ADMIN_CODE
 REM Put your administrator-level commands here
 winget install -e --id Python.Python.3.13 --scope machine
+exit
