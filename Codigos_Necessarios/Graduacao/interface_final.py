@@ -24,6 +24,7 @@ from openpyxl import load_workbook
 from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 from datetime import datetime, timedelta # Funções para a leitura de horários de aula
 import sys
+import re # Biblioteca Regex para trabalhar com expressões regulares.
 
 """# Teste de Interface mais Clara
 
@@ -2306,6 +2307,216 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
         - {os.path.basename(file_path_sol)}\n\
         - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
 
+def visualizacao_completa(file_path):
+    
+    return
+def visualizacao_curso(file_path):
+    return
+def visualizacao_dep(file_path):
+    return
+def planilhas_sti(file_path):
+    file_list = []
+
+    # Utilizando a planilha que acabou de ser criada, criaremos uma segunda planilha para ser enviada para o sistema da intranet, automaticamente
+    # computando as decisões feitas à respeito da alocação.
+
+    # Leio o arquivo
+    # file_path = "dados_solucao - m1.2.xlsx"
+    sti = pd.read_excel(file_path)
+
+    # Defino uma função para extrair o horário das aulas na planilha.
+    def extrair_horarios(horario):
+        # Remove espaços extras e deixa minúsculo para uniformizar.
+        horario = horario.strip().lower()
+
+        # Expressão regular para identificar o padrão: dia da semana e dois horários.
+        pattern = r"(\bseg(?:unda)?\b|\bter(?:ça)?\b|\bqua(?:rta)?\b|\bqui(?:nta)?\b|\bsex(?:ta)?\b|\bs[áa]b(?:ado)?\b|\bdom(?:ingo)?\b)\s*-?\s*(\d{2}:\d{2})\s*[/-]?\s*(\d{2}:\d{2})"
+
+        # Tenta encontrar correspondências com a expressão regular.
+        match = re.search(pattern, horario)
+
+        if match:
+            dia = match.group(1).capitalize()  # Dia da semana.
+            horario_inicio = match.group(2)    # Horário de início.
+            horario_fim = match.group(3)       # Horário de fim.
+            # Retorna os valores como formato padrão.
+            return f"{dia} - {horario_inicio}", f"{dia} - {horario_fim}"
+        else:
+            return None, None
+
+    # Aplica a função à coluna 'Horário' e cria novas colunas 'Hora de Início' e 'Hora de Fim'.
+    sti['Hora de Início'], sti['Hora de Fim'] = zip(*sti['Horário'].apply(extrair_horarios))
+
+    # Anoto as salas correspondentes com as aulas.
+    Sala = []
+    # Para cada célula da coluna 'Sala' da planilha
+    for i in sti['Sala']:
+        # Se ela for uma sala comum, adiciono-a na lista de sala
+        if i != '6-305/6-306' and i != '6-303/6-304':
+            Sala.append(i)
+        # Se ela for a sala conjunta '6-305/6-306', salvo ela apenas como '6-305', seguindo o padrão da planilha do STI.
+        elif i == '6-305/6-306':
+            Sala.append('6-305')
+        # Se ela for a sala conjunta '6-303/6-304', salvo ela apenas como '6-303', seguindo o padrão da planilha do STI.
+        else:
+            Sala.append('6-303')
+    # print(Sala)
+
+    # Novamente, crio um dicionário com os dados obtidos e organizados.
+    # Note que o tipo de 'Aula', apresentado na coluna de mesmo nome, sempre é "Aula" por ser o único tipo que estamos alocando.
+    # Note também que, para discernir entre qual sala de laboratório estará sendo usada (entre a sala única e a conjunta),
+    # utilizamos os valores das células da coluna 'Sala' da planilha original.
+    dados_organizados = {
+        'Sala': Sala,
+        'Disciplina': sti['Disciplina'],
+        'Descrição': sti['Nomes'],
+        'Aula': ["Aula" for i in range(len(sti['Sala']))],
+        'Dia e hora início': sti['Hora de Início'],
+        'Dia e hora fim': sti['Hora de Fim'],
+        'Docente': sti['NUSP'],
+        'Compartilhada com outra sala?': ["S" if (sti['Sala'][i] == '6-305/6-306' or sti['Sala'][i] == '6-303/6-304') \
+                                        else "N" for i in range(len(sti['Sala']))]
+    }
+
+    # Converto o dicionário para um dataframe.
+    sti_planilha = pd.DataFrame(dados_organizados)
+
+    # Caminho do novo arquivo Excel a ser criado.
+    # file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
+    full_name = "Planilha da Intranet Completa.csv"
+    pasta_dados = saidas
+    file_path = os.path.join(pasta_dados, full_name)
+
+
+    # Crio um novo arquivo Excel e escrevo os dados.
+    # with pd.ExcelWriter(file_path1, engine='openpyxl') as writer:
+    #     sti_planilha.to_csv(writer, sheet_name='Resultados', index=False, sep=';', encoding='latin-1')
+    try:
+        sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+        file_list.append(full_name)
+    except PermissionError as e:
+        if e.errno == 13:
+            # Se o erro for de permissão, provavelmente o arquivo está aberto em outro programa.
+            # Aviso o usuário e encerro o programa.
+            messagebox.showerror("Erro de Permissão", 
+                                    (
+                                        f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                                        "Feche o arquivo e tente novamente."
+                                        f"\n\nDetalhes do erro: {e}"
+                                    )
+                                )
+            return
+        else:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        return
+
+
+
+    for sala in sti_planilha['Sala'].unique():
+        sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
+        # print(len(df_aux))
+        full_name = f"Planilha da Intranet - {sala}.csv"
+
+        file_path = os.path.join(pasta_dados, full_name)
+
+        try:        
+            sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+            file_list.append(full_name)
+        except PermissionError as e:
+            if e.errno == 13:
+                # Se o erro for de permissão, provavelmente o arquivo está aberto em outro programa.
+                # Aviso o usuário e encerro o programa.
+                messagebox.showerror("Erro de Permissão", 
+                                        (
+                                            f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                                            "Feche o arquivo e tente novamente."
+                                            f"\n\nDetalhes do erro: {e}"
+                                        )
+                                    )
+                return
+            else:
+                messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+                return
+        except Exception as e:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+
+    # Com a criação dos arquivos, aviso o usuário que os arquivos foram criados com sucesso.
+    messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados na pasta {saidas}:\n\n" + "\n".join(file_list))
+    return
+
+def menu_relatorios(func):
+    menu = tk.Toplevel(root)
+    menu.title("Visualização Completa da Solução")
+    menu.geometry("+250+150")
+
+    frame2 = tk.Frame(menu)
+    frame2.pack(pady=10, padx=10)
+
+    # Crio uma variável para salvar o arquivo com a base de dados para o modelo, seja ela a completa ou a de pior caso.
+    arquivo_selecionado = tk.StringVar(value="Selecione o arquivo com os Dados da solução do Modelo")
+    
+    # Defino a função para selecionar o arquivo.
+    def selecionar_arquivo():
+        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        arquivo = filedialog.askopenfilename(title="Selecione o arquivo com os Dados da solução do Modelo")
+
+        # Se um arquivo foi selecionado:
+        if arquivo:
+            # Salvo o caminho do arquivo.
+            arquivo_selecionado.set(arquivo)
+
+    # Crio uma legenda para ficar ao lado do botão.
+    lbl_arquivo = tk.Label(frame2, text="Selecione o arquivo com os Dados da solução do Modelo")
+    # Defino a posição do texto na janela.
+    lbl_arquivo.grid(row=0, column=0, pady=5, sticky='w')
+    # Crio o botão para salvar o arquivo do SME.
+    btn_selecionar_arquivo = tk.Button(frame2, textvariable=arquivo_selecionado, command=selecionar_arquivo, wraplength=250, width=40)
+    # Defino a posição do botão na janela.
+    btn_selecionar_arquivo.grid(row=0, column=1, padx=5, pady=5)
+
+    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+    def salvar_valores(func):
+        # Se um arquivo não foi selecionado, uma janela avisando o ocorrido aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
+        if not arquivo_selecionado.get() or arquivo_selecionado.get() == "Selecione o arquivo com os Dados da solução do Modelo":
+            messagebox.showwarning("Aviso", "Por favor, selecione o arquivo com os Dados da solução do Modelo.")
+            return
+
+        # Se todos os arquivos tiverem sido selecionados corretamente, chamo a função que irá gerar a visualização completa.
+        if func == "visualizacao_completa":
+            visualizacao_completa(arquivo_selecionado.get())
+        elif func == "visualizacao_curso":
+            visualizacao_curso(arquivo_selecionado.get())
+        elif func == "visualizacao_dep":
+            visualizacao_dep(arquivo_selecionado.get())
+        elif func == "planilhas_sti":
+            planilhas_sti(arquivo_selecionado.get())
+
+        # E fecho a janela que havia sido criada.
+        menu.destroy()
+    # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
+    ttk.Button(frame2, text="Gerar Visualização", command=lambda: salvar_valores(func)).grid(row=1, column=0, columnspan=2, pady=10)
+# Função que define o menu para geração de relatórios
+def gerar_relatorios():
+    # Crio uma nova janela em cima da janela principal da interface.
+    nova_janela = tk.Toplevel(root)
+    nova_janela.geometry("+200+200")
+    nova_janela.title("Menu para Geração de Relatórios")
+
+    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    frame = tk.Frame(nova_janela)
+    frame.pack(pady=10, padx=10)
+
+    ttk.Button(frame, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0, row=0, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização Completa da Solução", command=lambda: menu_relatorios(func="visualizacao_completa")).grid(column=0, row=1, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=2, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=3, sticky="w", pady=5)
+    ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=4, sticky="w", pady=5)
+    ttk.Button(frame, text="Sair", command=nova_janela.destroy).grid(column=0, row=5, sticky="w", pady=5)
+
 """# Interface"""
 
 # Nome da pasta que você quer verificar/criar
@@ -2351,8 +2562,10 @@ ttk.Button(frm, text="Construir Planilha com os dados do JúpiterWeb", command=l
 ttk.Button(frm, text="Construir Base de Dados do Modelo", command=lambda: base_dados(pior_caso=False)).grid(column=0,row=2,sticky="w", pady=5)
 ttk.Button(frm, text="Construir Base de Dados de Pior Caso", command=lambda: base_dados(pior_caso=True)).grid(column=0,row=3,sticky="w", pady=5)
 ttk.Button(frm, text="Verificar Dados e Executar Modelo", command=execute).grid(column=0,row=4,sticky="w", pady=5)
-ttk.Button(frm, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0,row=5,sticky="w",pady=5)
+# ttk.Button(frm, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0,row=5,sticky="w",pady=5)
+ttk.Button(frm, text="Gerar Relatórios", command=gerar_relatorios).grid(column=0,row=5,sticky="w",pady=5)
 ttk.Button(frm, text="Preencher planilhas com Dados da Solução", command=preencher_planilha_dados).grid(column=0, row=6, sticky="w", pady=5)
+# Botões de Visualização, planilhas Intranet, e demais visualizações
 ttk.Button(frm, text="Sair", command=root.destroy).grid(column=0, row=7, sticky="w", pady=5)
 # ttk.Button(frm, text="Teste", command=lambda: Novo_edit_config(file_name='C:/Users/gabri/Estágio/Códigos/Endgame/Newest completa (1).xlsx')).grid(column=0, row=8, sticky="w", pady=5)
 
