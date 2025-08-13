@@ -1,24 +1,15 @@
-NET SESSION >nul 2>&1
+rem @ECHO OFF
+cd %~dp0
+set venv_path=%~dp0\.venv
 
-IF %ERRORLEVEL% EQU 0 (
-    echo Administrator privileges detected.
-    goto :ADMIN_CODE
-) ELSE (
-    echo Attempting to elevate privileges...
-    powershell -Command "Start-Process -FilePath '%~dpnx0' -Verb RunAs"
-    exit /b
+rem START /WAIT "" python_install.bat
 
-    goto :CRIA_VENV
-)
+python -m venv %venv_path%
 
-:ADMIN_CODE
-REM Put your administrator-level commands here
-winget install -e --id Python.Python.3.13 --scope machine
+call %venv_path%\Scripts\activate
 
-
-:CRIA_VENV
-cd '%~dp0'
-python -m venv .venv
-call .\.venv\activate
 pip install -r requirements.txt -U
-.\.venv\deactivate
+
+call %venv_path%\Scripts\deactivate
+
+pause
