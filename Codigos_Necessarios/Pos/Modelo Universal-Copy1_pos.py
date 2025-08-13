@@ -431,26 +431,28 @@ for t in A_s:
 # Além disso, na mesma linha, há um dia da semana e um horário vago.
 # Então, para cada linha do df_livres, eu preciso verificar se o horário daquela sala está livre
 
-# for idx, row in df_livres.iterrows():
-#     sala = row['Sala']
-#     dia = row['Dia da semana']
-#     inicio_str, fim_str = str(row['Horário vago']).split(' - ')
-#     inicio = horario_para_decimal(inicio_str.strip())
-#     fim = horario_para_decimal(fim_str.strip())
+df_livres = pd.read_excel(sys.argv[8])
+# pd.read_excel('C:/Users/gabri/Estágio/Códigos/Demonstração/Saídas da Interface/Planilhas de Dados/plan1.xlsx')
+for idx, row in df_livres.iterrows():
+    sala = row['Sala']
+    dia = row['Dia da semana']
+    inicio_str, fim_str = str(row['Horário vago']).split(' - ')
+    inicio = horario_para_decimal(inicio_str.strip())
+    fim = horario_para_decimal(fim_str.strip())
     
-#     # Verifico se a sala está livre para cada aula
-#     for a in range(lenA):
-#         # Se o dia da aula for o mesmo que o dia do horário livre
-#         # e o horário da aula não estiver completamente dentro do horário livre,
-#         if dia_a[a] == dia and not (start_a[a] >= inicio and end_a[a] <= fim):
-#             # Verifico se a aula caberia na sala
-#             s = salas[salas['Sala'] == sala].index[0]
-#             if eta_as[(a, s)] == 1:
-#                 # Se a aula caberia na sala, marco como 0 (não cabe),
-#                 # pois o horário não está livre para aquela aula
-#                 eta_as[(a, s)] = 0
-#                 print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
-#                 print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
+    # Verifico se a sala está livre para cada aula
+    for a in range(lenA):
+        # Se o dia da aula for o mesmo que o dia do horário livre
+        # e o horário da aula não estiver completamente dentro do horário livre,
+        if dia_a[a] == dia and not (start_a[a] >= inicio and end_a[a] <= fim):
+            # Verifico se a aula caberia na sala
+            s = salas[salas['Sala'] == sala].index[0]
+            if eta_as[(a, s)] == 1:
+                # Se a aula caberia na sala, marco como 0 (não cabe),
+                # pois o horário não está livre para aquela aula
+                eta_as[(a, s)] = 0
+                print(f"Aula {df.loc[int(a % lenT), 'Disciplina (código)']}, Sala {salas.loc[s, 'Sala']}: {eta_as[(a, s)]}")
+                print(f"Horário {dia} - {inicio} a {fim} não está livre para a aula de ínicio {start_a[a]} e fim {end_a[a]}.")
 
 
 # for s in range(lenS):
@@ -528,8 +530,8 @@ obj = peso_x * xsum(uso_as[a,s] * x_as[a,s] for a in range(lenA) for s in range(
 
 #     obj += peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl)
 
-# if sys.argv[5] and sys.argv[6]:
-if True:
+if sys.argv[5] and sys.argv[6]:
+# if True:
     # Variável de superlotação.
     # z_as é uma variável binária que ganha o valor 1 se a aula 'a', ao ser alocada à sala 's', ultrapassa uma certa quantia do espaço.
     # Ex: Se o fator de superlotação for 0.85, então a variável ganhará o valor 1 se a aula 'a' ocupar mais de 85% do espaço disponível da sala 's'.
@@ -544,8 +546,8 @@ if True:
 
     obj += peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS))
 
-# if sys.argv[7]:
-if True:
+if sys.argv[7]:
+# if True:
     # peso_pref = int(sys.argv[7])
     peso_pref = 500
 
