@@ -1,8 +1,8 @@
 rem @ECHO OFF
 cd %~dp0
-set venv_path=%~dp0\.venv
+set venv_path=%~dp0\..\.venv
 
-rem START /WAIT "" python_install.bat
+START /WAIT "" python_install.bat
 
 python -m venv %venv_path%
 
