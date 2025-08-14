@@ -1813,55 +1813,58 @@ def preencher_planilha_dados():
     frame = tk.Frame(nova_janela)
     frame.pack(pady=10, padx=10)
 
-    # Defino um frame adicional na janela.
-    frame2 = tk.Frame(nova_janela)
-    frame2.pack(pady=10, padx=10)
+    if preencher_completo:
+        # Defino um frame adicional na janela.
+        frame2 = tk.Frame(nova_janela)
+        frame2.pack(pady=10, padx=10)
+
+    
+        # Defino algumas funções especiais para utilizar nesse novo frame.
+
+        # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
+        def add_file():
+            file_path = filedialog.askopenfilename(title="Selecione um arquivo")
+            # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
+            if file_path:
+                lista_outros.append(file_path)
+                # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
+                update_listbox()
+
+        # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
+        def remove_selected():
+            # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
+            try:
+                # Salvo o índice do arquivo selecionado pelo usuário.
+                selected_index = file_listbox.curselection()[0]
+                # Removo o arquivo de mesmo índice da lista.
+                lista_outros.pop(selected_index)
+                # E atualizo a lista visualizada no frame.
+                update_listbox()
+            # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
+            except IndexError:
+                pass
+
+        # Defino uma função que atualiza a visualização da lista no frame.
+        def update_listbox():
+            # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
+            file_listbox.delete(0, tk.END)
+            # Depois disso, adiciono os arquivos da lista no visor.
+            for file in lista_outros:
+                file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+
+        # Defino um botão para adicionar arquivos, e sua posição na janela.
+        add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
+        add_file_button.grid(row=0, column=0, pady=5, sticky="w")
+
+        # Defino uma lista para aparecer no visor do frame.
+        file_listbox = tk.Listbox(frame2, width=100, height=10)
+        file_listbox.grid(row=1, column=0, pady=5)
+
+        # Defino um botão para remover arquivos, e sua posição na janela.
+        remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
+        remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
 
     lista_outros = []  # Lista para armazenar os arquivos adicionais selecionados pelo usuário.
-    # Defino algumas funções especiais para utilizar nesse novo frame.
-
-    # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
-    def add_file():
-        file_path = filedialog.askopenfilename(title="Selecione um arquivo")
-        # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
-        if file_path:
-            lista_outros.append(file_path)
-            # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
-            update_listbox()
-
-    # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
-    def remove_selected():
-        # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
-        try:
-            # Salvo o índice do arquivo selecionado pelo usuário.
-            selected_index = file_listbox.curselection()[0]
-            # Removo o arquivo de mesmo índice da lista.
-            lista_outros.pop(selected_index)
-            # E atualizo a lista visualizada no frame.
-            update_listbox()
-        # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
-        except IndexError:
-            pass
-
-    # Defino uma função que atualiza a visualização da lista no frame.
-    def update_listbox():
-        # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
-        file_listbox.delete(0, tk.END)
-        # Depois disso, adiciono os arquivos da lista no visor.
-        for file in lista_outros:
-            file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
-
-    # Defino um botão para adicionar arquivos, e sua posição na janela.
-    add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
-    add_file_button.grid(row=0, column=0, pady=5, sticky="w")
-
-    # Defino uma lista para aparecer no visor do frame.
-    file_listbox = tk.Listbox(frame2, width=100, height=10)
-    file_listbox.grid(row=1, column=0, pady=5)
-
-    # Defino um botão para remover arquivos, e sua posição na janela.
-    remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
-    remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
 
     # Com o novo frame feito, defino uma checkbox e um botão para armazenar o nome do arquivo
     # da Base de Dados, que só será alterável pelo usuário se a checkbox estiver marcada.
@@ -1905,14 +1908,24 @@ def preencher_planilha_dados():
     # Defino a posição do botão na janela.
     btn_selecionar_sol.grid(row=0, column=1, sticky='w', padx=5, pady=5)
 
-    # Crio uma checkbox para o usuário escolher se deseja preencher a Base de Dados.
-    checkbox11 = Checkbutton(frame, text="Preencherá a Base de Dados?", variable=var_base, command=atualizar_estado)
-    checkbox11.grid(row=1, column=0, sticky='w', pady=5)
+    if preencher_completo:
+        # Crio uma checkbox para o usuário escolher se deseja preencher a Base de Dados.
+        checkbox11 = Checkbutton(frame, text="Preencherá a Base de Dados?", variable=var_base, command=atualizar_estado)
+        checkbox11.grid(row=1, column=0, sticky='w', pady=5)
+
+        # Crio o botão para salvar o arquivo da Base de Dados.
+        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40, state=DISABLED)
+        # Defino a posição do botão na janela.
+        btn_selecionar_base.grid(row=1, column=1, sticky='w', padx=5, pady=5)
+    else:
+        lbl_base = tk.Label(frame, text="Selecione a Base de Dados do Modelo")
+        # Defino a posição do texto na janela.
+        lbl_base.grid(row=1, column=0, pady=5, sticky="w")
     
-    # Crio o botão para salvar o arquivo da Base de Dados.
-    btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40, state=DISABLED)
-    # Defino a posição do botão na janela.
-    btn_selecionar_base.grid(row=1, column=1, sticky='w', padx=5, pady=5)
+        # Crio o botão para salvar o arquivo da Base de Dados.
+        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40)
+        # Defino a posição do botão na janela.
+        btn_selecionar_base.grid(row=1, column=1, sticky='w', padx=5, pady=5)
 
 
     def salvar_valores():
@@ -1933,21 +1946,33 @@ def preencher_planilha_dados():
                 else:
                     if preencher_completo:
                         # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
-                        print("chamado 1")
-                        print(f"lista outros: {lista_outros}")
-                        print(f"arquivo_sol: {arquivo_sol.get()}")
-                        print(f"arquivo_base: {arquivo_base.get()}")
+                        # print("chamado 1")
+                        # print(f"lista outros: {lista_outros}")
+                        # print(f"arquivo_sol: {arquivo_sol.get()}")
+                        # print(f"arquivo_base: {arquivo_base.get()}")
                         preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get(), False)
                     else:
-                        print("chamado 2")
-                        print(f"lista outros: {lista_outros}")
-                        print(f"arquivo_sol: {arquivo_sol.get()}")
-                        print(f"arquivo_base: {arquivo_base.get()}")
+                        # print("chamado 2")
+                        # print(f"lista outros: {lista_outros}")
+                        # print(f"arquivo_sol: {arquivo_sol.get()}")
+                        # print(f"arquivo_base: {arquivo_base.get()}")
                         escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
-            # Se não estiver marcada, o usuário precisa adicionar pelo menos um arquivo para o preenchimento.
+            # Se não estiver marcada, existem duas opções:
             else:
-                messagebox.showwarning("Aviso", "Selecione uma Base de Dados, ou adicione arquivos para o preenchimento.")
-                return
+                # Se for o caso de preencher os dados completos, o usuário não precisa selecionar uma Base de Dados,
+                if preencher_completo:
+                    messagebox.showwarning("Aviso", "Selecione uma Base de Dados, ou adicione arquivos para o preenchimento.")
+                    return
+                # Se não for o caso de preencher os dados completos, o usuário precisa selecionar uma Base de Dados para ser preenchida.
+                else:
+
+                    if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
+                    # Se nenhum arquivo foi selecionado, uma janela de aviso aparece, e o usuário é instruído a selecionar um arquivo.
+                        messagebox.showwarning("Aviso", "Selecione uma Base de Dados.")
+                        return
+                    else:
+                        
+                        escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
         # Se houver pelo menos um arquivo para o preenchimento.
         else:
             # Verifico se a checkbox da Base de Dados está marcada:
@@ -1962,25 +1987,47 @@ def preencher_planilha_dados():
             else:
                 resposta = messagebox.askyesno("Aviso", "Você não selecionou uma Base de Dados. Deseja continuar preenchendo os arquivos selecionados?")
                 if not resposta:
+                    messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
                     return
 
-            if preencher_completo:
-                # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
-                print("chamado 3")
-                print(f"lista outros: {lista_outros}")
-                print(f"arquivo_sol: {arquivo_sol.get()}")
-                print(f"arquivo_base: {arquivo_base.get()}")
-                preenchimento(lista_outros, arquivo_sol.get(), "", False)
-            else:
-                print("chamado 4")
-                print(f"lista outros: {lista_outros}")
-                print(f"arquivo_sol: {arquivo_sol.get()}")
-                print(f"arquivo_base: {arquivo_base.get()}")
-                escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
+                if preencher_completo:
+                    # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
+                    # print("chamado 3")
+                    # print(f"lista outros: {lista_outros}")
+                    # print(f"arquivo_sol: {arquivo_sol.get()}")
+                    # print(f"arquivo_base: {arquivo_base.get()}")
+                    preenchimento(lista_outros, arquivo_sol.get(), "", False)
+                    return
+                else:
+                    # print("chamado 4")
+                    # print(f"lista outros: {lista_outros}")
+                    # print(f"arquivo_sol: {arquivo_sol.get()}")
+                    # print(f"arquivo_base: {arquivo_base.get()}")
+                    escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
+                    return
             
-        
-    btn_salvar = ttk.Button(frame2, text="Preencher Planilhas com os Dados da Solução", command=salvar_valores)
-    btn_salvar.grid(row=2, column=0, pady=10)
+            if preencher_completo:
+                    # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
+                    # print("chamado 3")
+                    # print(f"lista outros: {lista_outros}")
+                    # print(f"arquivo_sol: {arquivo_sol.get()}")
+                    # print(f"arquivo_base: {arquivo_base.get()}")
+                    preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get(), False)
+                    return
+            else:
+                # print("chamado 4")
+                # print(f"lista outros: {lista_outros}")
+                # print(f"arquivo_sol: {arquivo_sol.get()}")
+                # print(f"arquivo_base: {arquivo_base.get()}")
+                escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
+                return
+            
+    if preencher_completo:
+        btn_salvar = ttk.Button(frame2, text="Preencher Planilhas com os Dados da Solução", command=salvar_valores)
+        btn_salvar.grid(row=2, column=0, pady=10)
+    else:
+        btn_salvar = ttk.Button(frame, text="Preencher Planilhas com os Dados da Solução", command=salvar_valores)
+        btn_salvar.grid(row=2, column=0, pady=10)
     # else:
 
     #     # Crio uma nova janela em cima da janela principal da interface.
@@ -2352,7 +2399,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
                 # ao utilizado no modelo.
                 if not pd.isna(elenco.loc[d, 'Turma']):
                     disciplina = str(elenco.loc[d, 'Disciplina (código)']) + '-' + str(int(elenco.loc[d, 'Turma']))
-                    
+
                     # Verifico se a disciplina em questão foi incluída na solução:
                     if disciplina in solucao['Disciplina'].tolist():
 
@@ -2484,9 +2531,13 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
             # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
             text_message += f"- {os.path.basename(file_path_elenco.replace('.xlsx', ' Preenchido.xlsx'))}\n"
 
-    if file_path_base:
+        if file_path_base:
+            text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
+        messagebox.showinfo("Sucesso!", text_message)
+    else:
+        text_message = "O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n"
         text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
-    messagebox.showinfo("Sucesso!", text_message)
+        messagebox.showinfo("Sucesso!", text_message)
     #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
     #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
     #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
