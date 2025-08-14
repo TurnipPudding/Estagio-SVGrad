@@ -1804,298 +1804,367 @@ def preencher_planilha_dados():
         "Caso não, você poderá escolher quais alocações serão mantidas."
     )
 
-    if preencher_completo:
-        # Crio uma nova janela em cima da janela principal da interface.
-        nova_janela = tk.Toplevel(root)
-        nova_janela.title("Selecionar Arquivo e Inserir Valor")
+    # if preencher_completo:
+    # Crio uma nova janela em cima da janela principal da interface.
+    nova_janela = tk.Toplevel(root)
+    nova_janela.title("Selecionar Arquivo e Inserir Valor")
 
-        # Crio o frame para armazenar os botões e outros campos da nova janela.
-        frame = tk.Frame(nova_janela)
-        frame.pack(pady=10, padx=10)
+    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    frame = tk.Frame(nova_janela)
+    frame.pack(pady=10, padx=10)
 
-        # Defino um frame adicional na janela.
-        frame2 = tk.Frame(nova_janela)
-        frame2.pack(pady=10, padx=10)
+    # Defino um frame adicional na janela.
+    frame2 = tk.Frame(nova_janela)
+    frame2.pack(pady=10, padx=10)
 
-        lista_outros = []  # Lista para armazenar os arquivos adicionais selecionados pelo usuário.
-        # Defino algumas funções especiais para utilizar nesse novo frame.
+    lista_outros = []  # Lista para armazenar os arquivos adicionais selecionados pelo usuário.
+    # Defino algumas funções especiais para utilizar nesse novo frame.
 
-        # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
-        def add_file():
-            file_path = filedialog.askopenfilename(title="Selecione um arquivo")
-            # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
-            if file_path:
-                lista_outros.append(file_path)
-                # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
-                update_listbox()
+    # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
+    def add_file():
+        file_path = filedialog.askopenfilename(title="Selecione um arquivo")
+        # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
+        if file_path:
+            lista_outros.append(file_path)
+            # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
+            update_listbox()
 
-        # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
-        def remove_selected():
-            # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
-            try:
-                # Salvo o índice do arquivo selecionado pelo usuário.
-                selected_index = file_listbox.curselection()[0]
-                # Removo o arquivo de mesmo índice da lista.
-                lista_outros.pop(selected_index)
-                # E atualizo a lista visualizada no frame.
-                update_listbox()
-            # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
-            except IndexError:
-                pass
+    # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
+    def remove_selected():
+        # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
+        try:
+            # Salvo o índice do arquivo selecionado pelo usuário.
+            selected_index = file_listbox.curselection()[0]
+            # Removo o arquivo de mesmo índice da lista.
+            lista_outros.pop(selected_index)
+            # E atualizo a lista visualizada no frame.
+            update_listbox()
+        # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
+        except IndexError:
+            pass
 
-        # Defino uma função que atualiza a visualização da lista no frame.
-        def update_listbox():
-            # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
-            file_listbox.delete(0, tk.END)
-            # Depois disso, adiciono os arquivos da lista no visor.
-            for file in lista_outros:
-                file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+    # Defino uma função que atualiza a visualização da lista no frame.
+    def update_listbox():
+        # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
+        file_listbox.delete(0, tk.END)
+        # Depois disso, adiciono os arquivos da lista no visor.
+        for file in lista_outros:
+            file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
 
-        # Defino um botão para adicionar arquivos, e sua posição na janela.
-        add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
-        add_file_button.grid(row=0, column=0, pady=5, sticky="w")
+    # Defino um botão para adicionar arquivos, e sua posição na janela.
+    add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
+    add_file_button.grid(row=0, column=0, pady=5, sticky="w")
 
-        # Defino uma lista para aparecer no visor do frame.
-        file_listbox = tk.Listbox(frame2, width=100, height=10)
-        file_listbox.grid(row=1, column=0, pady=5)
+    # Defino uma lista para aparecer no visor do frame.
+    file_listbox = tk.Listbox(frame2, width=100, height=10)
+    file_listbox.grid(row=1, column=0, pady=5)
 
-        # Defino um botão para remover arquivos, e sua posição na janela.
-        remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
-        remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
+    # Defino um botão para remover arquivos, e sua posição na janela.
+    remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
+    remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
 
-        # Com o novo frame feito, defino uma checkbox e um botão para armazenar o nome do arquivo
-        # da Base de Dados, que só será alterável pelo usuário se a checkbox estiver marcada.
-        var_base = tk.BooleanVar(value=False)  # Variável para armazenar o estado da checkbox.
-        arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
-        def selecionar_base():
-            # O usuário seleciona o arquivo contendo a base de dados das aulas.
-            arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
+    # Com o novo frame feito, defino uma checkbox e um botão para armazenar o nome do arquivo
+    # da Base de Dados, que só será alterável pelo usuário se a checkbox estiver marcada.
+    var_base = tk.BooleanVar(value=False)  # Variável para armazenar o estado da checkbox.
+    arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
+    arquivo_sol = tk.StringVar(value="Selecione a Solução do Modelo")
+    def selecionar_base():
+        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
 
-            # Se um arquivo foi selecionado:
-            if arquivo:
-                # Salvo o caminho do arquivo.
-                arquivo_base.set(arquivo)
-                
-        def atualizar_estado():
-            # Verifico se a checkbox está marcada:
-            if var_base.get():
-                # Se estiver, o botão de selecionar a base de dados fica habilitado.
-                btn_selecionar_base.config(state=NORMAL)
-            else:
-                # Se não estiver, o botão de selecionar a base de dados fica desabilitado.
-                btn_selecionar_base.config(state=DISABLED)
-                btn_selecionar_base.config(text="Selecione a Base de Dados")
-                arquivo_base.set("Selecione a Base de Dados")
-
-        checkbox11 = Checkbutton(frame, text="Preencherá a Base de Dados?", variable=var_base, command=atualizar_estado)
-        checkbox11.grid(row=0, column=0, sticky='w', pady=5)
-        
-        # Crio o botão para salvar o arquivo da Base de Dados.
-        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, state=DISABLED)
-        # Defino a posição do botão na janela.
-        btn_selecionar_base.grid(row=0, column=1, sticky='w', padx=5, pady=5)
-
-
-        def salvar_valores():
-            # Se não houver nenhum arquivo para o preenchimento.
-            if not lista_outros:
-                # Verifico se a checkbox da Base de Dados está marcada:
-                if var_base.get():
-                    # Se estiver, verifico se um arquivo foi selecionado.
-                    if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
-                        # Se nenhum arquivo foi selecionado, uma janela de aviso aparece, e o usuário é instruído a selecionar um arquivo.
-                        messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
-                        return
-                    else:
-                        # Se um arquivo foi selecionado, chamo a função que preenche a planilha de dados com a base de dados selecionada.
-                
+        # Se um arquivo foi selecionado:
+        if arquivo:
+            # Salvo o caminho do arquivo.
+            arquivo_base.set(arquivo)
             
-        btn_salvar = ttk.Button(frame2, text="Preencher Planilhas com os Dados da Solução", command=atualizar_estado)
-        btn_salvar.grid(row=2, column=0, pady=10)
-    else:
+    def atualizar_estado():
+        # Verifico se a checkbox está marcada:
+        if var_base.get():
+            # Se estiver, o botão de selecionar a base de dados fica habilitado.
+            btn_selecionar_base.config(state=NORMAL)
+        else:
+            # Se não estiver, o botão de selecionar a base de dados fica desabilitado.
+            btn_selecionar_base.config(state=DISABLED)
+            btn_selecionar_base.config(text="Selecione a Base de Dados")
+            arquivo_base.set("Selecione a Base de Dados")
 
-        # Crio uma nova janela em cima da janela principal da interface.
-        nova_janela = tk.Toplevel(root)
-        nova_janela.title("Selecionar Arquivo e Inserir Valor")
+    def selecionar_sol():
+        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        arquivo = filedialog.askopenfilename(title="Selecione Solução do Modelo")
 
-        # Crio o frame para armazenar os botões e outros campos da nova janela.
-        frame = tk.Frame(nova_janela)
-        frame.pack(pady=10, padx=10)
+        # Se um arquivo foi selecionado:
+        if arquivo:
+            # Salvo o caminho do arquivo.
+            arquivo_sol.set(arquivo)
 
-        # Defino várias variáveis para armazenar os nomes dos arquivos que serão preenchidos.
-        arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
-        arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
-        arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
-        arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
-        arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
-        arquivo_sol = tk.StringVar(value="Selecione a planilha com os Dados da Solução do Modelo")
-        arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
+    lbl_sol = tk.Label(frame, text="Selecione a Solução do Modelo")
+    # Defino a posição do texto na janela.
+    lbl_sol.grid(row=0, column=0, pady=5, sticky="w")
+    # Crio o botão para salvar o arquivo da Solução do Modelo.
+    btn_selecionar_sol = tk.Button(frame, textvariable=arquivo_sol, command=selecionar_sol, wraplength=250, width=40)
+    # Defino a posição do botão na janela.
+    btn_selecionar_sol.grid(row=0, column=1, sticky='w', padx=5, pady=5)
 
-
-
-        # Defino funções para selecionar arquivos.
-        def selecionar_sme():
-            # O usuário seleciona o arquivo contendo a base de dados das aulas.
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
-
-            # Se um arquivo foi selecionado:
-            if arquivo:
-                # Salvo o caminho do arquivo.
-                arquivo_sme.set(arquivo)
-        def selecionar_sma():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
-            if arquivo:
-                arquivo_sma.set(arquivo)
-        def selecionar_scc():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
-            if arquivo:
-                arquivo_scc.set(arquivo)
-        def selecionar_ssc():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
-            if arquivo:
-                arquivo_ssc.set(arquivo)
-        def selecionar_outros():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
-            if arquivo:
-                arquivo_outros.set(arquivo)
-        def selecionar_sol():
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha com os Dados da Solução do Modelo")
-            if arquivo:
-                arquivo_sol.set(arquivo)
-        def selecionar_base():
-            arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
-            if arquivo:
-                arquivo_base.set(arquivo)
+    # Crio uma checkbox para o usuário escolher se deseja preencher a Base de Dados.
+    checkbox11 = Checkbutton(frame, text="Preencherá a Base de Dados?", variable=var_base, command=atualizar_estado)
+    checkbox11.grid(row=1, column=0, sticky='w', pady=5)
+    
+    # Crio o botão para salvar o arquivo da Base de Dados.
+    btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40, state=DISABLED)
+    # Defino a posição do botão na janela.
+    btn_selecionar_base.grid(row=1, column=1, sticky='w', padx=5, pady=5)
 
 
-
-        # Crio uma legenda para ficar ao lado do botão.
-        lbl_sme = tk.Label(frame, text="Selecione a planilha do SME")
-        # Defino a posição do texto na janela.
-        lbl_sme.grid(row=0, column=0, pady=5, sticky='w')
-        # Crio o botão para salvar o arquivo do SME.
-        btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
-        # Defino a posição do botão na janela.
-        btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
-
-        # As linhas a seguir são análogas.
-        lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA")
-        lbl_sma.grid(row=1, column=0, pady=5, sticky='w')
-        btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
-        btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
-
-        lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC")
-        lbl_scc.grid(row=2, column=0, pady=5, sticky='w')
-        btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
-        btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
-
-        lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC")
-        lbl_ssc.grid(row=3, column=0, pady=5, sticky='w')
-        btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
-        btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
-
-        lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos")
-        lbl_outros.grid(row=4, column=0, pady=5, sticky='w')
-        btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
-        btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
-
-        lbl_sol = tk.Label(frame, text="Selecione a planilha com os Dados da Solução do Modelo")
-        lbl_sol.grid(row=5, column=0, pady=5, sticky='w')
-        btn_selecionar_sol = tk.Button(frame, textvariable=arquivo_sol, command=selecionar_sol, wraplength=250, width=40)
-        btn_selecionar_sol.grid(row=5, column=1, padx=5, pady=5)
-
-        lbl_base = tk.Label(frame, text="Selecione a Base de Dados")
-        lbl_base.grid(row=6, column=0, pady=5, sticky='w')
-        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40)
-        btn_selecionar_base.grid(row=6, column=1, padx=5, pady=5)
-
-        # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-        def salvar_valores():
-            # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-            # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
-            if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+    def salvar_valores():
+        # Verifico se o arquivo da Solução do Modelo foi selecionado.
+        if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a Solução do Modelo":
+            # Se não foi, uma janela de aviso aparece, e o usuário é instruído a selecionar um arquivo.
+            messagebox.showwarning("Aviso", "Selecione uma Solução do Modelo.")
+            return
+        # Se não houver nenhum arquivo para o preenchimento.
+        if not lista_outros:
+            # Verifico se a checkbox da Base de Dados está marcada:
+            if var_base.get():
+                # Se estiver, verifico se um arquivo foi selecionado.
+                if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
+                    # Se nenhum arquivo foi selecionado, uma janela de aviso aparece, e o usuário é instruído a selecionar um arquivo.
+                    messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
+                    return
+                else:
+                    if preencher_completo:
+                        # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
+                        print("chamado 1")
+                        print(f"lista outros: {lista_outros}")
+                        print(f"arquivo_sol: {arquivo_sol.get()}")
+                        print(f"arquivo_base: {arquivo_base.get()}")
+                        preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get(), False)
+                    else:
+                        print("chamado 2")
+                        print(f"lista outros: {lista_outros}")
+                        print(f"arquivo_sol: {arquivo_sol.get()}")
+                        print(f"arquivo_base: {arquivo_base.get()}")
+                        escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
+            # Se não estiver marcada, o usuário precisa adicionar pelo menos um arquivo para o preenchimento.
+            else:
+                messagebox.showwarning("Aviso", "Selecione uma Base de Dados, ou adicione arquivos para o preenchimento.")
                 return
-            if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
-                return
-            if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
-                return
-            if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
-                return
-            if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-                return
-            if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
-                return
-            if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
-                messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
-                return
+        # Se houver pelo menos um arquivo para o preenchimento.
+        else:
+            # Verifico se a checkbox da Base de Dados está marcada:
+            if var_base.get():
+                # Se estiver, verifico se um arquivo foi selecionado.
+                if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
+                    # Se nenhum arquivo foi selecionado, uma janela de aviso aparece, e o usuário é instruído a selecionar um arquivo.
+                    messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
+                    return
+                
+            # Se não estiver marcada, o usuário precisa adicionar pelo menos um arquivo para o preenchimento.
+            else:
+                resposta = messagebox.askyesno("Aviso", "Você não selecionou uma Base de Dados. Deseja continuar preenchendo os arquivos selecionados?")
+                if not resposta:
+                    return
 
-            # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-            elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+            if preencher_completo:
+                # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
+                print("chamado 3")
+                print(f"lista outros: {lista_outros}")
+                print(f"arquivo_sol: {arquivo_sol.get()}")
+                print(f"arquivo_base: {arquivo_base.get()}")
+                preenchimento(lista_outros, arquivo_sol.get(), "", False)
+            else:
+                print("chamado 4")
+                print(f"lista outros: {lista_outros}")
+                print(f"arquivo_sol: {arquivo_sol.get()}")
+                print(f"arquivo_base: {arquivo_base.get()}")
+                escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
+            
+        
+    btn_salvar = ttk.Button(frame2, text="Preencher Planilhas com os Dados da Solução", command=salvar_valores)
+    btn_salvar.grid(row=2, column=0, pady=10)
+    # else:
 
-            # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
-            preenchimento(elenco, arquivo_sol.get(), arquivo_base.get(), True)
+    #     # Crio uma nova janela em cima da janela principal da interface.
+    #     nova_janela = tk.Toplevel(root)
+    #     nova_janela.title("Selecionar Arquivo e Inserir Valor")
 
-            # # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-            # messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
-            # - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-            # - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-            # - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-            # - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-            # - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-            # - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
+    #     # Crio o frame para armazenar os botões e outros campos da nova janela.
+    #     frame = tk.Frame(nova_janela)
+    #     frame.pack(pady=10, padx=10)
 
-            # E fecho a janela que havia sido criada.
-            nova_janela.destroy()
-
-        # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-        def salvar_valores1():
-            # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-            # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
-            if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
-                return
-            if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
-                return
-            if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
-                return
-            if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
-                return
-            if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-                return
-            if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
-                return
-            if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
-                messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
-                return
+    #     # Defino várias variáveis para armazenar os nomes dos arquivos que serão preenchidos.
+    #     arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
+    #     arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
+    #     arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
+    #     arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
+    #     arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
+    #     arquivo_sol = tk.StringVar(value="Selecione a planilha com os Dados da Solução do Modelo")
+    #     arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
 
 
 
-            # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-            elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+    #     # Defino funções para selecionar arquivos.
+    #     def selecionar_sme():
+    #         # O usuário seleciona o arquivo contendo a base de dados das aulas.
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
 
-            escolhas_preenchimento(elenco, arquivo_sol.get(), arquivo_base.get())
+    #         # Se um arquivo foi selecionado:
+    #         if arquivo:
+    #             # Salvo o caminho do arquivo.
+    #             arquivo_sme.set(arquivo)
+    #     def selecionar_sma():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
+    #         if arquivo:
+    #             arquivo_sma.set(arquivo)
+    #     def selecionar_scc():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
+    #         if arquivo:
+    #             arquivo_scc.set(arquivo)
+    #     def selecionar_ssc():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
+    #         if arquivo:
+    #             arquivo_ssc.set(arquivo)
+    #     def selecionar_outros():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
+    #         if arquivo:
+    #             arquivo_outros.set(arquivo)
+    #     def selecionar_sol():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha com os Dados da Solução do Modelo")
+    #         if arquivo:
+    #             arquivo_sol.set(arquivo)
+    #     def selecionar_base():
+    #         arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
+    #         if arquivo:
+    #             arquivo_base.set(arquivo)
 
 
-        # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
 
-        btn_salvar1 = ttk.Button(frame, text="Preencher Planilhas com escolhas do usuário", command=salvar_valores1)
-        btn_salvar1.grid(row=7, column=0, pady=10)
+    #     # Crio uma legenda para ficar ao lado do botão.
+    #     lbl_sme = tk.Label(frame, text="Selecione a planilha do SME")
+    #     # Defino a posição do texto na janela.
+    #     lbl_sme.grid(row=0, column=0, pady=5, sticky='w')
+    #     # Crio o botão para salvar o arquivo do SME.
+    #     btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
+    #     # Defino a posição do botão na janela.
+    #     btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
 
-        btn_salvar2 = ttk.Button(frame, text="Preencher Planilhas com a Solução Completa", command=salvar_valores)
-        btn_salvar2.grid(row=7, column=1, pady=10)
+    #     # As linhas a seguir são análogas.
+    #     lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA")
+    #     lbl_sma.grid(row=1, column=0, pady=5, sticky='w')
+    #     btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
+    #     btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
+
+    #     lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC")
+    #     lbl_scc.grid(row=2, column=0, pady=5, sticky='w')
+    #     btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
+    #     btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
+
+    #     lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC")
+    #     lbl_ssc.grid(row=3, column=0, pady=5, sticky='w')
+    #     btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
+    #     btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
+
+    #     lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos")
+    #     lbl_outros.grid(row=4, column=0, pady=5, sticky='w')
+    #     btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
+    #     btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
+
+    #     lbl_sol = tk.Label(frame, text="Selecione a planilha com os Dados da Solução do Modelo")
+    #     lbl_sol.grid(row=5, column=0, pady=5, sticky='w')
+    #     btn_selecionar_sol = tk.Button(frame, textvariable=arquivo_sol, command=selecionar_sol, wraplength=250, width=40)
+    #     btn_selecionar_sol.grid(row=5, column=1, padx=5, pady=5)
+
+    #     lbl_base = tk.Label(frame, text="Selecione a Base de Dados")
+    #     lbl_base.grid(row=6, column=0, pady=5, sticky='w')
+    #     btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40)
+    #     btn_selecionar_base.grid(row=6, column=1, padx=5, pady=5)
+
+    #     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+    #     def salvar_valores():
+    #         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
+    #         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
+
+    #         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+    #             return
+    #         if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+    #             return
+    #         if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+    #             return
+    #         if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+    #             return
+    #         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
+    #             return
+    #         if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
+    #             return
+    #         if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
+    #             return
+
+    #         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
+    #         elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+
+    #         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
+    #         preenchimento(elenco, arquivo_sol.get(), arquivo_base.get(), True)
+
+    #         # # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+    #         # messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
+    #         # - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+    #         # - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+    #         # - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+    #         # - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+    #         # - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
+    #         # - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
+
+    #         # E fecho a janela que havia sido criada.
+    #         nova_janela.destroy()
+
+    #     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+    #     def salvar_valores1():
+    #         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
+    #         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
+
+    #         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
+    #             return
+    #         if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
+    #             return
+    #         if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
+    #             return
+    #         if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
+    #             return
+    #         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
+    #             return
+    #         if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
+    #             return
+    #         if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
+    #             messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
+    #             return
+
+
+
+    #         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
+    #         elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
+
+    #         escolhas_preenchimento(elenco, arquivo_sol.get(), arquivo_base.get())
+
+
+    #     # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
+
+    #     btn_salvar1 = ttk.Button(frame, text="Preencher Planilhas com escolhas do usuário", command=salvar_valores1)
+    #     btn_salvar1.grid(row=7, column=0, pady=10)
+
+    #     btn_salvar2 = ttk.Button(frame, text="Preencher Planilhas com a Solução Completa", command=salvar_valores)
+    #     btn_salvar2.grid(row=7, column=1, pady=10)
 
 """## Escolhas de Preenchimento"""
 
@@ -2232,8 +2301,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
     # Abro a solução dada pelo modelo como um dataframe.
     solucao = pd.read_excel(file_path_sol)
 
-
-    if preencher_elenco:
+    if lista_elenco:
         # Para cada elenco na lista de elencos:
         for file_path_elenco in lista_elenco:
             # Leio e salvo o arquivo em uma variável.
@@ -2351,78 +2419,86 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
                 return
         
         
+    if file_path_base:
+        # Com todos os elencos preenchidos, agora resta preencher a base de dados para o modelo.
+        # Assim, abro a base de dados como um arquivo Excel.
+        base = pd.ExcelFile(file_path_base)
 
-    # Com todos os elencos preenchidos, agora resta preencher a base de dados para o modelo.
-    # Assim, abro a base de dados como um arquivo Excel.
-    base = pd.ExcelFile(file_path_base)
+        # Salvo quais as planilhas do arquivo.
+        sheet_names = base.sheet_names
 
-    # Salvo quais as planilhas do arquivo.
-    sheet_names = base.sheet_names
-
-    # E leio novamente o arquivo, mas como um dataframe com as planilhas corretas.
-    base = pd.read_excel(file_path_base, sheet_name=sheet_names)
-
-
-    # Para cada planilha de disciplinas, isto é, para cada planilha após a planilha de salas:
-    for sheet in sheet_names[1:]:
-        # Refaço a mesma lógica feita anteriormente. Verificarei se a disciplina foi alocada em alguma sala, filtrarei o dataframe,
-        # e cruzarei os dados da solução com os do dataframe, deixando o mesmo formato e ordem das salas para cada aula das disciplinas.
-        for d in range(len(base[sheet])):
-            disciplina = base[sheet].loc[d, 'Disciplina (código)']
-
-            if disciplina in solucao['Disciplina'].tolist():
-                base[sheet].loc[d, 'Sala'] = None
-                solucao_filtrada = solucao[solucao['Disciplina'] == disciplina]
+        # E leio novamente o arquivo, mas como um dataframe com as planilhas corretas.
+        base = pd.read_excel(file_path_base, sheet_name=sheet_names)
 
 
-                novo_valor = ['0', '0', '0', '0']
-                for i in range(4):
-                    for a in solucao_filtrada.index:
-                        if base[sheet].loc[d, 'Horário ' + str(i+1)] == solucao_filtrada.loc[a, 'Horário']:
-                            novo_valor[i] = str(solucao_filtrada.loc[a, 'Sala'])
+        # Para cada planilha de disciplinas, isto é, para cada planilha após a planilha de salas:
+        for sheet in sheet_names[1:]:
+            # Refaço a mesma lógica feita anteriormente. Verificarei se a disciplina foi alocada em alguma sala, filtrarei o dataframe,
+            # e cruzarei os dados da solução com os do dataframe, deixando o mesmo formato e ordem das salas para cada aula das disciplinas.
+            for d in range(len(base[sheet])):
+                disciplina = base[sheet].loc[d, 'Disciplina (código)']
 
-                salas_fixadas = novo_valor[0]
-                for s in novo_valor[1:]:
-                    salas_fixadas += ', ' + str(s)
+                if disciplina in solucao['Disciplina'].tolist():
+                    base[sheet].loc[d, 'Sala'] = None
+                    solucao_filtrada = solucao[solucao['Disciplina'] == disciplina]
 
-                base[sheet].loc[d, 'Sala'] = salas_fixadas
 
-    try:
-        # Com o novo dataframe construído, salvo-o como arquivo Excel com o nome alterado para distinção.
-        with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
-            for sheet in sheet_names:
-                base[sheet].to_excel(writer, sheet_name=sheet, index=False)
-    except PermissionError as e:
-        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
-            messagebox.showerror("Erro de Permissão", 
-                                    (
-                                        f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
-                                        "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                    novo_valor = ['0', '0', '0', '0']
+                    for i in range(4):
+                        for a in solucao_filtrada.index:
+                            if base[sheet].loc[d, 'Horário ' + str(i+1)] == solucao_filtrada.loc[a, 'Horário']:
+                                novo_valor[i] = str(solucao_filtrada.loc[a, 'Sala'])
+
+                    salas_fixadas = novo_valor[0]
+                    for s in novo_valor[1:]:
+                        salas_fixadas += ', ' + str(s)
+
+                    base[sheet].loc[d, 'Sala'] = salas_fixadas
+
+        try:
+            # Com o novo dataframe construído, salvo-o como arquivo Excel com o nome alterado para distinção.
+            with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
+                for sheet in sheet_names:
+                    base[sheet].to_excel(writer, sheet_name=sheet, index=False)
+        except PermissionError as e:
+            if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+                messagebox.showerror("Erro de Permissão", 
+                                        (
+                                            f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                            "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                        )
                                     )
-                                )
+                return
+            else:
+                messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+                return
+        except Exception as e:
+            # Para qualquer outro erro
+            messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
             return
-        else:
-            messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
-            return
-    except Exception as e:
-        # Para qualquer outro erro
-        messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
-        return
-    
-    if preencher_elenco:
-        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-        messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-        - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-        - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-        - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-        - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-        - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-        - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
-    else:
-        # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-        messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-        - {os.path.basename(file_path_sol)}\n\
-        - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
+        
+    # if file_path_base and lista_elenco:
+    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
+    #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
+    # elif file_path_base:
+    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
+    #     - {os.path.basename(file_path_sol)}\n\
+    #     - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
+    # else:
+    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
+    #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
+    #     - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n")
 
 def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
 
