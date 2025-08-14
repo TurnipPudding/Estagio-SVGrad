@@ -2350,52 +2350,53 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
 
                 # Adiciono um traço '-' e o número da turma ao nome da disciplina para ser igual
                 # ao utilizado no modelo.
-                disciplina = str(elenco.loc[d, 'Disciplina (código)']) + '-' + str(elenco.loc[d, 'Turma'])
+                if not pd.isna(elenco.loc[d, 'Turma']):
+                    disciplina = str(elenco.loc[d, 'Disciplina (código)']) + '-' + str(int(elenco.loc[d, 'Turma']))
+                    
+                    # Verifico se a disciplina em questão foi incluída na solução:
+                    if disciplina in solucao['Disciplina'].tolist():
 
-                # Verifico se a disciplina em questão foi incluída na solução:
-                if disciplina in solucao['Disciplina'].tolist():
+                        # Se foi, salvo a linha da disciplina com um acréscimo de duas unidades; uma para pular a linha do cabeçalho, e a outra para
+                        # igualar com os índices das linhas do workbook.
+                        row = d+2
 
-                    # Se foi, salvo a linha da disciplina com um acréscimo de duas unidades; uma para pular a linha do cabeçalho, e a outra para
-                    # igualar com os índices das linhas do workbook.
-                    row = d+2
+                        # Semelhantemente, salvo o índice da coluna de salas do dataframe com um acréscimo de 1.
+                        coluna = elenco.columns.get_loc('Sala')+1
 
-                    # Semelhantemente, salvo o índice da coluna de salas do dataframe com um acréscimo de 1.
-                    coluna = elenco.columns.get_loc('Sala')+1
+                        # Limpo o valor da célula da sala da disciplina d, utilizando uma soma de índices para garantir
+                        # que a linha está correta.
+                        ws.cell(row=header_row+row, column=coluna).value = None
 
-                    # Limpo o valor da célula da sala da disciplina d, utilizando uma soma de índices para garantir
-                    # que a linha está correta.
-                    ws.cell(row=header_row+row, column=coluna).value = None
-
-                    # Agora, faço um pequeno filtro das linhas de solução da disciplina, ou seja,
-                    # filtro os dados da solução para analisar apenas os que pertencem às aulas da disciplina.
-                    solucao_filtrada = solucao[solucao['Disciplina'] == disciplina]
+                        # Agora, faço um pequeno filtro das linhas de solução da disciplina, ou seja,
+                        # filtro os dados da solução para analisar apenas os que pertencem às aulas da disciplina.
+                        solucao_filtrada = solucao[solucao['Disciplina'] == disciplina]
 
 
-                    # Antes de explicar cada linha do trecho seguinte, devo explicar a lógica por trás dele.
-                    # Com a solução filtrada, eu tenho, separadamente, os horários das aulas de uma disciplina e a sala
-                    # onde cada uma foi alocada. Dessa forma, eu consigo iterar no comprimento da solução filtrada,
-                    # que deve me dar o número de colunas de horário que aquela disciplina possui.
-                    # E se eu cruzar essa iteração com uma que verifica se uma das aulas corresponde com a atual coluna de horário,
-                    # eu consigo cruzar colocar, em ordem, qual a sala de cada aula.
+                        # Antes de explicar cada linha do trecho seguinte, devo explicar a lógica por trás dele.
+                        # Com a solução filtrada, eu tenho, separadamente, os horários das aulas de uma disciplina e a sala
+                        # onde cada uma foi alocada. Dessa forma, eu consigo iterar no comprimento da solução filtrada,
+                        # que deve me dar o número de colunas de horário que aquela disciplina possui.
+                        # E se eu cruzar essa iteração com uma que verifica se uma das aulas corresponde com a atual coluna de horário,
+                        # eu consigo cruzar colocar, em ordem, qual a sala de cada aula.
 
-                    # Para cada linha dessa solução filtrada, que diz respeito a cada aula da disciplina:
-                    for i in range(len(solucao_filtrada)):
-                        # E para cada aula da disciplina na solução filtrada:
-                        for a in solucao_filtrada.index:
-                            # Verifico se o horário da coluna 'Horário i+1' bate com o horário da aula 'a':
-                            if elenco.loc[d, 'Horário ' + str(i+1)] == solucao_filtrada.loc[a, 'Horário']:
-                                # Se os horários batem, verifico se algum outro horário já foi colocado na célula:
-                                if ws.cell(row=header_row+row, column=coluna).value:
-                                    # Se foi, defino o novo valor da célula como o valor antigo somado com o novo, mas separado por uma vírgula.
-                                    novo_valor = str(ws.cell(row=header_row+row, column=coluna).value) + ', ' + str(solucao_filtrada.loc[a, 'Sala'])
+                        # Para cada linha dessa solução filtrada, que diz respeito a cada aula da disciplina:
+                        for i in range(len(solucao_filtrada)):
+                            # E para cada aula da disciplina na solução filtrada:
+                            for a in solucao_filtrada.index:
+                                # Verifico se o horário da coluna 'Horário i+1' bate com o horário da aula 'a':
+                                if elenco.loc[d, 'Horário ' + str(i+1)] == solucao_filtrada.loc[a, 'Horário']:
+                                    # Se os horários batem, verifico se algum outro horário já foi colocado na célula:
+                                    if ws.cell(row=header_row+row, column=coluna).value:
+                                        # Se foi, defino o novo valor da célula como o valor antigo somado com o novo, mas separado por uma vírgula.
+                                        novo_valor = str(ws.cell(row=header_row+row, column=coluna).value) + ', ' + str(solucao_filtrada.loc[a, 'Sala'])
 
-                                    # E defino o valor da célula com esse novo valor.
-                                    ws.cell(row=header_row+row, column=coluna).value = novo_valor
+                                        # E defino o valor da célula com esse novo valor.
+                                        ws.cell(row=header_row+row, column=coluna).value = novo_valor
 
-                                # Como eu havia limpado todas as células de sala anteriormente, tenho certeza que não há nenhum outro horário,
-                                # então coloco o primeiro na célula respectiva.
-                                else:
-                                    ws.cell(row=header_row+row, column=coluna).value = str(solucao_filtrada.loc[a, 'Sala'])
+                                    # Como eu havia limpado todas as células de sala anteriormente, tenho certeza que não há nenhum outro horário,
+                                    # então coloco o primeiro na célula respectiva.
+                                    else:
+                                        ws.cell(row=header_row+row, column=coluna).value = str(solucao_filtrada.loc[a, 'Sala'])
 
 
             try:
@@ -2477,7 +2478,15 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
             messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
             return
         
-    # if file_path_base and lista_elenco:
+    if lista_elenco:
+        text_message = "O(s) seguinte(s) arquivo(s) foi(ram) criado(s) utilizando os Dados da Solução do Modelo:\n"
+        for file_path_elenco in lista_elenco:
+            # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
+            text_message += f"- {os.path.basename(file_path_elenco.replace('.xlsx', ' Preenchido.xlsx'))}\n"
+
+    if file_path_base:
+        text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
+    messagebox.showinfo("Sucesso!", text_message)
     #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
     #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
     #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
