@@ -1956,7 +1956,7 @@ def preencher_planilha_dados():
                         # print(f"lista outros: {lista_outros}")
                         # print(f"arquivo_sol: {arquivo_sol.get()}")
                         # print(f"arquivo_base: {arquivo_base.get()}")
-                        escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
+                        escolhas_preenchimento(arquivo_sol.get(), arquivo_base.get())
             # Se não estiver marcada, existem duas opções:
             else:
                 # Se for o caso de preencher os dados completos, o usuário não precisa selecionar uma Base de Dados,
@@ -1972,7 +1972,7 @@ def preencher_planilha_dados():
                         return
                     else:
                         
-                        escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
+                        escolhas_preenchimento(arquivo_sol.get(), arquivo_base.get())
         # Se houver pelo menos um arquivo para o preenchimento.
         else:
             # Verifico se a checkbox da Base de Dados está marcada:
@@ -2003,7 +2003,8 @@ def preencher_planilha_dados():
                     # print(f"lista outros: {lista_outros}")
                     # print(f"arquivo_sol: {arquivo_sol.get()}")
                     # print(f"arquivo_base: {arquivo_base.get()}")
-                    escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
+                    # escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
+                    messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
                     return
             
             if preencher_completo:
@@ -2019,7 +2020,7 @@ def preencher_planilha_dados():
                 # print(f"lista outros: {lista_outros}")
                 # print(f"arquivo_sol: {arquivo_sol.get()}")
                 # print(f"arquivo_base: {arquivo_base.get()}")
-                escolhas_preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get())
+                escolhas_preenchimento(arquivo_sol.get(), arquivo_base.get())
                 return
             
     if preencher_completo:
@@ -2216,13 +2217,7 @@ def preencher_planilha_dados():
 """## Escolhas de Preenchimento"""
 
 # Função que define uma janela para o menu de preenchimento dos arquivos.
-def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
-
-    elenco = elenco1
-
-    file_path_sol = file_path_sol1
-
-    file_path_base = file_path_base1
+def escolhas_preenchimento(file_path_sol, file_path_base):
 
     # Crio uma nova janela em cima da janela principal da interface.
     nova_janela1 = tk.Toplevel(root)
@@ -2286,13 +2281,6 @@ def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
 
     def salvar_valores():
 
-        # print(elenco1, file_path_sol1, file_path_base1)
-        elenco = elenco1
-
-        file_path_sol = file_path_sol1
-
-        file_path_base = file_path_base1
-        # print(elenco, file_path_sol, file_path_base)
         new_df = pd.DataFrame(columns=df.columns)
         for var in vars_checkboxes:
             if var.get():
@@ -2300,12 +2288,12 @@ def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
                 new_df.loc[len(new_df)] = df.loc[index]
 
         try:
-            new_df.to_excel(file_path_sol.replace('.xlsx',' com Fixadas.xlsx'), sheet_name="Resultados", index=False)
+            new_df.to_excel(file_path_sol.replace('.xlsx',' com Escolhas.xlsx'), sheet_name="Resultados", index=False)
         except PermissionError as e:
                 if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
                     messagebox.showerror("Erro de Permissão", 
                                             (
-                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Escolhas.xlsx')}. "
                                                 "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                             )
                                         )
@@ -2323,7 +2311,7 @@ def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
 
         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
         
-        preenchimento(elenco, file_path_sol.replace('.xlsx',' com Fixadas.xlsx'), file_path_base, False)
+        preenchimento("", file_path_sol.replace('.xlsx',' com Escolhas.xlsx'), file_path_base, True)
         
 
         
@@ -2344,7 +2332,7 @@ def escolhas_preenchimento(elenco1, file_path_sol1, file_path_base1):
 """## Função para preencher"""
 
 # Função que preenche os arquivos fornecidos pelo usuário.
-def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco):
+def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial):
     # Abro a solução dada pelo modelo como um dataframe.
     solucao = pd.read_excel(file_path_sol)
 
@@ -2453,7 +2441,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
                 if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
                     messagebox.showerror("Erro de Permissão", 
                                             (
-                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                                f"Não foi possível salvar o arquivo {file_path_elenco.replace('.xlsx',' Preenchido.xlsx')}. "
                                                 "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                             )
                                         )
@@ -2505,14 +2493,27 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
 
         try:
             # Com o novo dataframe construído, salvo-o como arquivo Excel com o nome alterado para distinção.
-            with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
-                for sheet in sheet_names:
-                    base[sheet].to_excel(writer, sheet_name=sheet, index=False)
+            if not preencher_parcial:
+                with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Preenchido.xlsx'), engine="openpyxl") as writer:
+                    for sheet in sheet_names:
+                        base[sheet].to_excel(writer, sheet_name=sheet, index=False)
+            else:
+                with pd.ExcelWriter(file_path_base.replace('.xlsx', ' Parcial.xlsx'), engine="openpyxl") as writer:
+                    for sheet in sheet_names:
+                        base[sheet].to_excel(writer, sheet_name=sheet, index=False)
         except PermissionError as e:
-            if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+            if e.errno == 13 and not preencher_parcial:  # Erro de permissão (arquivo aberto ou bloqueado)
                 messagebox.showerror("Erro de Permissão", 
                                         (
-                                            f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Fixadas.xlsx')}. "
+                                            f"Não foi possível salvar o arquivo {file_path_base.replace('.xlsx',' Preenchido.xlsx')}. "
+                                            "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                                        )
+                                    )
+                return
+            elif e.errno == 13 and preencher_parcial:
+                messagebox.showerror("Erro de Permissão", 
+                                        (
+                                            f"Não foi possível salvar o arquivo {file_path_base.replace('.xlsx',' Parcial.xlsx')}. "
                                             "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                         )
                                     )
@@ -2535,9 +2536,15 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_elenco)
             text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
         messagebox.showinfo("Sucesso!", text_message)
     else:
-        text_message = "O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n"
-        text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
-        messagebox.showinfo("Sucesso!", text_message)
+        if not preencher_parcial:
+            text_message = "O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n"
+            text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n"
+            messagebox.showinfo("Sucesso!", text_message)
+        else:
+            text_message = "O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n"
+            text_message += f"- {os.path.basename(file_path_sol)}\n"
+            text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Parcial.xlsx'))}\n"
+            messagebox.showinfo("Sucesso!", text_message)
     #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
     #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
     #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
