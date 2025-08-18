@@ -2293,7 +2293,7 @@ def escolhas_preenchimento(file_path_sol, file_path_base):
                 if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
                     messagebox.showerror("Erro de Permissão", 
                                             (
-                                                f"Não foi possível salvar o arquivo {file_path_sol.replace('.xlsx',' com Escolhas.xlsx')}. "
+                                                f"Não foi possível salvar o arquivo {os.path.basename(file_path_sol.replace('.xlsx',' com Escolhas.xlsx'))}. "
                                                 "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                             )
                                         )
@@ -2441,7 +2441,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
                 if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
                     messagebox.showerror("Erro de Permissão", 
                                             (
-                                                f"Não foi possível salvar o arquivo {file_path_elenco.replace('.xlsx',' Preenchido.xlsx')}. "
+                                                f"Não foi possível salvar o arquivo {os.path.basename(file_path_elenco.replace('.xlsx',' Preenchido.xlsx'))}. "
                                                 "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                             )
                                         )
@@ -2505,7 +2505,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
             if e.errno == 13 and not preencher_parcial:  # Erro de permissão (arquivo aberto ou bloqueado)
                 messagebox.showerror("Erro de Permissão", 
                                         (
-                                            f"Não foi possível salvar o arquivo {file_path_base.replace('.xlsx',' Preenchido.xlsx')}. "
+                                            f"Não foi possível salvar o arquivo {os.path.basename(file_path_base.replace('.xlsx',' Preenchido.xlsx'))}. "
                                             "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                         )
                                     )
@@ -2513,7 +2513,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
             elif e.errno == 13 and preencher_parcial:
                 messagebox.showerror("Erro de Permissão", 
                                         (
-                                            f"Não foi possível salvar o arquivo {file_path_base.replace('.xlsx',' Parcial.xlsx')}. "
+                                            f"Não foi possível salvar o arquivo {os.path.basename(file_path_base.replace('.xlsx',' Parcial.xlsx'))}. "
                                             "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
                                         )
                                     )
