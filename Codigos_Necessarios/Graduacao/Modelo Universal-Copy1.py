@@ -32,14 +32,9 @@ from openpyxl.formatting.rule import DataBar, FormatObject, Rule
 """## Leitura dos dados"""
 
 sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
-# sheet_names = df_completo.sheet_names
+
 # Diferentes arquivos de teste que foram utilizados
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia_com_fixadas.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas semigual ao 202401.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 pior caso.xlsx'
+
 file_path = sys.argv[1]
 
 # Criação e mescla do dataframe (dados das aulas)
@@ -122,26 +117,7 @@ for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
         df.loc[s, 'Sala'] = '0'
 # print(df['Sala'])
-# if sys.argv[7]:
-#     # Variável com o número suposto de alunos da pós.
-#     qtd_pos = int(sys.argv[7])
-#     for d in range(len(tam_t)):
-#         # print(f"Valor de tam_t: {tam_t[d]}")
-#         # print(f"Valor do dataframe: {df.loc[d, 'Vagas por disciplina']}")
-#         if not pd.isna(df.loc[d, 'Observações']):
-#             if 'Espelho' in df.loc[d, 'Observações'] or 'espelho' in df.loc[d, 'Observações']:
-#                 print(
-#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-#                     f"\nAdicionando número de inscritos da pós fornecido pelo usuário."
-#                 )
-#                 # print(df.loc[d, 'Vagas por disciplina'])
-#                 # print(tam_t[d])
-#                 tam_t[d] += qtd_pos
-#                 df.loc[d, 'Vagas por disciplina'] += qtd_pos
-#                 print(
-#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-#                 )
-#             # print(tam_t[d])
+
 
 for d in range(len(tam_t)):
     if pd.isna(df.loc[d, 'Turma']):
@@ -152,18 +128,18 @@ for d in range(len(tam_t)):
 # Faço uma lista de índices de cada turma/disciplina do dataframe principal, então a primeira disciplina é 0, a segunda 1, etc.
 T = range(len(df['Disciplina (código)']))
 # print(T[38]) # retorna um índice que equivale à posição de uma disciplina na lista
-# print(df['Disciplina (código)'][T[38]]) # retorna a sigla da disciplina (o índice equivale a linha - 2)
+# print(df.loc[T[38], 'Disciplina (código)']) # retorna a sigla da disciplina (o índice equivale a linha - 2)
 
 # Faço uma lista de índices de cada sala do dataframe principal, então a primeira sala é 0, a segunda 1, etc.
 S = range(len(salas['Sala']))
-# print(salas['Sala'][S[2]]) # retorna uma sala
+# print(salas.loc[S[2], 'Sala']) # retorna uma sala
 
 # Faço uma lista de quais salas são de laboratório (salvo como índices)
-sigma_s = [1 if salas['Laboratório'][s] == 'Sim' else 0 for s in S]
+sigma_s = [1 if salas.loc[s, 'Laboratório'] == 'Sim' else 0 for s in S]
 # print(sigma_s) # sigma_s = 1 se a sala s eh de laboratório
 
 # Faço uma lista de quais turmas/disciplinas requisitaram aula em laboratório
-tal_t = [0 if df['Utilizará laboratório? (sim ou não)'][t] == 'Não' else 1 for t in T]
+tal_t = [0 if df.loc[t, 'Utilizará laboratório? (sim ou não)'] == 'Não' else 1 for t in T]
 # print(tal_t) # tal_t = 1 se a turma/disciplina t precisar de laboratório
 
 # Para não precisar chamar o mesmo método que calcula o comprimento das listas mais importantes, eu salvo eles em variáveis
@@ -277,21 +253,17 @@ eta_as = {(a, s): 1 if tam_t[int((a % lenT ))] <= cap_s[s] \
 # Agora, se 'a' fosse das 14:20 às 16:00, teríamos ainda que 14.33 < 18, mas teríamos que 16.33 > 16, logo, não é considerado conflito
 theta_aal = {(a, al): 1 if (dia_a[a] == dia_a[al] and (start_a[a] < end_a[al] and start_a[al] < end_a[a])) \
              else 0 for a in range(lenA) for al in range(lenA)}
-
 # print(theta_aal)
 
 # A variável uso_as é um dicionário em formato de matriz para contabilizar o quanto de espaço vazio uma aula deixa em uma determinada sala
 # Ex: se uma aula 'a' tem 30 alunos, ela ocupa 67% de uma sala 's' com 45 lugares (deixando 33% da sala vazia),
 # mas 100% de uma sala 's' com 30 lugares (deixando 0% da sala vazia). Quando menor o valor de uso_as, melhor.
 uso_as = {(a, s): 100 * (1 - (tam_t[int((a % lenT))]/cap_s[s])) for a in range(lenA) for s in range(lenS)}
-
 # print(uso_as)
 
 # A variável dis é um dicionário em formato de matriz para contabilizar a distância (arbitrária) de ir de uma sala 's' até uma sala 'sl'.
 # Ex: A distância de uma sala do bloco 3 até uma sala do bloco 5 é de 6 unidades de distância, enquanto a distância de uma sala do bloco 3
 # até uma sala do bloco 4 é de 1 unidade de distância.
-
-# dis = {(s, sl): salas.iloc[s, sl+3] for s in range(salas.shape[0]) for sl in range(salas.shape[1]-3)}
 dis = {(s, sl): salas.loc[s, salas.columns[sl+3]] for s in range(lenS) for sl in range(lenS)}
 # print("dis =", dis)
 
@@ -399,8 +371,9 @@ for a in range(lenA):
         
 seguidas = [1 for _ in range(lenT)]
 for t in A_s:
-    # print(df.loc[int(t[0] % lenT), 'Disciplina (código)'])
     seguidas[int(t[0] % lenT)] = 2
+print(seguidas)
+
 
 """## Modelo Principal"""
 
@@ -459,6 +432,8 @@ if sys.argv[7]:
     peso_pref = int(sys.argv[7])
 
     obj = obj + peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS))
+
+
 # Função Objetivo.
 # Queremos minimizar o espaço vazio das salas, descrito pela somatória de (uso_as * x_as), que contabiliza o uso da sala 's' pela aula 'a'.
 # Além disso, queremos também minimizar o número de trocas de sala, descrito pela somatória de y_t, que contabiliza
@@ -466,70 +441,10 @@ if sys.argv[7]:
 # Caso a variável c_st esteja sendo usada, por ela ser uma variável de "verificação", ela não precisa ser contabilizada na função objetivo.
 # Caso a variável c_st esteja sendo usada, a interpretação de y_t muda, mas sua influência na função objetivo não é alterada.
 # Pelo mesmo motivo de c_st não estar contabilizada na função objetivo, a variável w_cs também não está.
-# model.objective = minimize(peso_x * xsum(uso_as[a,s] * x_as[a,s] for a in range(lenA) for s in range(lenS)) + \
-#                            peso_v * xsum(dis[s,sl] * v_cssl[c,s,sl] for c in range(lenC) for s in range(lenS) for sl in range(lenS) if s != sl) + \
-#                            peso_z * xsum(z_as[a, s] for a in range(lenA) for s in range(lenS)) + \
-#                            peso_pref * xsum(pref[s] * x_as[a,s] for a in range(lenA) for s in range(lenS)) + \
-#                           peso_y*xsum(y_t[t] for t in range(lenT)))
+
 model.objective = minimize(obj)
 
-
-
-# # Restrições
-# # Para toda aula que não tem um horário ou número de matriculados definido, faço com que ela não seja alocada em nenhuma sala.
-# for a in range(lenA):
-#     if start_a[a] == 0 or tam_t[a % lenT] == 0:
-#         model += xsum(x_as[a,s] for s in range(lenS)) == 0
-
-# # Para toda aula que tem um horário e número de matriculados definido, faço com que ela seja alocada em alguma sala.
-# for a in range(lenA):
-#     if start_a[a] != 0 and tam_t[a % lenT] != 0:
-#         # Se a aula possuir uma sala fixada, garanto que ela será fixada naquela sala.
-#         if sala_fixa[a] != '0':
-#             # A variável fixa possui o valor da sala onde a sala 'a' está fixada.
-#             # if ', ' in df.loc[a % lenT, 'Sala']:
-#             #     fixa = df.loc[a % lenT, 'Sala'].split(', ')
-#             # fixa = df.loc[a % lenT, 'Sala']
-#             # # Caso a aula seja ministrada no LEM, eu a desconsidero do modelo, atribuindo o valor 0 para a variável em todas as salas.
-#             # if fixa == '6-307':
-#             #     model += xsum(x_as[a,s] for s in range(lenS)) == 0
-#             # # Caso contrário ela esteja fixada em uma sala comum.
-#             # else:
-#             #     s = salas['Sala'].tolist().index(fixa)
-#             #     # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-#             #     model += xsum(x_as[a,s] for s in range(lenS)) == 1
-#             #     # E garanto que a sala alocada pela aula 'a' é a que ela está fixada.
-#             #     model += x_as[a,s] == 1
-#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
-#             aux_s = salas['Sala'].tolist().index(sala_fixa[a])
-#             model += x_as[a,aux_s] == 1
-#         # Se a aula 'a' não está fixada em uma sala, verifico se ela é de laboratório.
-#         elif lab_tal[a] == 0: # Se a aula não é de laboratório, garanto que ela não seja alocada em um laboratório.
-#             # Garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
-#             # E garanto que a aula 'a' não poderá ser alocada em nenhuma sala de laboratório.
-#             model += xsum(x_as[a,s] for s in salas_labs) == 0
-#         else: # Se ela é de laboratório, garanto que ela só pode ser alocada em um laboratório
-#             # Garanto que a aula 'a' poderá ser alocada em alguma sala de laboratório.
-#             model += xsum(x_as[a,s] for s in salas_labs) == 1
-#             # E garanto que a aula 'a' poderá ser alocada em apenas uma sala entre todas as disponíveis.
-#             model += xsum(x_as[a,s] for s in range(lenS)) == 1
-
-        # if a in sala_proibida.keys():
-        #     proibir_sala = sala_proibida.get(a)
-        #     print(proibir_sala)
-        #     if len(proibir_sala) > 1:
-        #         # proibir_sala = proibir_sala.split(', ')
-        #         aux_s = [salas['Sala'].tolist().index(proibir_sala[s]) for s in range(len(proibir_sala))]
-        #         model += xsum(x_as[a,s] for s in aux_s) == 0
-        #     else:
-        #         s = salas['Sala'].tolist().index(proibir_sala)
-        #         model += x_as[a,s] == 0
-                
-            # print(proibir_sala)
-            # aux_s = [salas['Sala'].tolist().index(proibir_sala[s]) for s in range(len(proibir_sala))]
-            # model += xsum(x_as[a,s] for s in aux_s) == 0
-
+# Restrições
 
 # (3.3) - A sala precisa ser capaz de receber todos os inscritos da aula.
 # Essa restrição garante que uma aula 'a' só pode ser alocada em uma sala 's' que consegue suportá-la, e isso é verificado
@@ -553,7 +468,8 @@ for a in range(lenA):
     for al in range(lenA):
         # Verifico se as aulas 'a' e 'al' possuem conflito de horário.
         if theta_aal[a, al] == 1 and a != al:
-            # Se elas possuem conflito de horário, então garanto que as duas não possam ser alocadas para a mesma sala.
+            # Se elas são aulas diferentes e possuem conflito de horário, 
+            # então garanto que as duas não possam ser alocadas para a mesma sala.
             for s in range(lenS):
                 model += x_as[a,s] + x_as[al,s] <= 1
             # Caso ambas as disciplinas sejam de laboratório, também é necessário considerar o conflito de horários entre as
@@ -582,23 +498,9 @@ for a in range(lenA):
                 model += x_as[al, salas['Sala'].to_list().index('6-305/6-306')] + \
                 x_as[a, salas['Sala'].to_list().index('6-306')] <= 1
 
-# nr = 0
-# (3.5) - Controla o número de trocas de salas por
-# Para cada turma/disciplina 't'.
-# for t in range(lenT):
-#     # Crio uma lista com as possíveis salas que comportam as aulas da turma/disciplina 't'.
-#     salas_possiveis = list(dict.fromkeys([s for s in range(lenS) for a in A_tt[t] if eta_as[a,s] == 1]))
-#     # Para cada possível combinação de salas alocadas para as aulas da turma/disciplina 't', tento manter o valor de y_t no menor possível.
-#     for subS in [list(perm) for perm in list(permutations(salas_possiveis, len(A_tt[t])))]:
-#         model += xsum(x_as[A_tt[t][n], subS[n]] for n in range(len(A_tt[t]))) <= 1 + y_t[t]
-        # nr += 1
-# print(nr)
 
-# Abordagem com variável de contagem
-# nr = 0
 # Para cada turma/disciplina 't'.
 for t in range(lenT):
-    # model += len(A_tt[t]) >= y_t[t]
     # Para cada sala 's'.
     for s in range(lenS):
         # Adiciono uma restrição que verifica se a sala 's' foi utilizada pela turma/disciplina 't'.
@@ -607,18 +509,10 @@ for t in range(lenT):
         # Caso ela tenha o valor 1, então há espaço para que uma aula de 't' seja alocada na sala 's', e eu levo em conta o caso de
         # mais de uma aula de 't' ser alocada na mesma sala, até o número real de aulas da turma/disciplina 't'.
         model += xsum(x_as[a, s] for a in A_tt[t]) <= len(A_tt[t]) * c_st[s, t]
-    #     nr += 1
+
     # Com as restrições de verificação concluídas e adicionadas, coloco uma restrição que garante que o valor de y_t reflita
     # o número de salas diferentes usadas pela turma/disciplina 't'.
     model += y_t[t] >= xsum(c_st[s, t] for s in range(lenS))
-#     nr += 1
-# print(nr)
-
-# Para cada turma/disciplina com horários seguidos um do outro, garanto que ambas sejam alocadas na mesma sala.
-# Novamente, assumo que não tem aulas seguidas em mais de 2 horários.
-# for t in A_s:
-#     for s in range(lenS):
-#         model += x_as[t[0],s] == x_as[t[1],s]
 
 
 # Restrição de superlotação de uma sala.
@@ -672,7 +566,6 @@ if sys.argv[4]:
 # Defino a tolerância do ótimo com algum valor, isto é, defino uma distância máxima que eu tolero entre uma solução factível e uma solução ótima.
 model.opt_tol = 0.1
 # Desabilito as saídas de execução do modelo.
-# set_solver_log(False)
 model.verbose = 0
 model.tol = 1e-6
 model.integer_tol = 1e-6
@@ -709,34 +602,14 @@ for t in range(lenT):
     # Se o valor de y_t for maior que 0.5, quer dizer que a turma/disciplina:
     # 1) teve uma ou mais trocas de sala, se a interpretação de y_t for o número de trocas de sala feitas pela turma/disciplina 't'.
     # 2) teve uma ou mais salas utilizadas, se a interpretação de y_t for o número de salas utilizadas pela turma/disciplina 't'.
-    if y_t[t].x >= 0.5:
-        # Imrpimo o valor de y_t e contabilizo o ocorrido na variável trocas.
-        # print(y_t[t].x)
+    if y_t[t].x >= 1.5:
+        # Imprimo o valor de y_t e contabilizo o ocorrido na variável trocas.
         trocas += 1
-#         print(f"Houve troca pra turma/disciplina {t}")
 
-# Salvando a solução em um arquivo .txt
-# Seguindo a mesma ideia para contar contabilizar os resultados anteriores, salvo os valores das variáveis importantes em um arquivo .txt.
-# with open("X da solução - m2.2.txt", "w") as f:
-#     for a in range(lenA):
-#         for s in range(lenS):
-#             if x_as[a, s].x > 0.5:  # Salvo apenas as variáveis relevantes
-#                 f.write(f"{a},{s},{x_as[a, s].x}\n")  # Salvo no formato 'a,s,valor'
 
-# with open("Y da solução - m2.2.txt", "w") as f:
-#     for t in range(lenT):
-#         if y_t[t].x > 0.5:
-#             f.write(f"{t},{y_t[t].x}\n")
-
-# Imprimo as informações coletadas após o término da execução do modelo.
-# print(trocas)
-# print(aulas)
 print(f"Valor da solução: {model.objective_value}")
 print(f"Valor do GAP da solução: {model.gap:.2%}")
 print(f"Valor das salas ocupadas: {ocupacao}.")
-
-# print(alocacoes)
-# print(teste)
 
 """## Salvamento dos dados"""
 
@@ -805,13 +678,6 @@ for a in range(lenA):
                 ano_dados.append(df['Ano dos dados'][index])
 
 
-# Imprimo o tamanho das listas apenas para verificar que não houve nenhum problema estranho.
-# Note que, aqui, as disciplinas do LEM estão contabilizadas no cálculo.
-# print(len(codigos))
-# print(len(horarios))
-# print(len(inscritos))
-# print(len(salas_alocadas))
-
 # A variável dados_solucao é um dicionário contendo as listas que acabamos de criar, e essa variável será
 # usada para criar um novo dataframe que será salvo no formato de uma planilha do excel.
 dados_solucao = {
@@ -857,125 +723,6 @@ except Exception as e:
     traceback.print_exc(file=sys.stderr)
     sys.exit(1)
 
-# """## Conversão de tabela"""
-
-# # Utilizando a planilha que acabou de ser criada, criaremos uma segunda planilha para ser enviada para o sistema da intranet, automaticamente
-# # computando as decisões feitas à respeito da alocação.
-
-# # Leio o arquivo
-# # file_path = "dados_solucao - m1.2.xlsx"
-# sti = pd.read_excel(file_path)
-
-# # Defino uma função para extrair o horário das aulas na planilha.
-# def extrair_horarios(horario):
-#     # Remove espaços extras e deixa minúsculo para uniformizar.
-#     horario = horario.strip().lower()
-
-#     # Expressão regular para identificar o padrão: dia da semana e dois horários.
-#     pattern = r"(\bseg(?:unda)?\b|\bter(?:ça)?\b|\bqua(?:rta)?\b|\bqui(?:nta)?\b|\bsex(?:ta)?\b|\bs[áa]b(?:ado)?\b|\bdom(?:ingo)?\b)\s*-?\s*(\d{2}:\d{2})\s*[/-]?\s*(\d{2}:\d{2})"
-
-#     # Tenta encontrar correspondências com a expressão regular.
-#     match = re.search(pattern, horario)
-
-#     if match:
-#         dia = match.group(1).capitalize()  # Dia da semana.
-#         horario_inicio = match.group(2)    # Horário de início.
-#         horario_fim = match.group(3)       # Horário de fim.
-#         # Retorna os valores como formato padrão.
-#         return f"{dia} - {horario_inicio}", f"{dia} - {horario_fim}"
-#     else:
-#         return None, None
-
-# # Aplica a função à coluna 'Horário' e cria novas colunas 'Hora de Início' e 'Hora de Fim'.
-# sti['Hora de Início'], sti['Hora de Fim'] = zip(*sti['Horário'].apply(extrair_horarios))
-
-# # Anoto as salas correspondentes com as aulas.
-# Sala = []
-# # Para cada célula da coluna 'Sala' da planilha
-# for i in sti['Sala']:
-#     # Se ela for uma sala comum, adiciono-a na lista de sala
-#     if i != '6-305/6-306' and i != '6-303/6-304':
-#         Sala.append(i)
-#     # Se ela for a sala conjunta '6-305/6-306', salvo ela apenas como '6-305', seguindo o padrão da planilha do STI.
-#     elif i == '6-305/6-306':
-#         Sala.append('6-305')
-#     # Se ela for a sala conjunta '6-303/6-304', salvo ela apenas como '6-303', seguindo o padrão da planilha do STI.
-#     else:
-#         Sala.append('6-303')
-# # print(Sala)
-
-# # Novamente, crio um dicionário com os dados obtidos e organizados.
-# # Note que o tipo de 'Aula', apresentado na coluna de mesmo nome, sempre é "Aula" por ser o único tipo que estamos alocando.
-# # Note também que, para discernir entre qual sala de laboratório estará sendo usada (entre a sala única e a conjunta),
-# # utilizamos os valores das células da coluna 'Sala' da planilha original.
-# dados_organizados = {
-#     'Sala': Sala,
-#     'Disciplina': sti['Disciplina'],
-#     'Descrição': sti['Nomes'],
-#     'Aula': ["Aula" for i in range(len(sti['Sala']))],
-#     'Dia e hora início': sti['Hora de Início'],
-#     'Dia e hora fim': sti['Hora de Fim'],
-#     'Docente': sti['NUSP'],
-#     'Compartilhada com outra sala?': ["S" if (sti['Sala'][i] == '6-305/6-306' or sti['Sala'][i] == '6-303/6-304') \
-#                                       else "N" for i in range(len(sti['Sala']))]
-# }
-
-# # Converto o dicionário para um dataframe.
-# sti_planilha = pd.DataFrame(dados_organizados)
-
-# # Caminho do novo arquivo Excel a ser criado.
-# # file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
-# full_name = "Planilha do STI dada pelo Modelo.csv"
-# file_path = os.path.join(pasta_dados, full_name)
-
-
-# # Crio um novo arquivo Excel e escrevo os dados.
-# # with pd.ExcelWriter(file_path1, engine='openpyxl') as writer:
-# #     sti_planilha.to_csv(writer, sheet_name='Resultados', index=False, sep=';', encoding='latin-1')
-# try:
-#     sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-#     print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
-# except PermissionError as e:
-#     if e.errno == 13:
-#         print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(2)
-#     else:
-#         print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(1)
-# except Exception as e:
-#     print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#     traceback.print_exc(file=sys.stderr)
-#     sys.exit(1)
-
-
-
-# for sala in sti_planilha['Sala'].unique():
-#     sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
-#     # print(len(df_aux))
-#     full_name = f"Planilha do STI dada pelo Modelo - {sala}.csv"
-
-#     file_path = os.path.join(pasta_dados, full_name)
-
-#     try:        
-#         sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-#         print(f"Novo arquivo '{full_name}' criado e dados salvos com sucesso!")
-#     except PermissionError as e:
-#         if e.errno == 13:
-#             print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
-#             traceback.print_exc(file=sys.stderr)
-#             sys.exit(2)
-#         else:
-#             print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#             traceback.print_exc(file=sys.stderr)
-#             sys.exit(1)
-#     except Exception as e:
-#         print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(1)
-
-
 """## Factibilidade e Verificação"""
 
 # Via de regra, se o modelo for infactível, é porque não tem como alocar todas as aulas nas salas.
@@ -990,8 +737,6 @@ except Exception as e:
 # não deveria estar na planilha, afinal, não tem motivo para alocar uma sala para 0 pessoas.
 
 # Traço o caminho até a planilha feita para o STI.
-# file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
-# file_path = "sti_planilha - m2.2.xlsx"
 planilha_dados = pd.read_excel(os.path.join(pasta_dados, "Dados da solução do Modelo.xlsx"))
 
 # Crio uma variável no formato de lista com todas as turmas/disciplinas cujas aulas foram alocadas.
@@ -1004,428 +749,6 @@ for t in disciplinas:
     # Se ela não fazer parte da lista de turmas/disciplinas alocadas pelo modelo, escrevo um aviso para o usuário.
     if t not in alocadas:
         print(f"A disciplina {t} não foi alocada. Verifique os horários e o número de vagas, pode haver algum erro de digitação.")
-
-# """## Visualização de Planilha
-
-# ### Códigos e funções gerais para as visualizações
-# """
-
-# # Os próximos códigos são feitos para criar arquivos de planilha bem semelhantes,
-# # então fiz uma pequena coletânea de funções que são recorrentemente usadas.
-
-# # Leio novamente a planilha contendo a solução do modelo.
-# # dfv = pd.read_excel('C:/Users/gabri/Estágio/Códigos/dados_solucao - m1.2.xlsx')
-# dfv = pd.read_excel(os.path.join(pasta_dados, "Dados da solução do Modelo.xlsx"))
-
-# # Ordena o DataFrame com base na coluna desejada, no caso, 'Sala'.
-# dfv = dfv.sort_values(by='Sala')
-
-# # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução.
-# salas1 = dfv['Sala'].unique().tolist()
-
-# # Configurar horário inicial e final, isto é, o intervalo dos horários que serão colocados na planilha para a visualização.
-# start_time = datetime.strptime("07:00", "%H:%M")
-# end_time = datetime.strptime("23:30", "%H:%M")
-
-# # Crio uma lista para conter os valores do intervalo de horários.
-# horarios = []
-# # Crio uma variável com o horário inicial.
-# current_time = start_time
-# # Enquanto o horário inicial não for maior que o horário final, isto é, enquanto houver valores para serem colocados no intervalo.
-# while current_time <= end_time:
-#     # Adiciono o horário atual na lista de horários.
-#     horarios.append(current_time.strftime("%H:%M"))
-#     # Faço um acréscimo de 30 minutos no horário atual.
-#     current_time += timedelta(minutes=30)
-
-# # print(horarios)
-
-# # Função para padronizar o horário
-# def padronizar_horario_intranet(horario):
-#     # Para padronizar e facilitar a leitura dos horários, retiro espaços do horário.
-#     if ' ' in horario:
-#         horario = str(horario).replace(' ', '')
-#     # Para padronizar e facilitar a leitura dos horários, substituo 'h' por ':', caso tenha no horário.
-#     if 'h' in horario:
-#         horario = str(horario).replace('h', ':')
-#     # Separo o dia do horário da aula.
-#     dia, intervalo = horario.split('-')
-#     # Separo o começo e o fim da aula.
-#     start, end = intervalo.split('/')
-#     # Traduzo o horário para um objeto de data, ou seja, crio um objeto com propriedades e métodos dedicados à manipulação de horários do dia.
-#     start_dt = datetime.strptime(start, "%H:%M")
-#     end_dt = datetime.strptime(end, "%H:%M")
-#     # horario_dt = datetime.strptime(h, "%H:%M")
-
-#     # Começo uma análise para ver como o horário fica mais adequado.
-#     # Se o horário de início da disciplina é menor que 18, ou seja, 8:10,10:10,14:20 e 16:20, coloco os minutos em 0.
-#     if start_dt.hour < 18:
-#         start_dt = start_dt.replace(minute=0)
-#     # Caso contrário, isto é, 18, 19 e 21, mantém normal.
-
-#     # Se o horário de fim da aula é menor ou igual que 18, ou seja, 9:50, 11:50, 16 e 18
-#     if end_dt.hour <= 18:
-#         # Se os minutos do horário de fim da aula são inferiores a 30.
-#         if end_dt.minute < 30:
-#             # Arredondo o horário para a hora anterior, com 30 minutos.
-#             # Ex: 18:00 se torna 17:30.
-#             end_dt = end_dt.replace(minute=30,hour=end_dt.hour - 1)
-#         # Se os minutos do horário de fim são superiores a 30.
-#         elif end_dt.minute > 30:
-#             # Apenas deixo os minutos do horário como 30.
-#             # Ex: 09:50 se torna 09:30
-#             end_dt = end_dt.replace(minute=30)
-#     # Se o horário de fim da aula é maior que 18, ou seja, 19, 20:40 e 22:40
-#     else:
-#         # Se os minutos do horário de fim são inferiores a 30, mas superiores a 0.
-#         if end_dt.minute < 30 and end_dt.minute > 0:
-#             # Apenas deixo os minutos do horário como 0.
-#             # Ex: 19:10 se torna 19:00
-#             end_dt = end_dt.replace(minute=0)
-#         # Se os minutos do horário de fim são superiores a 30.
-#         elif end_dt.minute > 30:
-#             # Apenas deixo os minutos do horário como 30.
-#             # Ex: 20:40 se torna 20:30
-#             end_dt = end_dt.replace(minute=30)
-#         # Se os minutos forem exatamente 0, eu considero que a aula acaba meia hora antes do denotado.
-#         # Ex: fim às 19:00 se torna 18:30 para evitar problemas com disciplinas que começam às 19:00
-#         else:
-#             end_dt = end_dt.replace(minute=30,hour=end_dt.hour - 1)
-#     # start_dt.replace(hour=start_dt.hour, minute=start_dt.minute).s
-#     # end_dt.replace(hour=end_dt.hour, minute=end_dt.minute)
-#     # return str(f'{dia} - {horario_ajustado.strftime("%H:%M")}')
-#     # Retorno o novo horário traduzido.
-#     return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
-
-# # Crio uma variável com a quantidade de colunas necessárias para colocar todos os horários do intervalo.
-# sala_colunas = len(horarios)
-# # Lista com os nomes dos dias da semana que serão usados na visualização.
-# dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
-
-# # Função para preencher a planilha com os nomes das disciplinas.
-# def preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
-#     # Defino um preenchimento verde para preencher as células com o nome das disciplinas.
-#     green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
-
-#     # Defino um estilo de borda para colocar nas células.
-#     thin_border = Border(
-#         left=Side(style="thin"),
-#         right=Side(style="thin"),
-#         top=Side(style="thin"),
-#         bottom=Side(style="thin")
-#     )
-
-# #     sala = "Sala 101"
-#     # Mesclo as células na posição correta para colocar o número/nome da sala.
-#     ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
-#     # Adiciono o número/nome da sala na célula mesclada.
-#     ws.cell(row=start_row, column=start_column).value = sala
-#     # Defino o alinhamento do texto da célula mesclada para deixar o número/nome da sala no centro da célula.
-#     ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
-#     # Por conta da célula mesclada funcionar de forma diferente de uma célula normal, é necessário aplicar o estilo da borda
-#     # em todas as células que foram mescladas.
-#     for col in range(1, end_column):
-#         ws.cell(row=start_row, column=col+1).border = thin_border
-
-#     # Preencho a primeira coluna com dias da semana.
-#     for i, dia in enumerate(dias_semana, start=start):
-#         ws.cell(row=i, column=start_column-1).value = dia
-#         ws.cell(row=i, column=start_column-1).border = thin_border
-
-#     # Preencho o horário nas colunas das células que foram mescladas, semelhante a um cabeçalho.
-#     for j, horario in enumerate(horarios, start=start_column):
-#         ws.cell(row=start_row+1, column=j).value = horario
-#         ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
-#         ws.cell(row=start_row+1, column=j).border = thin_border
-
-#     # Para todas as linhas da tabela.
-#     for row in range(start, start + len(dias_semana)):
-#         # Para todas as colunas da tabela.
-#         for col in range(start_column, start_column + len(horarios)):
-#             # Aplico a borda.
-#             ws.cell(row=row, column=col).border = thin_border
-#     # print(horarios)
-
-#     # Preenchimento das aulas nas planilhas.
-#     # Para cada horário de aula na lista de aulas da sala
-#     for h in aula:
-#         # print(h)
-#         # Separo o dia e o intervalo da aula.
-#         dia_h, int_h = h.split(' - ')
-#         # Separo o horário de fim e de início da aula.
-#         start_h, end_h = int_h.split('/')
-#         # print(type(start_h), end_h)
-#         # Para cada dia da semana.
-#         for i, dia in enumerate(dias_semana, start=start):
-#             # Verifico se o dia em questão é o mesmo que o da aula sendo analisada.
-#             if ws.cell(row=i, column=start_column-1).value == dia_h:
-#                 # Se for, salvo o índice das colunas de início e fim do intervalo da aula, isto é,
-#                 # identifico os índices das células que serão mescladas para colocar o nome da turma/disciplina da aula.
-#                 # Ex: uma aula de Terça das 08:10 às 09:50 é considerada como das 08:00 às 09:30,
-#                 # então as células mescladas são as da linha de Terça, começando na coluna das 08:00 até a coluna das 09:30.
-#                 index_start = horarios.index(start_h)
-#                 index_end = horarios.index(end_h)
-
-#                 # Mesclo as células necessárias.
-#                 ws.merge_cells(start_row=i,start_column=index_start+2, end_row=i, end_column=index_end+2)
-#                 # Defino uma variável para simbolizar a célula do topo esquerdo da célula mesclada (que é a que deve ser alterada, neste caso).
-#                 merged_cell = ws.cell(row=i,column=index_start+2)
-#                 # Escrevo o nome da turma/disciplina da aula em questão, aplico o preenchimento verde, e o alinhamento de centro.
-#                 merged_cell.value = disciplina[aula.index(h)]
-#                 merged_cell.fill = green_fill
-#                 merged_cell.alignment = Alignment(horizontal="center", vertical="center")
-
-#                 # Contabilizo a aula colocada na planilha.
-#                 aulas += 1
-#     # Retorno o número de aulas colocadas na planilha dessa forma.
-#     return aulas
-
-# # Função que define a largura das colunas da planilha.
-# def ajusta_largura(ws):
-#     # Para cada coluna na planilha.
-#     for col in ws.columns:
-#         # Defino uma variável de comprimento máximo
-#         max_length = 0
-#         # Verifico se a primeira célula da coluna é uma célula mesclada.
-#         if type(col[0]) == openpyxl.cell.cell.MergedCell:
-#             # Se for, obtenho a letra da coluna pela célula abaixo, pois uma célula mesclada não possui o método necessário para obtê-la.
-#             column = col[1].column_letter  # Obtém a letra da coluna
-#         else:
-#             # Caso contrário, obtenho a letra da coluna pela primeira célula mesmo.
-#             column = col[0].column_letter
-
-#         # Para cada célula da coluna.
-#         for cell in col:
-#             # Utilizo o método try-catch para ignorar erros ao analisar uma célula mesclada, já que ela funciona de forma diferente.
-#             try:
-#                 # Verifico se o comprimento do conteúdo da célula é maior que meu comprimento máximo.
-#                 if len(str(cell.value)) > max_length:
-#                     # Em caso positivo, atualizo o comprimento máximo.
-#                     max_length = len(str(cell.value))
-#             except:
-#                 pass
-#         # Com o comprimento máximo, atualizo a largura das colunas da planilha para serem de um tamanho próximo ao mais alto.
-#         ws.column_dimensions[column].width = (max_length) * 1.1
-
-# """### Visualização Completa (Todas as aulas e salas)"""
-
-# # Cria o workbook e a sheet, isto é, um objeto de planilha do Excel com a planilha ativa.
-# wb = Workbook()
-# ws = wb.active
-# ws.title = "Horário de Aulas"
-
-# # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-# start_row = 1 # Linha de início.
-# start_column = 2 # Coluna de início.
-# end_row = 1 # Linha de término.
-# end_column = 1 + sala_colunas # Coluna de término.
-# start = start_row + 2 # Linha de início para listar os dias da semana.
-# space_between = 3 # Número de linhas entre a tabela de uma sala para a de outra sala.
-
-# # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
-# aulas = 0
-
-# # Para cada sala utilizada na solução.
-# for sala in salas1:
-#     # A variável df_filtrado é um dataframe com as linhas de dados do dataframe da solução, cuja coluna é a mesma que a sala.
-#     # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual.
-#     df_filtrado = dfv[dfv['Sala'] == sala]
-
-#     # A variável aula é uma lista dos horários das aulas após serem padronizados.
-#     aula = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist()
-
-#     # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
-#     disciplina = df_filtrado['Disciplina'].tolist()
-
-#     # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
-#     aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-
-#     # Feito isso, ttualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
-#     start_row = start_row + 2 + len(dias_semana) + space_between
-#     end_row = start_row
-#     start = start_row + 2
-
-# # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
-# ajusta_largura(ws)
-
-# # Por fim, salva o arquivo.
-# # Por fim, salva o arquivo.
-# full_name = f"Visualização completa da Solução.xlsx"
-
-# file_path = os.path.join(pasta_dados, full_name)
-
-# wb.save(file_path)
-# print(f"Arquivo '{full_name}' salvo com sucesso!")
-# print("Número de aulas alocadas:", aulas)
-
-# """### Visualização por Curso"""
-
-# # Cria o workbook, isto é, um objeto de planilha do Excel.
-# wb = Workbook()
-
-# # Para cada curso do ICMC
-# for c in curriculos:
-#     # Crio uma planilha com o nome do curso.
-#     ws = wb.create_sheet(title=c)
-
-#     # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-#     start_row = 1 # Linha de início.
-#     start_column = 2 # Coluna de início.
-#     end_row = 1 # Linha de término.
-#     end_column = 1 + sala_colunas # Coluna de término.
-#     start = start_row + 2 # Linha de início para listar os dias da semana.
-#     space_between = 3 # Número de linhas entre a tabela de uma sala para a de outra sala.
-
-#     # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
-#     aulas = 0
-
-#     # A variável df_filtrado, neste caso, é um dataframe com um filtro de curso.
-#     # Em outras palavras, é um dataframe com as aulas que são ministradas para o curso atual.
-#     df_filtrado = dfv[dfv['Cursos'].str.contains(c, na=False)]
-
-#     # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por curso.
-#     salas1 = df_filtrado['Sala'].unique().tolist()
-
-#     # Para cada sala utilizada na solução.
-#     for sala in salas1:
-#         # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
-#         # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são ministradas para o curso atual.
-#         df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
-
-#         # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
-#         aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
-
-#         # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
-#         disciplina = df_filtrado_aux['Disciplina'].tolist()
-
-#         # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
-#         aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-
-#         # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
-#         start_row = start_row + 2 + len(dias_semana) + space_between
-#         end_row = start_row
-#         start = start_row + 2
-
-#     # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
-#     ajusta_largura(ws)
-#     print(f"Número de aulas alocadas do curso {c}: {aulas}")
-
-# # Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
-# wb.remove(wb.active)
-# # Por fim, salvo o arquivo.
-# # Por fim, salva o arquivo.
-# full_name = f"Visualização por curso.xlsx"
-
-# file_path = os.path.join(pasta_dados, full_name)
-
-# try:
-#     wb.save(file_path)
-#     print(f"Arquivo '{full_name}' salvo com sucesso!")
-# except PermissionError as e:
-#     if e.errno == 13:
-#         print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(2)
-#     else:
-#         print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(1)
-# except Exception as e:
-#     print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#     traceback.print_exc(file=sys.stderr)
-#     sys.exit(1)
-
-# """### Visualização por Departamento"""
-
-# # Cria o workbook, isto é, um objeto de planilha do Excel.
-# wb = Workbook()
-
-# # Crio uma lista dos departamentos do ICMC, além de considerar disciplinas de outros departamentos que precisam de alocação.
-# departamentos = ['SME', 'SMA', 'SCC', 'SSC', 'Outras']
-
-# # Para cada departamento da lista.
-# for d in departamentos:
-#     # Crio uma planilha com o nome do departamento.
-#     ws = wb.create_sheet(title=d)
-
-#     # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-#     start_row = 1
-#     start_column = 2
-#     end_row = 1
-#     end_column = 1 + sala_colunas
-#     start = start_row + 2
-#     space_between = 3
-
-#     # A variável aulas é um contador de quantas aulas foram colocadas na planilha, facilitando a verificação.
-#     aulas = 0
-
-#     # Verifico se o departamento atual não é do ICMC
-#     if d == 'Outras':
-#         # Caso o departamento atual não seja nenhum departamento do ICMC, eu crio um filtro especial com todas as linhas das aulas
-#         # que não são dos departamentos do ICMC.
-#         filtro = ~(
-#             dfv['Disciplina'].str.startswith('SME', na=False) |
-#             dfv['Disciplina'].str.startswith('SMA', na=False) |
-#             dfv['Disciplina'].str.startswith('SCC', na=False) |
-#             dfv['Disciplina'].str.startswith('SSC', na=False)
-#         )
-#         # Após isso, aplico o filtro no dataframe para deixar os dados salvos na variável df_filtrado.
-#         df_filtrado = dfv[filtro]
-#     else:
-#         # Caso o departamento atual seja um dos do ICMC, adiciono os dados à variável df_filtrado.
-#         # Neste caso, ela é um dataframe com um filtro de departamento.
-#         df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
-
-#     # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por departamento.
-#     salas1 = df_filtrado['Sala'].unique().tolist()
-
-#     # Para cada sala utilizada na solução.
-#     for sala in salas1:
-#         # A variável df_filtrado_aux é um dataframe com as linhas de dados do dataframe filtrado, cuja coluna é a mesma que a sala.
-#         # Em outras palavras, é um dataframe com as aulas que foram alocadas na sala atual, e que são oferecidas pelo departamento atual.
-#         df_filtrado_aux = df_filtrado[df_filtrado['Sala'] == sala]
-
-#         # A variável aula é uma lista dos horários das aulas filtradas após serem padronizados.
-#         aula = df_filtrado_aux['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist().copy()
-
-#         # A variável disciplina é uma lista do código das disciplinas cujas aulas foram alocadas na sala atual.
-#         disciplina = df_filtrado_aux['Disciplina'].tolist()
-
-#         # Chamo a função que preenche a planilha, mandando os parâmetros necessários, e retornando o número de aulas alocadas na planilha.
-#         aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-
-#         # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
-#         start_row = start_row + 2 + len(dias_semana) + space_between
-#         end_row = start_row
-#         start = start_row + 2
-
-#     # Depois de todas as aulas terem sido alocadas, ajusto a largura das colunas da planilha.
-#     ajusta_largura(ws)
-#     print(f"Número de aulas alocadas do departamento {d}: {aulas}")
-
-# # Retiro a primeira planilha do arquivo, pois ela está vazia e não precisamos dela.
-# wb.remove(wb.active)
-# # Por fim, salvo o arquivo.
-# full_name = f"Visualização por departamento.xlsx"
-
-# file_path = os.path.join(pasta_dados, full_name)
-
-# try:
-#     wb.save(file_path)
-#     print(f"Arquivo '{full_name}' salvo com sucesso!")
-# except PermissionError as e:
-#     if e.errno == 13:
-#         print(f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). Feche o arquivo e tente novamente.")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(2)
-#     else:
-#         print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#         traceback.print_exc(file=sys.stderr)
-#         sys.exit(1)
-# except Exception as e:
-#     print(f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-#     traceback.print_exc(file=sys.stderr)
-#     sys.exit(1)
 
 """## Planilha de Distribuição"""
 

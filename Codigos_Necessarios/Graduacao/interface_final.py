@@ -117,7 +117,7 @@ def padroniza_dataframe(file_name, header_row, ano):
                                    )
                                 )
                 return None
-            # print(len(str(df.loc[d, header]).split("-")))
+            
             if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
                 messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
                                    (
@@ -454,7 +454,7 @@ def ler_df(caminho_arquivo):
     # No caso de algum erro inesperado ocorrer, alerto o usuário com uma mensagem e o nome do erro.
     except Exception as e:
             messagebox.showerror("Erro", f"Erro ao carregar o arquivo:\n{e}")
-    # return df
+    
 
 """### Concatenar"""
 
@@ -673,7 +673,7 @@ def base_dados(pior_caso):
 
             # Se um arquivo foi selecionado:
             if arquivo:
-            # Salvo o caminho do arquivo.
+                # Salvo o caminho do arquivo.
                 arquivo_base1.set(arquivo)
     def selecionar_dois():
         if not pior_caso:
@@ -862,9 +862,6 @@ def base_dados(pior_caso):
                 messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
                 return
     
-            
-
-        # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
         # Terminada a criação da base de dados, destruo a janela de seleção.
         nova_janela.destroy()
 
@@ -878,8 +875,7 @@ def base_dados(pior_caso):
 # Note que df1 deve sempre ser a base de dados mais recente, enquanto df2 deve sempre ser a base de dados mais antiga.
 def base_pior_caso(df1, df2, sheets):
 
-    # df1 = pd.read_excel(df1_name, sheet_name=sheets)
-    # df2 = pd.read_excel(df1_name, sheet_name=sheets)
+    
     try:
     # Para cada planilha na base de dados mais recente:
         # for sh in df1.sheet_names[1:]:
@@ -1036,10 +1032,6 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
         messagebox.showerror("Erro", f"Erro inesperado: {e}")
         return
 
-    # # Caso algum erro ocorra ao executar o script, alerto o usuário inserindo o erro na janela de saída.
-    # except Exception as e:
-    #     output_text.insert(tk.END, f"\nErro ao executar o script: {e}")
-
 """### Novo Edit Configs"""
 
 # Função que cria uma nova janela para configurar os parâmetros da verificação ou do modelo antes de chamar o script.
@@ -1168,21 +1160,6 @@ def Novo_edit_config(file_name):
             pref.delete(0, "end")
             pref.config(state=DISABLED)
 
-        # Esse par de variáveis não está separado com as demais por elas serem associadas com os únicos valores necessários
-        # tanto para a verificação dos dados, quanto para a execução do modelo, que são o número de alunos da pós a serem
-        # considerados em disciplinas com espelho.
-        # if var71.get():
-        #     checkbox72.config(state=DISABLED)
-        # else:
-        #     checkbox72.config(state=NORMAL)
-        # if var72.get():
-        #     checkbox71.config(state=DISABLED)
-        #     qtd_pos.config(state=NORMAL)
-        # else:
-        #     checkbox71.config(state=NORMAL)
-        #     qtd_pos.delete(0, "end")
-        #     qtd_pos.config(state=DISABLED)
-
     
     # Defino uma linha puramente estética no topo da janela.
     # Em seguida, defino uma legenda e um botão ao lado, ambos desabilitados, apenas para servir como
@@ -1308,21 +1285,6 @@ def Novo_edit_config(file_name):
     preencher uma sala que poderia ser usada para alguma outra função, por ela ser mais fácil de ser preenchida, \n\
     do que mantê-la desocupada para a pós.")
 
-    # ttk.Separator(frame2, orient="horizontal").grid(row=20, column=0, columnspan=3, sticky="ew", pady=(0, 10))
-    # lblq = tk.Label(frame2, text="Defina uma quantidade de alunos da pós para as disciplinas com espelho:")
-    # lblq.grid(row=21,column=0,sticky='w',pady=5)
-    # checkbox71 = Checkbutton(frame2, text="Recomendado: 20", variable=var71, command=atualizar_estado)
-    # checkbox71.grid(row=21, column=1, sticky='w', pady=5)
-    # checkbox72 = Checkbutton(frame2, text="Personalizado: ", variable=var72, command=atualizar_estado)
-    # checkbox72.grid(row=21, column=2, sticky='w', pady=5)
-    # qtd_pos = Entry(frame2, state=DISABLED)
-    # qtd_pos.grid(row=22,column=2,sticky='e',pady=5)
-    # Tooltip(lblq, "A quantidade de alunos da pós refere-se a um valor sugerido pelo usuário \n\
-    # para simbolizar quantos alunos da pós-graduação farão \n\
-    # uma disciplina da graduação que é espelhada com a pós. \n\
-    # Esse valor será aplicado no número de inscritos de QUALQUER \n\
-    # disciplina que tenha espelho com a pós.")
-
     # Defino uma função que detecta as configurações escolhidas pelo usuário.
     def executar_configs_perso():
         # Verifico se ao menos uma das checkbox relacionadas ao peso de alocação foi selecionada,
@@ -1410,13 +1372,6 @@ def Novo_edit_config(file_name):
         else:
             aux_p = pref.get()
 
-        # if var72.get() and not qtd_pos.get():
-        #     messagebox.showwarning("Aviso", "Por favor, digite uma quantidade de alunos da pós para as disciplinas com espelho.")
-        #     return
-        # elif var71.get():
-        #     aux_q = '20'
-        # else:
-        #     aux_q = qtd_pos.get()
 
         # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
         # então só resta rodar o script com elas.
@@ -1442,17 +1397,6 @@ def Novo_edit_config(file_name):
     ttk.Button(frame2, text="Executar com Personalizados",
                 command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
 
-    
-        
-        # # Análogo aos botões que são definidos no menu de configurações do modelo.
-        # ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
-        # ttk.Button(frame2, text="Verificar com Recomendados",
-        #            command=lambda: roda_script(script="verificar_dados.py",
-        #                                        nome=file_name, peso_x='1', peso_y='500', peso_v="",
-        #                                        peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
-
-        # ttk.Button(frame2, text="Verificar com Personalizados",
-        #            command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
 
 """## Análise de Espaços Livres (colocar nos arquivos de modelo)"""
 
@@ -1946,16 +1890,8 @@ def preencher_planilha_dados():
                 else:
                     if preencher_completo:
                         # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
-                        # print("chamado 1")
-                        # print(f"lista outros: {lista_outros}")
-                        # print(f"arquivo_sol: {arquivo_sol.get()}")
-                        # print(f"arquivo_base: {arquivo_base.get()}")
                         preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get(), False)
                     else:
-                        # print("chamado 2")
-                        # print(f"lista outros: {lista_outros}")
-                        # print(f"arquivo_sol: {arquivo_sol.get()}")
-                        # print(f"arquivo_base: {arquivo_base.get()}")
                         escolhas_preenchimento(arquivo_sol.get(), arquivo_base.get())
             # Se não estiver marcada, existem duas opções:
             else:
@@ -1992,34 +1928,17 @@ def preencher_planilha_dados():
 
                 if preencher_completo:
                     # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
-                    # print("chamado 3")
-                    # print(f"lista outros: {lista_outros}")
-                    # print(f"arquivo_sol: {arquivo_sol.get()}")
-                    # print(f"arquivo_base: {arquivo_base.get()}")
                     preenchimento(lista_outros, arquivo_sol.get(), "", False)
                     return
                 else:
-                    # print("chamado 4")
-                    # print(f"lista outros: {lista_outros}")
-                    # print(f"arquivo_sol: {arquivo_sol.get()}")
-                    # print(f"arquivo_base: {arquivo_base.get()}")
-                    # escolhas_preenchimento(lista_outros, arquivo_sol.get(), "")
                     messagebox.showwarning("Aviso", "Selecione uma Base de Dados ou desative sua seleção.")
                     return
             
             if preencher_completo:
                     # Chamo a função que preenche as planilhas de dados com os arquivos selecionados pelo usuário.
-                    # print("chamado 3")
-                    # print(f"lista outros: {lista_outros}")
-                    # print(f"arquivo_sol: {arquivo_sol.get()}")
-                    # print(f"arquivo_base: {arquivo_base.get()}")
                     preenchimento(lista_outros, arquivo_sol.get(), arquivo_base.get(), False)
                     return
             else:
-                # print("chamado 4")
-                # print(f"lista outros: {lista_outros}")
-                # print(f"arquivo_sol: {arquivo_sol.get()}")
-                # print(f"arquivo_base: {arquivo_base.get()}")
                 escolhas_preenchimento(arquivo_sol.get(), arquivo_base.get())
                 return
             
@@ -2029,190 +1948,7 @@ def preencher_planilha_dados():
     else:
         btn_salvar = ttk.Button(frame, text="Preencher Planilhas com os Dados da Solução", command=salvar_valores)
         btn_salvar.grid(row=2, column=0, pady=10)
-    # else:
-
-    #     # Crio uma nova janela em cima da janela principal da interface.
-    #     nova_janela = tk.Toplevel(root)
-    #     nova_janela.title("Selecionar Arquivo e Inserir Valor")
-
-    #     # Crio o frame para armazenar os botões e outros campos da nova janela.
-    #     frame = tk.Frame(nova_janela)
-    #     frame.pack(pady=10, padx=10)
-
-    #     # Defino várias variáveis para armazenar os nomes dos arquivos que serão preenchidos.
-    #     arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
-    #     arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
-    #     arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
-    #     arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
-    #     arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
-    #     arquivo_sol = tk.StringVar(value="Selecione a planilha com os Dados da Solução do Modelo")
-    #     arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
-
-
-
-    #     # Defino funções para selecionar arquivos.
-    #     def selecionar_sme():
-    #         # O usuário seleciona o arquivo contendo a base de dados das aulas.
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
-
-    #         # Se um arquivo foi selecionado:
-    #         if arquivo:
-    #             # Salvo o caminho do arquivo.
-    #             arquivo_sme.set(arquivo)
-    #     def selecionar_sma():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
-    #         if arquivo:
-    #             arquivo_sma.set(arquivo)
-    #     def selecionar_scc():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SCC")
-    #         if arquivo:
-    #             arquivo_scc.set(arquivo)
-    #     def selecionar_ssc():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
-    #         if arquivo:
-    #             arquivo_ssc.set(arquivo)
-    #     def selecionar_outros():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
-    #         if arquivo:
-    #             arquivo_outros.set(arquivo)
-    #     def selecionar_sol():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a planilha com os Dados da Solução do Modelo")
-    #         if arquivo:
-    #             arquivo_sol.set(arquivo)
-    #     def selecionar_base():
-    #         arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
-    #         if arquivo:
-    #             arquivo_base.set(arquivo)
-
-
-
-    #     # Crio uma legenda para ficar ao lado do botão.
-    #     lbl_sme = tk.Label(frame, text="Selecione a planilha do SME")
-    #     # Defino a posição do texto na janela.
-    #     lbl_sme.grid(row=0, column=0, pady=5, sticky='w')
-    #     # Crio o botão para salvar o arquivo do SME.
-    #     btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
-    #     # Defino a posição do botão na janela.
-    #     btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
-
-    #     # As linhas a seguir são análogas.
-    #     lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA")
-    #     lbl_sma.grid(row=1, column=0, pady=5, sticky='w')
-    #     btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
-    #     btn_selecionar_sma.grid(row=1, column=1, padx=5, pady=5)
-
-    #     lbl_scc = tk.Label(frame, text="Selecione a planilha do SCC")
-    #     lbl_scc.grid(row=2, column=0, pady=5, sticky='w')
-    #     btn_selecionar_scc = tk.Button(frame, textvariable=arquivo_scc, command=selecionar_scc, wraplength=250, width=40)
-    #     btn_selecionar_scc.grid(row=2, column=1, padx=5, pady=5)
-
-    #     lbl_ssc = tk.Label(frame, text="Selecione a planilha do SSC")
-    #     lbl_ssc.grid(row=3, column=0, pady=5, sticky='w')
-    #     btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
-    #     btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
-
-    #     lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos")
-    #     lbl_outros.grid(row=4, column=0, pady=5, sticky='w')
-    #     btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
-    #     btn_selecionar_outros.grid(row=4, column=1, padx=5, pady=5)
-
-    #     lbl_sol = tk.Label(frame, text="Selecione a planilha com os Dados da Solução do Modelo")
-    #     lbl_sol.grid(row=5, column=0, pady=5, sticky='w')
-    #     btn_selecionar_sol = tk.Button(frame, textvariable=arquivo_sol, command=selecionar_sol, wraplength=250, width=40)
-    #     btn_selecionar_sol.grid(row=5, column=1, padx=5, pady=5)
-
-    #     lbl_base = tk.Label(frame, text="Selecione a Base de Dados")
-    #     lbl_base.grid(row=6, column=0, pady=5, sticky='w')
-    #     btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_base, wraplength=250, width=40)
-    #     btn_selecionar_base.grid(row=6, column=1, padx=5, pady=5)
-
-    #     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-    #     def salvar_valores():
-    #         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-    #         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
-    #         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
-    #             return
-    #         if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
-    #             return
-    #         if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
-    #             return
-    #         if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
-    #             return
-    #         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-    #             return
-    #         if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
-    #             return
-    #         if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
-    #             return
-
-    #         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-    #         elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
-
-    #         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
-    #         preenchimento(elenco, arquivo_sol.get(), arquivo_base.get(), True)
-
-    #         # # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-    #         # messagebox.showinfo("Sucesso!", f"Os seguintes arquivos foram criados utilizando os Dados da Solução do Modelo:\n\
-    #         # - {os.path.basename(arquivo_sme.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-    #         # - {os.path.basename(arquivo_sma.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-    #         # - {os.path.basename(arquivo_scc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-    #         # - {os.path.basename(arquivo_ssc.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-    #         # - {os.path.basename(arquivo_outros.get()).replace('.xlsx', ' Preenchido.xlsx')}\n\
-    #         # - {os.path.basename(arquivo_base.get()).replace('.xlsx', ' Preenchido.xlsx')}\n")
-
-    #         # E fecho a janela que havia sido criada.
-    #         nova_janela.destroy()
-
-    #     # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-    #     def salvar_valores1():
-    #         # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-    #         # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
-    #         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
-    #             return
-    #         if not arquivo_sma.get() or arquivo_sma.get() == "Selecione a planilha do SMA":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SMA.")
-    #             return
-    #         if not arquivo_scc.get() or arquivo_scc.get() == "Selecione a planilha do SCC":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SCC.")
-    #             return
-    #         if not arquivo_ssc.get() or arquivo_ssc.get() == "Selecione a planilha do SSC":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
-    #             return
-    #         if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
-    #             return
-    #         if not arquivo_sol.get() or arquivo_sol.get() == "Selecione a planilha com os Dados da Solução do Modelo":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os Dados da Solução do Modelo.")
-    #             return
-    #         if not arquivo_base.get() or arquivo_base.get() == "Selecione a Base de Dados":
-    #             messagebox.showwarning("Aviso", "Por favor, selecione a Base de Dados.")
-    #             return
-
-
-
-    #         # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-    #         elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
-
-    #         escolhas_preenchimento(elenco, arquivo_sol.get(), arquivo_base.get())
-
-
-    #     # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
-
-    #     btn_salvar1 = ttk.Button(frame, text="Preencher Planilhas com escolhas do usuário", command=salvar_valores1)
-    #     btn_salvar1.grid(row=7, column=0, pady=10)
-
-    #     btn_salvar2 = ttk.Button(frame, text="Preencher Planilhas com a Solução Completa", command=salvar_valores)
-    #     btn_salvar2.grid(row=7, column=1, pady=10)
+    
 
 """## Escolhas de Preenchimento"""
 
@@ -2306,17 +2042,9 @@ def escolhas_preenchimento(file_path_sol, file_path_base):
             messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
             return
 
-        # Se todos os arquivos tiverem sido selecionados corretamente, crio uma lista com os elencos das disciplinas.
-        # elenco = [arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(), arquivo_ssc.get(), arquivo_outros.get()]
-
         # E chamo a função que irá realizar o preenchimento de cada um dos arquivos.
-        
         preenchimento("", file_path_sol.replace('.xlsx',' com Escolhas.xlsx'), file_path_base, True)
         
-
-        
-
-
         # E fecho a janela que havia sido criada.
         nova_janela1.destroy()
 
@@ -2341,8 +2069,6 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
         for file_path_elenco in lista_elenco:
             # Leio e salvo o arquivo em uma variável.
             elenco = pd.read_excel(file_path_elenco)
-            # file_path = 'C:/Users/gabri/Estágio/Códigos/Endgame/Testes/Elenco SME_2025 testando.xlsx'
-            # sme = pd.read_excel(file_path)
 
             # Defino uma variável com o nome de um cabeçalho para ser encontrado, caso o cabeçalho não seja a primeira linha da planilha.
             header_name = 'Disciplina (código)'
@@ -2545,27 +2271,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
             text_message += f"- {os.path.basename(file_path_sol)}\n"
             text_message += f"- {os.path.basename(file_path_base.replace('.xlsx', ' Parcial.xlsx'))}\n"
             messagebox.showinfo("Sucesso!", text_message)
-    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-    #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
-    # elif file_path_base:
-    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-    #     - {os.path.basename(file_path_sol)}\n\
-    #     - {os.path.basename(file_path_base.replace('.xlsx', ' Preenchido.xlsx'))}\n")
-    # else:
-    #     # Com a conclusão do preenchimento, aviso o usuário dos novos arquivos preenchidos.
-    #     messagebox.showinfo("Sucesso!", f"O seguinte arquivo foi criado utilizando os Dados da Solução do Modelo:\n\
-    #     - {os.path.basename(lista_elenco[0].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[1].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[2].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[3].replace('.xlsx', ' Preenchido.xlsx'))}\n\
-    #     - {os.path.basename(lista_elenco[4].replace('.xlsx', ' Preenchido.xlsx'))}\n")
+    
 
 def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
 
@@ -2622,9 +2328,7 @@ def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, en
             # Ex: fim às 19:00 se torna 18:30 para evitar problemas com disciplinas que começam às 19:00
             else:
                 end_dt = end_dt.replace(minute=30,hour=end_dt.hour - 1)
-        # start_dt.replace(hour=start_dt.hour, minute=start_dt.minute).s
-        # end_dt.replace(hour=end_dt.hour, minute=end_dt.minute)
-        # return str(f'{dia} - {horario_ajustado.strftime("%H:%M")}')
+        
         # Retorno o novo horário traduzido.
         return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
 
@@ -2641,7 +2345,6 @@ def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, en
             bottom=Side(style="thin")
         )
 
-    #     sala = "Sala 101"
         # Mesclo as células na posição correta para colocar o número/nome da sala.
         ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
         # Adiciono o número/nome da sala na célula mesclada.
@@ -2670,7 +2373,7 @@ def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, en
             for col in range(start_column, start_column + len(horarios)):
                 # Aplico a borda.
                 ws.cell(row=row, column=col).border = thin_border
-        # print(horarios)
+        
 
         # Preenchimento das aulas nas planilhas.
         # Para cada horário de aula na lista de aulas da sala
@@ -2807,8 +2510,6 @@ def visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana):
         messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
         return
     
-    # print(f"Arquivo '{full_name}' salvo com sucesso!")
-    # print("Número de aulas alocadas:", aulas)
     messagebox.showinfo("Sucesso!", f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}")
     
     return
@@ -2861,8 +2562,7 @@ def visualizacao_curso(dfv, salas1, horarios, sala_colunas, dias_semana):
         messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
         return
     
-    # print(f"Arquivo '{full_name}' salvo com sucesso!")
-    # print("Número de aulas alocadas:", aulas)
+    
     messagebox.showinfo("Sucesso!", f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}")
     return
 def visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana):
@@ -2901,7 +2601,6 @@ def visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana):
             df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
 
         # Cria uma lista dos valores únicos da coluna ordenada, isto é, uma lista das salas utilizadas na solução filtrando por departamento.
-        # dfv = df_filtrado.sort_values(by='Sala')
         salas1 = df_filtrado['Sala'].unique().tolist()
 
         aulas = funcao_visualizacao(df_filtrado, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas)
@@ -2933,8 +2632,6 @@ def visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana):
         messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
         return
     
-    # print(f"Arquivo '{full_name}' salvo com sucesso!")
-    # print("Número de aulas alocadas:", aulas)
     messagebox.showinfo("Sucesso!", f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}")
     return
 
@@ -2945,7 +2642,6 @@ def planilhas_sti(file_path):
     # computando as decisões feitas à respeito da alocação.
 
     # Leio o arquivo
-    # file_path = "dados_solucao - m1.2.xlsx"
     sti = pd.read_excel(file_path)
 
     # Defino uma função para extrair o horário das aulas na planilha.
@@ -2984,7 +2680,6 @@ def planilhas_sti(file_path):
         # Se ela for a sala conjunta '6-303/6-304', salvo ela apenas como '6-303', seguindo o padrão da planilha do STI.
         else:
             Sala.append('6-303')
-    # print(Sala)
 
     # Novamente, crio um dicionário com os dados obtidos e organizados.
     # Note que o tipo de 'Aula', apresentado na coluna de mesmo nome, sempre é "Aula" por ser o único tipo que estamos alocando.
@@ -3006,15 +2701,12 @@ def planilhas_sti(file_path):
     sti_planilha = pd.DataFrame(dados_organizados)
 
     # Caminho do novo arquivo Excel a ser criado.
-    # file_path = "C:/Users/gabri/Estágio/Códigos/sti_planilha - m1.2.xlsx"
     full_name = "Planilha da Intranet Completa.csv"
     pasta_dados = saidas
     file_path = os.path.join(pasta_dados, full_name)
 
 
     # Crio um novo arquivo Excel e escrevo os dados.
-    # with pd.ExcelWriter(file_path1, engine='openpyxl') as writer:
-    #     sti_planilha.to_csv(writer, sheet_name='Resultados', index=False, sep=';', encoding='latin-1')
     try:
         sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
         file_list.append(full_name)
@@ -3041,7 +2733,6 @@ def planilhas_sti(file_path):
 
     for sala in sti_planilha['Sala'].unique():
         sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
-        # print(len(df_aux))
         full_name = f"Planilha da Intranet - {sala}.csv"
 
         file_path = os.path.join(pasta_dados, full_name)
@@ -3169,7 +2860,6 @@ def gerar_relatorios():
     ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=2, sticky="w", pady=5)
     ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=3, sticky="w", pady=5)
     ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=4, sticky="w", pady=5)
-    # ttk.Button(frame, text="Sair", command=nova_janela.destroy).grid(column=0, row=5, sticky="w", pady=5)
 
 
 def pop_up_teste():
@@ -3229,7 +2919,6 @@ ttk.Button(frm, text="Gerar Relatórios", command=gerar_relatorios).grid(column=
 ttk.Button(frm, text="Preencher planilhas com Dados da Solução", command=preencher_planilha_dados).grid(column=0, row=6, sticky="w", pady=5)
 # Botões de Visualização, planilhas Intranet, e demais visualizações
 ttk.Button(frm, text="Sair", command=root.destroy).grid(column=0, row=7, sticky="w", pady=5)
-# ttk.Button(frm, text="Teste", command=lambda: Novo_edit_config(file_name='C:/Users/gabri/Estágio/Códigos/Endgame/Newest completa (1).xlsx')).grid(column=0, row=8, sticky="w", pady=5)
 
 # Com ela definida, basta colocá-la para rodar.
 root.mainloop()
