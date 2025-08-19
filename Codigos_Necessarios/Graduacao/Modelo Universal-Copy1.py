@@ -326,7 +326,7 @@ for a in range(lenA):
                 sala_fixa.append(sala_valor.split(', ')[int(a / lenT)])
             else:
                 sala_fixa.append('0')
-            # sala_fixa.append(sala_valor.split(', ')[int(a / lenT)])
+
     elif not pd.isna(df.loc[int(a / lenT), 'Horário ' + str(int(a / lenT) + 1)]):
         sala_fixa.append(sala_valor)
     else:
@@ -371,7 +371,7 @@ for a in range(lenA):
 seguidas = [1 for _ in range(lenT)]
 for t in A_s:
     seguidas[int(t[0] % lenT)] = 2
-print(seguidas)
+# print(seguidas)
 
 
 """## Modelo Principal"""
