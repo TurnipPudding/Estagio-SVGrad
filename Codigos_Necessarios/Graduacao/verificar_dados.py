@@ -566,8 +566,8 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
         salas60 = []
 
         # Vou definir algumas listas com os índices de algumas salas que comportam essas categorias.
-        lista2 = salas.index[salas['Sala'].isin(['1-004'])].tolist()
-        lista1 = salas.index[salas['Sala'].isin(['1-004', '6-303', '6-304', '6-305', '6-306'])].tolist()
+        # lista2 = salas.index[salas['Sala'].isin(['1-004'])].tolist()
+        lista1 = salas.index[salas['Sala'].isin(['1-004', '6-303', '6-304', '6-305', '6-306', '6-307'])].tolist()
         lista0 = salas.index[salas['Sala'].isin(['6-303/6-304', '6-305/6-306'])].tolist()
 
         
@@ -599,22 +599,8 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
                 custom_exit()
             # Se a aula possui uma sala fixada, preciso editar a lista de verificação.
             if sala_fixa[aula] != '0':
-                # Se a aula é de laboratório e foi fixada no LEM, então há algum erro de fixação. O códigonão considera o LEM como uma sala
-                # de laboratório, muito menos uma sala normal para alocar outras disciplinas.
                 
-                if sala_fixa[aula] == '6-307':
-                    print(
-                        f"As aulas de laboratório da disciplina {df.loc[aula % lenT, 'Disciplina (código)']} estão fixadas na sala 6-307"
-                        f" , mas o código não considera isso como uma fixação válida. Por favor, considere definir o uso de laboratório como"
-                        f" \'Não\', ou desafixe a sala."
-                    )
-                    custom_exit()
-                # Se a aula não for no LEM, eu verifico qual a sala fixada para aquela aula e qual categoria ela se enquadra.
-                # Ex: Se a aula foi fixada em alguma sala do bloco 4, o índice da sala será um entre 5,6 ou 7. Além disso,
-                # como são salas do grupo com mais de 80 lugares, então preciso considerar que ela não estará disponível
-                # para o restante do grupo.
-                
-                elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista0:
+                if salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista0:
                     
                     # Também adiciono o índice da sala fixada na lista de mesmo índice do último grupo que a aula foi colocada, ou seja,
                     # se uma aula que pertence ao grupo77 foi fixada em uma sala do bloco 4, eu adiciono a sala na segunda posição da
@@ -923,7 +909,7 @@ for grupo in grupos_de_conflitos[:]:
             if sala_fixa[aula] != '0':
                 # Para o caso da aula ter sido alocada em uma sala de laboratório.
                 
-                if sala_fixa[aula] in salas['Sala'].tolist() and sala_fixa[aula] in salas_labs:
+                if sala_fixa[aula] in salas['Sala'].tolist() and salas['Sala'].tolist().index(sala_fixa[aula]) in salas_labs:
                     # Envio uma mensagem de erro e interrompo o código.
                     
                     print(
