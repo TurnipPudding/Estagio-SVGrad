@@ -10,49 +10,32 @@ Original file is located at
 
 
 """## Import das bibliotecas"""
-
-# !pip install mip
 # Imports das bibliotecas e funções utilizadas
 import pandas as pd # Leitura de dados
-# import time # Cálculo de tempo
-# from mip import Model, xsum, minimize, BINARY, INTEGER, CONTINUOUS, OptimizationStatus # Biblioteca com linguagem de modelagem
-import re
-import os
 import sys # Implementação de saídas de erro
 import traceback # Implementação de inspeção para auxiliar nas saídas de erro.
-from itertools import permutations # Função para criar uma lista de permutações
-from datetime import datetime, timedelta # Funções para a leitura de horários de aula
 import networkx as nx # Biblioteca para utilizar redes de grafos.
-# import openpyxl # Biblioteca para a elaboração de planilhas mais detalhadas
-# # Métodos e funções para auxiliar na criação de planilhas mais elaboradas
-# from openpyxl import Workbook
-# from openpyxl.styles import PatternFill, Alignment, Border, Side
-# from openpyxl.utils import get_column_letter
-# from openpyxl import load_workbook
-# from openpyxl.formatting.rule import DataBar, FormatObject, Rule
+
 
 """## Leitura dos dados"""
 
 sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
-# Diferentes arquivos de teste que foram utilizados
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados_das_salas_atualizado_copia_com_fixadas.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas semigual ao 202401.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 copia.xlsx'
-# file_path = 'C:/Users/gabri/Estágio/Dados/Dados das salas 2025 pior caso.xlsx'
+
 file_path = sys.argv[1]
 
 # Criação e mescla do dataframe (dados das aulas)
 df = pd.read_excel(file_path, sheet_name=sheets)
 df = pd.concat(df.values(), ignore_index=True)
 # print(df)
+
 # Dataframe com os dados das salas
 salas = pd.read_excel(file_path, sheet_name="Salas")
 # print(salas)
+
 # Lista da capacidade de cada sala do dataframe
 cap_s = salas['Lugares'].tolist()
 # print(cap_s)
+
 # Lista do tamanho de cada disciplina (número de inscritos)
 tam_t = df['Vagas por disciplina'].tolist()
 # print(tam_t)
@@ -74,7 +57,6 @@ def horario_para_decimal(horario):
 
 # Função para processar a célula no formato 'Dia - HH:MM/HH:MM'
 def processar_horario(celula):
-#     print(celula)
     # Verifico se a célula que está sendo analisada possui um horário definido (se há algo escrito nela e separado por um traço "-")
     if isinstance(celula, str) and "-" in celula:
         # Deleto qualquer espaço " " da célula para garantir uma leitura organizada,
@@ -107,6 +89,7 @@ for coluna in colunas_horarios:
 
 # Crio um dataframe com os dados padronizados de todas as aulas
 A = pd.DataFrame(result, columns=['Dia', 'start_a', 'end_a'])
+
 # Salvo as colunas do dataframe em listas separadas
 dia_a = A['Dia'].to_list()
 start_a = A['start_a'].to_list()
@@ -120,27 +103,6 @@ for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
         df.loc[s, 'Sala'] = '0'
 
-# if sys.argv[7]:
-#     # Variável com o número suposto de alunos da pós.
-#     qtd_pos = int(sys.argv[7])
-#     for d in range(len(tam_t)):
-#         # print(f"Valor de tam_t: {tam_t[d]}")
-#         # print(f"Valor do dataframe: {df.loc[d, 'Vagas por disciplina']}")
-#         if not pd.isna(df.loc[d, 'Observações']):
-#             if 'Espelho' in df.loc[d, 'Observações'] or 'espelho' in df.loc[d, 'Observações']:
-#                 print(
-#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-#                     f"\nAdicionando número de inscritos da pós fornecido pelo usuário."
-#                 )
-#                 # print(df.loc[d, 'Vagas por disciplina'])
-#                 # print(tam_t[d])
-#                 tam_t[d] += qtd_pos
-#                 df.loc[d, 'Vagas por disciplina'] += qtd_pos
-#                 print(
-#                     f"Número de inscritos na disciplina {df.loc[d, 'Disciplina (código)']} (espelhada com a pós): {df.loc[d, 'Vagas por disciplina']}"
-#                 )
-#                 # print(tam_t[d])
-
 for d in range(len(tam_t)):
     if pd.isna(df.loc[d, 'Turma']):
         df.loc[d, 'Turma'] = 1
@@ -150,18 +112,19 @@ for d in range(len(tam_t)):
 # Faço uma lista de índices de cada turma/disciplina do dataframe principal, então a primeira disciplina é 0, a segunda 1, etc.
 T = range(len(df['Disciplina (código)']))
 # print(T[38]) # retorna um índice que equivale à posição de uma disciplina na lista
-# print(df['Disciplina (código)'][T[38]]) # retorna a sigla da disciplina (o índice equivale a linha - 2)
+# print(df.loc[T[38], 'Disciplina (código)']) # retorna a sigla da disciplina (o índice equivale a linha - 2)
+
 
 # Faço uma lista de índices de cada sala do dataframe principal, então a primeira sala é 0, a segunda 1, etc.
 S = range(len(salas['Sala']))
-# print(salas['Sala'][S[2]]) # retorna uma sala
+# print(salas.loc[S[2], 'Sala']) # retorna uma sala
 
 # Faço uma lista de quais salas são de laboratório (salvo como índices)
-sigma_s = [1 if salas['Laboratório'][s] == 'Sim' else 0 for s in S]
+sigma_s = [1 if salas.loc[s, 'Laboratório'] == 'Sim' else 0 for s in S]
 # print(sigma_s) # sigma_s = 1 se a sala s eh de laboratório
 
 # Faço uma lista de quais turmas/disciplinas requisitaram aula em laboratório
-tal_t = [0 if df['Utilizará laboratório? (sim ou não)'][t] == 'Não' else 1 for t in T]
+tal_t = [0 if df.loc[t, 'Utilizará laboratório? (sim ou não)'] == 'Não' else 1 for t in T]
 # print(tal_t) # tal_t = 1 se a turma/disciplina t precisar de laboratório
 
 # Para não precisar chamar o mesmo método que calcula o comprimento das listas mais importantes, eu salvo eles em variáveis
@@ -182,7 +145,6 @@ for t in range(lenT):
     celula = df.loc[t, 'Curso(s)']
     # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
     if ',' in celula:
-        # print(df['Curso(s)'][int(a % lenT)].split(', '))
         # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
         # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
         for c in celula.split(', '):
@@ -275,20 +237,17 @@ eta_as = {(a, s): 1 if tam_t[int((a % lenT ))] <= cap_s[s] \
 # Agora, se 'a' fosse das 14:20 às 16:00, teríamos ainda que 14.33 < 18, mas teríamos que 16.33 > 16, logo, não é considerado conflito
 theta_aal = {(a, al): 1 if (dia_a[a] == dia_a[al] and (start_a[a] < end_a[al] and start_a[al] < end_a[a])) \
              else 0 for a in range(lenA) for al in range(lenA)}
-
 # print(theta_aal)
 
 # A variável uso_as é um dicionário em formato de matriz para contabilizar o quanto de espaço vazio uma aula deixa em uma determinada sala
 # Ex: se uma aula 'a' tem 30 alunos, ela ocupa 67% de uma sala 's' com 45 lugares (deixando 33% da sala vazia),
 # mas 100% de uma sala 's' com 30 lugares (deixando 0% da sala vazia). Quando menor o valor de uso_as, melhor.
 uso_as = {(a, s): 100 * (1 - (tam_t[int((a % lenT))]/cap_s[s])) for a in range(lenA) for s in range(lenS)}
-
 # print(uso_as)
 
 # A variável dis é um dicionário em formato de matriz para contabilizar a distância (arbitrária) de ir de uma sala 's' até uma sala 'sl'.
 # Ex: A distância de uma sala do bloco 3 até uma sala do bloco 5 é de 6 unidades de distância, enquanto a distância de uma sala do bloco 3
 # até uma sala do bloco 4 é de 1 unidade de distância.
-# dis = {(s, sl): salas.iloc[s, sl+3] for s in range(salas.shape[0]) for sl in range(salas.shape[1]-3)}
 dis = {(s, sl): salas.loc[s, sl] for s in range(len(salas)) for sl in salas.columns[3:-1]}
 # print("dis =", dis)
 
@@ -342,7 +301,6 @@ for a in aula_labs:
 # A variável sala_fixa é uma lista de 1's e 0's, onde cada elemento dela remete ao índice de uma aula. Se o i-ésimo termo da lista é 1,
 # então a i-ésima aula possui uma sala fixada. Se o valor é 0, ela não possui sala fixada
 # Ex: Se a aula 37 possui uma sala fixa, então sala_fixa[37] = 1 (lembrando do uso da aula 0 neste caso)
-# sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
     sala_valor = str((df.loc[a % lenT, 'Sala']))
@@ -358,6 +316,23 @@ for a in range(lenA):
     else:
         sala_fixa.append('0')
 # print(sala_fixa)
+
+for aula in range(lenA):
+    if sala_fixa[aula] != '0':
+        fixada = salas['Sala'].tolist().index(sala_fixa[aula])
+        for sala in range(lenS):
+            eta_as[aula, sala] = 0
+        eta_as[aula, fixada] = 1
+
+for aula in range(lenA):
+    if lab_tal[aula] == 1:
+        for sala in range(lenS):
+            if sala not in salas_labs:
+                eta_as[aula, sala] = 0
+    else:
+        for sala in range(lenS):
+            if sala in salas_labs:
+                eta_as[aula, sala] = 0
 
 
 sala_proibida = {}
@@ -405,11 +380,7 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
         lista1 = salas.index[salas['Sala'].isin(['5-001', '5-003', '5-004', '5-101'])].tolist()
         lista0 = salas.index[salas['Sala'].isin(['4-001', '4-003', '4-005'])].tolist()
 
-        # A variável verificar_fixadas é um contador de quantas aulas já foram fixadas anteriormente
-        # para não contar como possíveis salas para as demais aulas.
-        # Ex: Se eu tenho fixado duas salas grandes, elas não devem aparecer como 'vazias' na hora de alocar uma aula menor.
-        # Se tem uma sala de 74 a 77 lugares fixadas, então, da segunda posição em diante, o vetor ganha o valor 1.
-        # verificar_fixadas = [0,0,0,0,0]
+        
         # A variável verificar_salas_fixadas é uma Lista das listas de salas fixadas pelas aulas.
         # Ex: Se duas aulas foram alocadas em salas grandes, então a primeira sublista contém quais dessas salas foram alocadas.
         # Isso ajudará nos momentos em que uma aula pequena for fixada em uma sala grande, pois na hora de verificar a
@@ -449,22 +420,10 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
             else:
                 # Se eu não consegui colocar aquela aula em nenhuma das salas disponíveis, novamente notifico o erro.
                 print(f"Não há sala capaz de comportar a disciplina {df.loc[aula % lenT, 'Disciplina (código)']}.")
-                # print("System exit 6.\n")
-                # sys.exit()
                 custom_exit()
             # Se a aula possui uma sala fixada, preciso editar a lista de verificação.
             if sala_fixa[aula] != '0':
-                # Se a aula é no LEM, então ela nem deveria contar para o número de "salas usadas",
-                # então considero um preenchimento a menos, ou seja, de [0,0,0,0,0] para [-1,-1,-1,-1,-1].
-                # if df.loc[int(aula % lenT), 'Sala'] == '6-307':
-                # if sala_fixa[aula] == '6-307':
-                #     verificar_fixadas[last_entered:] = [x - 1 for x in verificar_fixadas[last_entered:]]
-                # Se a aula não for no LEM, eu verifico qual a sala fixada para aquela aula e qual categoria ela se enquadra.
-                # Ex: Se a aula foi fixada em alguma sala do bloco 4, o índice da sala será um entre 5,6 ou 7. Além disso,
-                # como são salas do grupo com mais de 80 lugares, então preciso considerar que ela não estará disponível
-                # para o restante do grupo.
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista0:
-                # elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista0:
+                
                 if salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista0:
                     # Se a sala fixada é uma das do bloco 4, aumento o valor dos elementos da lista verificar_fixadas desde o índice
                     # equivalente ao grupo80, ou seja, de [0,0,0,0,0] para [1,1,1,1,1].
@@ -475,25 +434,21 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
                     # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
                 # As demais condições são equivalentes no raciocínio.
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista1:
+                
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista1:
-                    # verificar_fixadas[1:] = [x + 1 for x in verificar_fixadas[1:]]
-                    # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
+                    
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista2:
+                
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista2:
-                    # verificar_fixadas[2:] = [x + 1 for x in verificar_fixadas[2:]]
-                    # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
+                    
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista3:
+                
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista3:
-                    # verificar_fixadas[3:] = [x + 1 for x in verificar_fixadas[3:]]
-                    # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
+                
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista4:
+                
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista4:
-                    # verificar_fixadas[4:] = [x + 1 for x in verificar_fixadas[4:]]
-                    # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
+                
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
 
 
@@ -504,8 +459,7 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
         # Ex: Se eu tenho 3 aulas de mesmo horário, mas apenas 2 salas disponíveis para alocá-las, há um problema com o grupo.
         verificar_aulas = [grupo80, grupo77, grupo73, grupo45, grupo30]
         verificar_salas = [salas80, salas77, salas73, salas45, salas30]
-        # print(verificar_aulas)
-        # print(verificar_salas)
+        
         # Para cada lista em verificar_salas_fixadas, isto é, para cada lista de salas fixadas
         for i,grupo1 in enumerate(verificar_salas_fixadas):
             # Salvo as salas repetidas, isto é, se houver duas aulas da mesma categoria de tamanho fixadas na mesma sala, a sala é salva
@@ -527,8 +481,7 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
                     for grupinho in verificar_aulas:
                         for aula in grupinho:
                             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                    # print("System exit 7.\n")
-                    # sys.exit()
+
                     custom_exit()
 
             # Caso não tenham salas fixadas para uma mesma categoria, passo a verificar se o mesmo não acontece com categorias diferentes.
@@ -554,16 +507,14 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
                     for grupinho in verificar_aulas:
                         for aula in grupinho:
                             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                    # print("System exit 8.\n")
-                    # sys.exit()
+
                     custom_exit()
 
         aux_verificar_aulas = verificar_aulas.copy()
         aux_verificar_salas = verificar_salas.copy()
         for i in range(len(verificar_aulas)):
             grupo = aux_verificar_aulas[i].copy()
-            # if 4 in grupo:
-            #     print(grupo)
+            
             for aula in grupo[:]:
                 if sala_fixa[aula] != '0':
                     sala_fixada = salas.index[salas['Sala'] == sala_fixa[aula]].tolist()[0]
@@ -590,10 +541,10 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
                 for grupinho in verificar_aulas:
                     for aula in grupinho:
                         print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                # print("System exit 9.\n")
-                # sys.exit()
+                
                 custom_exit()
             aulas_alocadas += len(aux_verificar_aulas[g])
+
         # Se não há aulas com conflito de horário fixadas em uma mesma sala, o próximo passo é verificar a existência de aulas
         # suficientes para um determinado grupo de conflitos.
         # A variável aulas_alocadas é um contador para "simular" as aulas alocadas. O funcionamento dessa etapa é puramente matemático,
@@ -601,37 +552,7 @@ def verificar_horarios_de_conflito(grupos_de_conflitos, salas_de_aulas):
         # conseguem comportar as aulas menores. Com isso, no momento de alocar as salas menores, precisamos excluir as salas maiores
         # que "já foram alocadas", e estas são contabilizadas com a variável aulas_alocadas.
         aulas_alocadas = 0
-        # Para cada categoria de tamanho na lista verificar_aulas.
-        # for g in range(len(verificar_aulas)):
-        #     # Verifico se o número de aulas de uma categoria, subtraído do número de aulas dessa categoria com sala já fixada,
-        #     # é maior que o número de salas disponíveis para aquela categoria, subtraindo o número de salas já alocadas e o
-        #     # número de aulas já fixadas, além de ignorar quando uma categoria é vazia.
-        #     # Se esse for o caso, quer dizer que há mais aulas para serem alocadas do que salas disponíveis para serem alocadas.
-        #     if len(verificar_aulas[g]) - len(verificar_salas_fixadas[g]) \
-        #     > len(verificar_salas[g]) - aulas_alocadas - verificar_fixadas[g] \
-        #     and len(verificar_aulas[g]) != 0:
-        #         print("aulas", verificar_aulas[g])
-        #         print("salas", len(verificar_salas[g]))
-        #         print("salas - aulas", aulas_alocadas)
-        #         print("fixadas", verificar_fixadas[g])
-        #         print(f"conta {len(verificar_aulas[g])} - {len(verificar_salas_fixadas[g])} > {len(verificar_salas[g])} - {aulas_alocadas} - {verificar_fixadas[g]}")
-        #         # Se este caso for verdadeiro, isto é, há mais aulas para serem alocadas do que salas disponíveis para serem alocadas,
-        #         # envio uma mensagem de erro, aponto quais aulas estão causando problema, e interrompo o código.
-        #         print(f"Há muitas aulas com conflito de horário no seguinte grupo, então uma troca de horários pode ser necessária:")
-        #         print("Em particular, essas disciplinas que parecem estar dando problema:")
-        #         for aula in verificar_aulas[g]:
-        #             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-        #         print("O grupo inteiro das aulas e disciplinas causando problema é esse:")
-        #         for grupinho in verificar_aulas:
-        #             for aula in grupinho:
-        #                 print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-        #         # print("System exit 9.\n")
-        #         # sys.exit()
-        #         custom_exit()
-        #     # Se é possível alocar as aulas de uma categoria, então contabilizo quantas aulas dessa categoria foram fixadas,
-        #     # então aumento o número de aulas_alocadas pelo número de aulas da categoria.
-        #     if len(verificar_aulas[g]) != 0:
-        #         aulas_alocadas += len(verificar_aulas[g]) - len(verificar_salas_fixadas[g])
+        
 
 def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
     # Para cada grupo de conflito
@@ -649,11 +570,7 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
         lista1 = salas.index[salas['Sala'].isin(['1-004', '6-303', '6-304', '6-305', '6-306'])].tolist()
         lista0 = salas.index[salas['Sala'].isin(['6-303/6-304', '6-305/6-306'])].tolist()
 
-        # A variável verificar_fixadas é um contador de quantas aulas já foram fixadas anteriormente
-        # para não contar como possíveis salas para as demais aulas.
-        # Ex: Se eu tenho fixado duas salas grandes, elas não devem aparecer como 'vazias' na hora de alocar uma aula menor.
-        # Se tem uma sala de 74 a 77 lugares fixadas, então, da segunda posição em diante, o vetor ganha o valor 1.
-        # verificar_fixadas = [0,0]
+        
         # A variável verificar_salas_fixadas é uma Lista das listas de salas fixadas pelas aulas.
         # Ex: Se duas aulas foram alocadas em salas grandes, então a primeira sublista contém quais dessas salas foram alocadas.
         # Isso ajudará nos momentos em que uma aula pequena for fixada em uma sala grande, pois na hora de verificar a
@@ -678,14 +595,13 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
             else:
                 # Se eu não consegui colocar aquela aula em nenhuma das salas disponíveis, novamente notifico o erro.
                 print(f"Não há sala capaz de comportar a disciplina {df.loc[aula % lenT, 'Disciplina (código)']}.")
-                # print("System exit 6.\n")
-                # sys.exit()
+                
                 custom_exit()
             # Se a aula possui uma sala fixada, preciso editar a lista de verificação.
             if sala_fixa[aula] != '0':
                 # Se a aula é de laboratório e foi fixada no LEM, então há algum erro de fixação. O códigonão considera o LEM como uma sala
                 # de laboratório, muito menos uma sala normal para alocar outras disciplinas.
-                # if df.loc[int(aula % lenT), 'Sala'] == '6-307':
+                
                 if sala_fixa[aula] == '6-307':
                     print(
                         f"As aulas de laboratório da disciplina {df.loc[aula % lenT, 'Disciplina (código)']} estão fixadas na sala 6-307"
@@ -697,43 +613,25 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
                 # Ex: Se a aula foi fixada em alguma sala do bloco 4, o índice da sala será um entre 5,6 ou 7. Além disso,
                 # como são salas do grupo com mais de 80 lugares, então preciso considerar que ela não estará disponível
                 # para o restante do grupo.
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista0:
+                
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista0:
-                    # Se a sala fixada é um laboratório em conjunto (6-303/6-304), aumento o valor dos elementos da lista verificar_fixadas
-                    # desde o índice equivalente ao grupo60, ou seja, de [0,0] para [3,3].
-                    # Como o uso da sala 6-303/6-304 conta como uma sala a menos, e por conta dela proibir o uso das salas 6-303 e 6-304
-                    # isoladamente, uma fixação conta como 3 salas, ao invés de apenas uma.
-                    # verificar_fixadas[0:] = [x + 1 for x in verificar_fixadas[0:]]
+                    
                     # Também adiciono o índice da sala fixada na lista de mesmo índice do último grupo que a aula foi colocada, ou seja,
                     # se uma aula que pertence ao grupo77 foi fixada em uma sala do bloco 4, eu adiciono a sala na segunda posição da
                     # lista verificar_salas_fixadas, então de [[],[],[],[],[]] foi para [[],[5],[],[],[]].
                     # verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0])
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
                 # As demais condições são equivalentes no raciocínio.
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista1 and \
-                # salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] not in lista2:
-                # elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista1 and \
-                # salas[salas['Sala'] == sala_fixa[aula]].index[0] not in lista2:
-                    # Como o uso da sala 6-303 proibe o uso da sala 6-303/6-304, o uso dela conta como 2 salas a menos.
-                    # verificar_fixadas[1:] = [x + 1 for x in verificar_fixadas[1:]]
-                # elif salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista1 and \
-                # salas[salas['Sala'] == str(df.loc[int(aula % lenT), 'Sala'])].index[0] in lista2:
-                # elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista1 and \
-                # salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista2:
-                #     verificar_fixadas[1:] = [x + 1 for x in verificar_fixadas[1:]]
                 elif salas[salas['Sala'] == sala_fixa[aula]].index[0] in lista1:
                     verificar_salas_fixadas[last_entered].append(salas[salas['Sala'] == sala_fixa[aula]].index[0])
 
-
-
-        # print(f"grupo60: {grupo60}")
-        # print(f"sala60: {salas60}")
         # Formados os subgrupos de aulas conflitantes separados, vou analisar a existência de aulas disponíveis para este grupo.
         # Ex: Se eu tenho 3 aulas de mesmo horário, mas apenas 2 salas disponíveis para alocá-las, há um problema com o grupo.
         verificar_aulas = [grupo60, grupo30]
         verificar_salas = [salas60, salas30]
         # print(verificar_aulas)
         # print(verificar_salas)
+
         # Para cada lista em verificar_salas_fixadas, isto é, para cada lista de salas fixadas
         for i,grupo1 in enumerate(verificar_salas_fixadas):
             # Salvo as salas repetidas, isto é, se houver duas aulas da mesma categoria de tamanho fixadas na mesma sala, a sala é salva
@@ -755,8 +653,7 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
                     for grupinho in verificar_aulas:
                         for aula in grupinho:
                             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                    # print("System exit 7.\n")
-                    # sys.exit()
+                    
                     custom_exit()
 
             # Caso não tenham salas fixadas para uma mesma categoria, passo a verificar se o mesmo não acontece com categorias diferentes.
@@ -782,16 +679,14 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
                     for grupinho in verificar_aulas:
                         for aula in grupinho:
                             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                    # print("System exit 8.\n")
-                    # sys.exit()
+                    
                     custom_exit()
 
         aux_verificar_aulas = verificar_aulas.copy()
         aux_verificar_salas = verificar_salas.copy()
         for i in range(len(verificar_aulas)):
             grupo = aux_verificar_aulas[i].copy()
-            # if 4 in grupo:
-            #     print(grupo)
+            
             for aula in grupo[:]:
                 if sala_fixa[aula] != '0':
                     sala_fixada = salas.index[salas['Sala'] == sala_fixa[aula]].tolist()[0]
@@ -816,8 +711,7 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
                 for grupinho in verificar_aulas:
                     for aula in grupinho:
                         print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-                # print("System exit 9.\n")
-                # sys.exit()
+                
                 custom_exit()
             aulas_alocadas += len(aux_verificar_aulas[g])
         # Se não há aulas com conflito de horário fixadas em uma mesma sala, o próximo passo é verificar a existência de aulas
@@ -827,40 +721,7 @@ def verificar_horarios_de_conflito_lab(grupos_de_conflitos, salas_de_aulas):
         # conseguem comportar as aulas menores. Com isso, no momento de alocar as salas menores, precisamos excluir as salas maiores
         # que "já foram alocadas", e estas são contabilizadas com a variável aulas_alocadas.
         aulas_alocadas = 0
-        # Para cada categoria de tamanho na lista verificar_aulas.
-        # for g in range(len(verificar_aulas)):
-        #     # Verifico se o número de aulas de uma categoria, subtraído do número de aulas dessa categoria com sala já fixada,
-        #     # é maior que o número de salas disponíveis para aquela categoria, subtraindo o número de salas já alocadas e o
-        #     # número de aulas já fixadas, além de ignorar quando uma categoria é vazia.
-        #     # Se esse for o caso, quer dizer que há mais aulas para serem alocadas do que salas disponíveis para serem alocadas.
-        #     if len(verificar_aulas[g]) - len(verificar_salas_fixadas[g]) \
-        #     > len(verificar_salas[g]) - aulas_alocadas - verificar_fixadas[g] \
-        #     and len(verificar_aulas[g]) != 0:
-        #         # print("aulas", verificar_aulas[g])
-        #         # print("salas", len(verificar_salas[g]))
-        #         # print("salas - aulas", aulas_alocadas)
-        #         # print("fixadas", verificar_fixadas[g])
-        #         # print(
-        #         #     f"conta {len(verificar_aulas[g])} - {len(verificar_salas_fixadas[g]) }"
-        #         #     f"> {len(verificar_salas[g])} - {aulas_alocadas} - {verificar_fixadas[g]}"
-        #         # )
-        #         # Se este caso for verdadeiro, isto é, há mais aulas para serem alocadas do que salas disponíveis para serem alocadas,
-        #         # envio uma mensagem de erro, aponto quais aulas estão causando problema, e interrompo o código.
-        #         print(f"Há muitas aulas com conflito de horário no seguinte grupo, então uma troca de horários pode ser necessária:")
-        #         print("Em particular, essas disciplinas que parecem estar dando problema:")
-        #         for aula in verificar_aulas[g]:
-        #             print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-        #         print("O grupo inteiro das aulas e disciplinas causando problema é esse:")
-        #         for grupinho in verificar_aulas:
-        #             for aula in grupinho:
-        #                 print(f"Aula {aula}, {df['Disciplina (código)'][int(aula % lenT)]}")
-        #         # print("System exit 9.\n")
-        #         # sys.exit()
-        #         custom_exit()
-        #     # Se é possível alocar as aulas de uma categoria, então contabilizo quantas aulas dessa categoria foram fixadas,
-        #     # então aumento o número de aulas_alocadas pelo número de aulas da categoria.
-        #     if len(verificar_aulas) != 0:
-        #         aulas_alocadas += len(verificar_aulas[g])
+        
 
 
 def custom_exit():
@@ -876,74 +737,26 @@ def custom_exit():
 # clusters, como aulas das 17 às 19 que conectam o cluster das aulas das 16 às 18 com os das 18 às 20:40, que estão conectados com 
 # os das 19 às 20:40. Por conta dessa natureza, na hora de fazer a verificação, haveria muito mais nós do que salas disponíveis.
 
-# Com a ajuda da biblioteca Networkx, é possível fazer um algoritmo que detecta esses nós, e com isso podemos considerar os clusters separados para
-# comparar apenas o tamanho dele com o número de salas disponíveis. Em outras palavras, o que queremos fazer, é analisar se, para um 
-# determinado horário (cluster), existem salas suficientes para alocar todas as aulas daquele horário.
-
-# Defino uma variável para conter a rede de grafos das aulas.
-G = nx.Graph()
-
-# Defino uma lista com todas as arestas dos nós, isto é, monto um grafo das aulas que possuem conflito de horário.
-edges = [(a, al) for a in range(lenA) for al in range(lenA) if theta_aal[a, al] == 1 and a != al]
-
-# Adiciono as arestas, e os nós, à rede.
-G.add_edges_from(edges)
-
-# Salvo o número original de componentes conexos para comparar com o número após retirar algum nó. Isso identificará os nós pontes.
-original_components = list(nx.connected_components(G))
-num_original_components = len(original_components)
-
-# Identifico nós que realmente conectam clusters.
-articulation_points = list(nx.articulation_points(G))
-
-# Crio uma lista com os nós importantes que conectam clusters.
-important_connectors = []
-
-# Para cada nó que é um ponto de articulação:
-for node in articulation_points:
-    # Faço uma cópia temporária do grafo original.
-    G_temp = G.copy()
-
-    # Removo o ponto de articulação do grafo.
-    G_temp.remove_node(node)
-
-    # E faço outra lista com os nós conectados após retirar o ponto de articulação.
-    new_components = list(nx.connected_components(G_temp))
-
-    # Se o número de componentes aumentar, é um conector real, ou seja, é um nó que conecta dois clusters.
-    if len(new_components) > num_original_components:
-        important_connectors.append(node)
-
-# Salvo o nome das disciplinas cujas aulas criam pontes (pontos de articulação ) entre clusters.
-disciplinas_problematicas = [df.loc[node % lenT, 'Disciplina (código)'] for node in important_connectors]
-
 group = [0 for _ in range(lenA)]
 intervalos = [[8, 9.9], [10, 13], [13, 16.4], [16, 18], [19, 20.9], [21, 22.9]]  # Intervalos padrão
 
 # Para cada aula, veja quantos intervalos ela intersecta
 for a in range(lenA):
     for i_ini, i_fim in intervalos:
-        # if sobrepoe(start_a[a], end_a[a], i_ini, i_fim):
+        
         if (start_a[a] >= i_ini or start_a[a] == 18) and end_a[a] <= i_fim and (start_a[a] > 0):
-            # print(f"Aula {a}, {df.loc[a % lenT, 'Disciplina (código)']} {start_a[a]}-{end_a[a]} está no intervalo [{i_ini}, {i_fim}]")
+            
             group[a] += 1
         
 
 # Se uma aula estiver em mais de um intervalo, consideramos problemática
-disciplinas_problematicas2 = []
+disciplinas_problematicas = []
 for a in range(lenA):
     if group[a] < 1 and start_a[a] > 0:
-        # print(f"Aula {a}, {df.loc[a % lenT, 'Disciplina (código)']} {start_a[a]}-{end_a[a]} está fora dos intervalos padrão.")
-        # nome_disciplina = df.loc[a % lenT, 'Disciplina (código)']
-        # if nome_disciplina not in disciplinas_problematicas2:
-        #     disciplinas_problematicas2.append(nome_disciplina)
-        if a not in disciplinas_problematicas2:
-            disciplinas_problematicas2.append(a)
+        if a not in disciplinas_problematicas:
+            disciplinas_problematicas.append(a)
 
-# for aula in disciplinas_problematicas2:
-#     print(aula)
-# sys.exit(0)
-disciplinas_problematicas = disciplinas_problematicas2.copy()
+
 
 # A variável grupos_de_conflitos é uma importante lista que irá conter listas de aulas que possuem conflito entre si,
 # possibilitando uma análise prévia dos dados caso tenha algo de errado com eles.
@@ -952,8 +765,7 @@ grupos_de_conflitos = []
 # Para cada aula 'a'
 for a in range(lenA):
     # # Verifico se a aula 'a' não tem um horário problemático, isto é, se ela não conecta dois grupos de horário separados em um único.
-    # if df.loc[a % lenT, 'Disciplina (código)'] not in disciplinas_problematicas:
-    if a not in disciplinas_problematicas2:
+    if a not in disciplinas_problematicas:
         # Se ela não tem um horário problemático
         # Verifico se já fiz outras listas de conflitos
         if len(grupos_de_conflitos) > 0:
@@ -988,11 +800,7 @@ for a in range(lenA):
         lista_a = []
 
 # print(grupos_de_conflitos)
-# print(A_tt[df['Disciplina (código)'].tolist().index('SSC0142-1')])
-# print(A_tt[df['Disciplina (código)'].tolist().index('SSC0109-1')])
-# print(A_tt[df['Disciplina (código)'].tolist().index('SCC0222-2')])
-# for a in [81, 121, 134, 183, 184, 292]:
-#     print(df.loc[a % lenT, 'Disciplina (código)'])
+
 
 """### Verificação Geral"""
 
@@ -1007,11 +815,9 @@ salas_de_aula = []
 # A variável salas_de_laboratorio seguem o mesmo raciocínio, mas apenas para as aulas de laboratório
 salas_de_laboratorio = []
 
-
-# Com essas novas listas criadas, passamos a analisar cada grupo em grupos_de_conflitos
 # Com essas novas listas criadas, passamos a analisar cada grupo em grupos_de_conflitos
 for grupo in grupos_de_conflitos[:]:
-    # print(f"Grupo {grupos_de_conflitos.index(grupo)}: {grupo}")
+    
     # A variável aula_lab é uma lista que será usada para formar a lista de laboratorios_conflito
     aula_lab = []
     # A variável salas_de_aula_conflito é uma lista que será usada para formar a lista de salas_de_aula
@@ -1022,12 +828,12 @@ for grupo in grupos_de_conflitos[:]:
     for aula in grupo:
         # Verifico se é uma aula de laboratório
         if lab_tal[aula] == 1:
-            # print(f"Aula de lab: {df.loc[aula % lenT, 'Disciplina (código)']}")
+            
             # Em caso positivo, verifico se a aula foi fixada em uma sala.
             if sala_fixa[aula] != '0':
                 # Verifico se a sala fixada foi um que não seja de laboratório, isto é,
                 # a aula de laboratório foi fixada em uma sala que não é de laboratório.
-                # if salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala']) not in salas_labs:
+                
                 if salas['Sala'].tolist().index(sala_fixa[aula]) not in salas_labs:
                     # Caso seja o caso, envio uma mensagem de erro e interrompo o código.
                     print(
@@ -1035,7 +841,7 @@ for grupo in grupos_de_conflitos[:]:
                         f"em uma sala que não é de laboratório."
                     )
                     custom_exit()
-                # elif eta_as[aula, salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala'])] != 1:
+                
                 elif eta_as[aula, salas['Sala'].tolist().index(sala_fixa[aula])] != 1:
                     print(
                         f"As aulas de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} foram fixadas " \
@@ -1045,7 +851,7 @@ for grupo in grupos_de_conflitos[:]:
                     custom_exit()
                 # Verifico se a aula foi fixada em uma sala onde outra aula de conflito também foi fixada.
                 else:
-                    # if df.loc[aula % lenT, 'Sala'] == '6-303/6-304':
+                    
                     if sala_fixa[aula] == '6-303/6-304':
                         for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] != '0':
@@ -1054,18 +860,14 @@ for grupo in grupos_de_conflitos[:]:
                                 sala_fixa[aula2] == '6-303' \
                                 or \
                                 sala_fixa[aula2] == '6-304':
-                                # if (df.loc[aula % lenT, 'Sala']) == (df.loc[aula2 % lenT, 'Sala']) \
-                                # or \
-                                # df.loc[aula2 % lenT, 'Sala'] == '6-303' \
-                                # or \
-                                # df.loc[aula2 % lenT, 'Sala'] == '6-304':
+                                
                                     print(
                                         f"Uma aula de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} foi fixada " \
                                         f"na mesma sala (ou salas conjuntas) onde uma aula de laboratório da disciplina " \
                                         f"{df['Disciplina (código)'][aula2 % lenT]} foi fixada."
                                     )
                                     custom_exit()
-                    # elif df.loc[aula % lenT, 'Sala'] == '6-305/6-306':
+                    
                     elif sala_fixa[aula] == '6-305/6-306':
                         for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] != '0':
@@ -1074,11 +876,7 @@ for grupo in grupos_de_conflitos[:]:
                                 sala_fixa[aula2] == '6-305' \
                                 or \
                                 sala_fixa[aula2] == '6-306':
-                                # if (df.loc[aula % lenT, 'Sala']) == (df.loc[aula2 % lenT, 'Sala']) \
-                                # or \
-                                # df.loc[aula2 % lenT, 'Sala'] == '6-305' \
-                                # or \
-                                # df.loc[aula2 % lenT, 'Sala'] == '6-306':
+                                
                                     print(
                                         f"Uma aula de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} foi fixada " \
                                         f"na mesma sala (ou salas conjuntas) onde uma aula de laboratório da disciplina " \
@@ -1088,7 +886,7 @@ for grupo in grupos_de_conflitos[:]:
                     else:
                         for aula2 in grupo:
                             if aula != aula2 and sala_fixa[aula2] == 1:
-                                # if (df.loc[aula % lenT, 'Sala']) == (df.loc[aula2 % lenT, 'Sala']):
+                                
                                 if sala_fixa[aula] == sala_fixa[aula2]:
                                     print(
                                         f"Uma aula de laboratório da disciplina {df['Disciplina (código)'][aula % lenT]} foi fixada " \
@@ -1097,13 +895,12 @@ for grupo in grupos_de_conflitos[:]:
                                     )
                                     custom_exit()
 
-            # if aula == 139:
-            #     print(df.loc[aula % lenT, 'Disciplina (código)'])
+            
             # Se a aula não foi fixada, eu a coloco na lista de aulas de laboratório com conflito e a retiro do grupo de conflito,
             # já que as demais aulas não precisam disputar sala com aulas de laboratório, e vice-versa
             # aula_lab.append(grupo.pop(grupo.index(aula)))
             aula_lab.append(aula)
-            # grupo.remove(aula)
+            
             # A variável auxiliar 'aux' é uma lista que serve para guardar
             # as salas de laboratórios capazes de acomodar a 'aula' sendo analisada.
             aux = [s for s in salas_labs if eta_as[aula,s] == 1]
@@ -1118,28 +915,24 @@ for grupo in grupos_de_conflitos[:]:
                     f"não pode(m) ser(em) alocada(s) por conta do número de alunos."
                     f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                 )
-                # print("System exit 2.\n")
-                # sys.exit()
+                
                 custom_exit()
         # Para o caso de a aula não ser uma aula de laboratório.
         else:
             # Verifico se a aula está fixada em alguma sala.
             if sala_fixa[aula] != '0':
                 # Para o caso da aula ter sido alocada em uma sala de laboratório.
-                # if df.loc[aula % lenT, 'Sala'] in salas['Sala'].tolist() \
-                # and salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala']) in salas_labs:
-                # if sala_fixa[aula] in salas['Sala'].tolist() and salas['Sala'].tolist().index(sala_fixa[aula] in salas_labs):
+                
                 if sala_fixa[aula] in salas['Sala'].tolist() and sala_fixa[aula] in salas_labs:
                     # Envio uma mensagem de erro e interrompo o código.
-                    # print("a")
+                    
                     print(
                         f"A aula da disciplina {df['Disciplina (código)'][aula % lenT]}" \
                         f" não é de laboratório, mas foi alocada em uma sala de laboratório."
                     )
 
                     custom_exit()
-                # elif df.loc[aula % lenT, 'Sala'] != '6-307' and eta_as[aula, salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala'])] != 1:
-                # elif sala_fixa[aula] != '6-307' and eta_as[aula, salas['Sala'].tolist().index(sala_fixa[aula])] != 1:
+                
                 elif eta_as[aula, salas['Sala'].tolist().index(sala_fixa[aula])] != 1:
                     print(
                         f"As aulas da disciplina {df['Disciplina (código)'][aula % lenT]} foram fixadas " \
@@ -1156,12 +949,7 @@ for grupo in grupos_de_conflitos[:]:
                         if aula != aula2 and \
                         sala_fixa[aula2] != '0' and \
                         salas['Sala'].tolist().index(sala_fixa[aula]) == salas['Sala'].tolist().index(sala_fixa[aula2]):
-                        # sala_fixa[aula2] != '6-307' and \
-                        # salas['Sala'].tolist().index(sala_fixa[aula]) == salas['Sala'].tolist().index(sala_fixa[aula2]):
-                        # if sala_fixa[aula2] == 1 and \
-                        # (df.loc[aula2 % lenT, 'Sala']) != '6-307' and \
-                        # salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala']) == \
-                        # salas['Sala'].tolist().index(df.loc[aula2 % lenT, 'Sala']):
+                        
                         
                             # Envio uma mensagem de erro e interrompo o código.
                             print(
@@ -1170,45 +958,6 @@ for grupo in grupos_de_conflitos[:]:
                                 f"na mesma sala onde uma aula da disciplina {df['Disciplina (código)'][aula2 % lenT]} foi fixada."
                             )
                             custom_exit()
-                    # Se a aula não foi fixada no LEM (sala 6-307).
-                    # if df.loc[aula % lenT, 'Sala'] != '6-307':
-                    # if sala_fixa[aula] != '6-307':
-                    #     # Verifico as demais aulas do grupo de conflito atual.
-                    #     for aula2 in grupo:
-                    #         # Se houver uma outra aula (aula2) deste grupo que está fixada na mesma sala da aula atual.
-                    #         # if aula != aula2 and theta_aal[aula, aula2] == 1 and \
-                    #         if aula != aula2 and \
-                    #         sala_fixa[aula2] != '0' and \
-                    #         sala_fixa[aula2] != '6-307' and \
-                    #         salas['Sala'].tolist().index(sala_fixa[aula]) == salas['Sala'].tolist().index(sala_fixa[aula2]):
-                    #         # if sala_fixa[aula2] == 1 and \
-                    #         # (df.loc[aula2 % lenT, 'Sala']) != '6-307' and \
-                    #         # salas['Sala'].tolist().index(df.loc[aula % lenT, 'Sala']) == \
-                    #         # salas['Sala'].tolist().index(df.loc[aula2 % lenT, 'Sala']):
-                            
-                    #             # Envio uma mensagem de erro e interrompo o código.
-                    #             print(
-                    #                 f"Uma aula da disciplina {df['Disciplina (código)'][aula % lenT]} foi fixada " \
-                    #                 f"na mesma sala onde uma aula da disciplina {df['Disciplina (código)'][aula2 % lenT]} foi fixada."
-                    #             )
-                    #             custom_exit()
-                    # # Caso a aula esteja fixada no LEM (sala 6-307).
-                    # else:
-                    #     # Verifico as demais aulas do grupo de conflito atual.
-                    #     for aula2 in grupo:
-                    #         # Se houver outra aula fixada na 6-307 com conflito de horário.
-                    #         if aula != aula2 and \
-                    #         sala_fixa[aula2] != '0' and \
-                    #         sala_fixa[aula2] == '6-307':
-                    #         # sala_fixa[aula2] == 1 and \
-                    #         # (df.loc[aula2 % lenT, 'Sala']) == '6-307':
-                            
-                    #             # Envio uma mensagem de erro e interrompo o código.
-                    #             print(
-                    #                 f"As disciplinas {df['Disciplina (código)'][aula % lenT]} e "
-                    #                 f"{df['Disciplina (código)'][aula2 % lenT]} foram fixadas no LEM, mesmo possuindo conflito de horários."
-                    #             )
-                    #             custom_exit()
 
             # Utilizo novamente uma lista auxiliar com as salas que são capazes de atender àquela aula, não contando os laboratórios
             aux = [s for s in range(lenS) if eta_as[aula,s] == 1 and s not in salas_labs]
@@ -1223,8 +972,7 @@ for grupo in grupos_de_conflitos[:]:
                     f"não pode(m) ser(em) alocada(s) por conta do número de alunos."
                     f"\nAlternativamente, a sala fixada também foi proíbida de ser usada por essa aula."
                 )
-                # print("System exit 3.\n")
-                # sys.exit()
+                
                 custom_exit()
     for aula in grupo[:]:
         if lab_tal[aula] == 1:
@@ -1266,8 +1014,7 @@ for grupo in grupos_de_conflitos[:]:
         print("Alguma(s) das aulas das seguintes disciplinas não podem ser alocadas por conta do número de alunos:")
         for i in grupo:
             print(df['Disciplina (código)'][i])
-        # print("System exit 4.\n")
-        # sys.exit()
+        
         custom_exit()
 
 # print("Aulas com conflito:", grupos_de_conflitos,"\n")
@@ -1287,8 +1034,7 @@ for grupo in grupos_de_conflitos[:]:
 # Caso chegue neste ponto, envio uma mensagem de erro e interrompo o código.
 if len(grupos_de_conflitos) > len(salas_de_aula):
     print("Há um problema entre os conjuntos de aulas conflitantes e as salas disponíveis para estes conjuntos.")
-    # print("System exit 5.\n")
-    # sys.exit()
+
     custom_exit()
 else:
     # Caso contrário, faço uma análise das aulas que estão em conflito de horário umas com as outras
