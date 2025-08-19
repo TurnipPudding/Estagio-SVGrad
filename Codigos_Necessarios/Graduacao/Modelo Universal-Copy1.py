@@ -317,7 +317,6 @@ for a in aula_labs:
 # A variável sala_fixa é uma lista de 1's e 0's, onde cada elemento dela remete ao índice de uma aula. Se o i-ésimo termo da lista é 1,
 # então a i-ésima aula possui uma sala fixada. Se o valor é 0, ela não possui sala fixada
 # Ex: Se a aula 37 possui uma sala fixa, então sala_fixa[37] = 1 (lembrando do uso da aula 0 neste caso)
-# sala_fixa = [1 if (df.loc[a % lenT, 'Sala'] != 0 and start_a[a] != 0) else 0 for a in range(lenA)]
 sala_fixa = []
 for a in range(lenA):
     sala_valor = str((df.loc[a % lenT, 'Sala']))
