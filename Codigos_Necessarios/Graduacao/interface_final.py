@@ -33,9 +33,16 @@ import re # Biblioteca Regex para trabalhar com expressões regulares.
 
 # Função que padroniza os dataframes para terem o mesmo formato.
 def padroniza_dataframe(file_name, header_row, ano):
+    """
+    Função que padroniza os dataframes para terem o mesmo formato.
+    Parâmetros:
+    - file_name: nome do arquivo a ser lido.
+    - header_row: número da linha onde o cabeçalho do arquivo está localizado.
+    - ano: ano dos dados fornecidos.
+    """
     # Leio o dataframe correto, com a linha do cabeçalho.
     df = pd.read_excel(file_name, header=header_row)
-    # print(df['Horário 4'])
+    # Verifico e ajusto os nomes das colunas para evitar problemas de leitura posteriormente.
     # Primeiramente, para cada cabeçalho/coluna 'col' do dataframe.
     for col in range(len(df.columns)):
         # Verifico se tem um "\n" no texto do dataframe.
@@ -47,7 +54,9 @@ def padroniza_dataframe(file_name, header_row, ano):
             # Se estiver, substituo o nome da coluna por apenas "Sala".
             df = df.rename(columns={df.columns[col] : "Sala"})
 
+    # Padronizo os valores da coluna 'Deve ser alocada no ICMC?' para evitar problemas de filtragem.
     for idx, row in df.iterrows():
+        # Removo espaços e padronizo o valor 'x' para 'X'.
         df.loc[idx, 'Deve ser alocada no ICMC?'] = str(df.loc[idx, 'Deve ser alocada no ICMC?']).replace(' ', '')
         if df.loc[idx, 'Deve ser alocada no ICMC?'] == 'x':
             df.loc[idx, 'Deve ser alocada no ICMC?'] = 'X'
@@ -55,9 +64,10 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
     df = df[df['Deve ser alocada no ICMC?'] == 'X']
 
-    # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
+    # Garante que todas as colunas de horários necessárias existam no dataframe, adicionando-as se necessário.
+    # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 3" no dataframe.
     if "Horário 3" not in df.columns:
-        # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
+        # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 2", e insiro a nova coluna ao lado.
         df.insert(df.columns.get_loc("Horário 2") + 1, "Horário 3", pd.NA)
 
     # Após editar os cabeçalhos, verifico se existe um cabeçalho chamado "Horário 4" no dataframe.
@@ -65,9 +75,11 @@ def padroniza_dataframe(file_name, header_row, ano):
         # Se não houver, eu o adiciono no dataframe. Primeiro, procuro pelo cabeçalho "Horário 3", e insiro a nova coluna ao lado.
         df.insert(df.columns.get_loc("Horário 3") + 1, "Horário 4", pd.NA)
 
+    # Padronizo o nome da coluna de observações para evitar problemas de leitura.
     if "observações" in df.columns:
         df = df.rename(columns={"observações" : "Observações"})
 
+    # Garante que a coluna "Observações" exista no dataframe.
     if "Observações" not in df.columns:
         df.insert(df.columns.get_loc("Horário 4") + 1, "Observações", pd.NA)
 
@@ -79,6 +91,7 @@ def padroniza_dataframe(file_name, header_row, ano):
     df['Utilizará laboratório? (sim ou não)'] = df['Utilizará laboratório? (sim ou não)'].fillna("Não")
     # print(df['Utilizará laboratório? (sim ou não)'])
 
+    # Verifico se há disciplinas sem turma definida e alerto o usuário caso existam.
     # Busco e listo por disciplinas cuja Turma não foi definida.
     turmas0 = df[df['Turma'].isna()].index.tolist()
     # Se existirem tais disciplinas, uma janela é aberta para indicar as linhas do arquivo que possuem turmas vazias.
@@ -92,9 +105,12 @@ def padroniza_dataframe(file_name, header_row, ano):
         return None
 
     # Adiciono mais duas colunas no dataframe, uma para colocar o número de inscritos das disciplinas, e outra para o ano dos dados.
+    # A coluna "Vagas por disciplina" será preenchida posteriormente.
     df.insert(df.columns.get_loc(headers[-1]), "Vagas por disciplina", "")
+    # A coluna "Ano dos dados" registra o ano dos dados fornecidos.
     df.insert(df.columns.get_loc(headers[-1]), "Ano dos dados", ano)
 
+    # Realizo a padronização dos horários, corrigindo traços e verificando o formato esperado.
     # Alguns horários das disciplinas podem ter sido definidos com um traço diferente do usual do teclado.
     # Por isso, eu busco em cada coluna de horários por esses possíveis traços errados, pois eles prejudicam a leitura das disciplinas.
     # Para cada coluna de horário:
@@ -105,6 +121,7 @@ def padroniza_dataframe(file_name, header_row, ano):
             if "–" in str(df.loc[d, header]):
                 # Se estiver, substituo-o pelo traço normal.
                 df.loc[d, header] = df.loc[d, header].replace('–', '-')
+            # Verifico se o horário está no formato correto, contendo o traço separador.
             if not pd.isna(df.loc[d, header]) \
                 and "-" not in str(df.loc[d, header]) \
                     and not (df.loc[d, header] == ""):
@@ -117,7 +134,7 @@ def padroniza_dataframe(file_name, header_row, ano):
                                    )
                                 )
                 return None
-            
+            # Verifico se há mais de um traço, o que pode indicar erro de digitação.
             if not pd.isna(df.loc[d, header]) and len(str(df.loc[d, header]).split("-")) > 2:
                 messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
                                    (
@@ -127,6 +144,7 @@ def padroniza_dataframe(file_name, header_row, ano):
                                    )
                                 )
                 return None
+            # Verifico se há quebra de linha na célula, o que pode prejudicar a leitura.
             if "\n" in str(df.loc[d, header]):
                 messagebox.showwarning(f"Aviso! Há um horário de aula não padronizado!",
                                    (
@@ -151,28 +169,39 @@ def padroniza_dataframe(file_name, header_row, ano):
 """## Tooltip"""
 
 # Classe Tooltip utilizada para mostrar textos ao sobrevoar o mouse em alguma parte da interface.
+# Permite criar uma pequena janela de texto explicativo ao passar o mouse sobre um widget.
 class Tooltip:
+    """
+    Classe Tooltip para exibir textos explicativos ao sobrevoar o mouse em widgets da interface.
+    Parâmetros:
+    - widget: widget da interface ao qual o tooltip será associado.
+    - text: texto a ser exibido no tooltip.
+    """
     def __init__(self, widget, text):
-        self.widget = widget
-        self.text = text
-        self.tooltip_window = None
+        self.widget = widget  # Widget ao qual o tooltip está associado
+        self.text = text      # Texto a ser exibido no tooltip
+        self.tooltip_window = None  # Janela do tooltip (inicialmente inexistente)
 
-        # Eventos para mostrar e ocultar o tooltip
+        # Eventos para mostrar e ocultar o tooltip ao passar o mouse
         widget.bind("<Enter>", self.show_tooltip)
         widget.bind("<Leave>", self.hide_tooltip)
 
     def show_tooltip(self, event=None):
-        # Cria a janela do tooltip
+        # Cria a janela do tooltip ao passar o mouse sobre o widget
         if self.tooltip_window is not None:
+            # Se já existe uma janela de tooltip, não faz nada
             return
 
+        # Calcula a posição X e Y do tooltip em relação ao widget
         x = self.widget.winfo_rootx() + 20  # Posição X do tooltip
         y = self.widget.winfo_rooty() + 20  # Posição Y do tooltip
 
+        # Cria uma nova janela de tooltip
         self.tooltip_window = tk.Toplevel(self.widget)
         self.tooltip_window.wm_overrideredirect(True)  # Remove bordas da janela
         self.tooltip_window.geometry(f"+{x}+{y}")
 
+        # Cria o label com o texto do tooltip
         label = tk.Label(
             self.tooltip_window,
             text=self.text,
@@ -184,25 +213,25 @@ class Tooltip:
         label.pack(ipadx=5, ipady=3)
 
     def hide_tooltip(self, event=None):
-        # Destrói a janela do tooltip
+        # Destroi a janela do tooltip ao retirar o mouse do widget
         if self.tooltip_window:
             self.tooltip_window.destroy()
             self.tooltip_window = None
 
 """## Ler planilhas dos institutos (Base de dados das aulas e do jupiter)"""
 
-# Função para criar a base de dados das aulas e a dos dados do JúpiterWeb.
-# Seu parâmetro 'jupiter' refere-se a uma variável booleana, que recebe o valor True caso seja o momento de criar a Base de Dados do Júpiter,
-# e False caso contrário.
 def planilha_dep(jupiter):
-
+    """
+    Função para criar a base de dados das aulas e a dos dados do JúpiterWeb.
+    Parâmetros:
+    - jupiter: variável booleana que indica se é para criar a base de dados do Júpiter (True) ou das aulas (False).
+    """
     # Crio uma nova janela em cima da janela principal da interface.
     nova_janela = tk.Toplevel(root)
 
-    # Baseado em qual base de dados será criada, defino um nome diferente para a janela.
+    # Defino o título da janela de acordo com o tipo de base de dados que será criada.
     if not jupiter:
         nova_janela.title("Construir Base de Dados das Aulas")
-
     else:
         nova_janela.title("Construir Base de Dados do JúpiterWeb")
 
@@ -210,29 +239,22 @@ def planilha_dep(jupiter):
     frame = tk.Frame(nova_janela)
     frame.pack(pady=10, padx=10)
 
-    # Defino várias variáveis para armazenar os nomes dos arquivos para criar a base de dados.
+    # Defino variáveis para armazenar os nomes dos arquivos necessários para criar a base de dados.
     arquivo_sme = tk.StringVar(value="Selecione a planilha do SME")
     arquivo_sma = tk.StringVar(value="Selecione a planilha do SMA")
     arquivo_scc = tk.StringVar(value="Selecione a planilha do SCC")
     arquivo_ssc = tk.StringVar(value="Selecione a planilha do SSC")
     arquivo_outros = tk.StringVar(value="Selecione a planilha dos Outros Institutos")
     arquivo_salas = tk.StringVar(value="Selecione a planilha dos dados das salas")
-    # Defino uma variável para conter o ano dos dados fornecidos.
-    ano_dados = IntVar()
-    # Defino uma variável para conter o nome da nova base de dados.
-    nome_arquivo = tk.StringVar()
-    # Defino uma lista que irá conter os nomes de outros arquivos necessários para criar uma base de dados.
-    lista_outros = []
+    ano_dados = IntVar()  # Variável para o ano dos dados fornecidos
+    nome_arquivo = tk.StringVar()  # Variável para o nome da nova base de dados
+    lista_outros = []  # Lista para armazenar arquivos de outros institutos
 
-    # Defino as funções para selecionar arquivos.
+    # Funções para seleção dos arquivos de cada departamento
     def selecionar_sme():
-        # A classe filedialog faz com que o gerenciador de arquivos seja aberto para selecionar um arquivo.
-        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        # Abre o gerenciador de arquivos para selecionar a planilha do SME
         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SME")
-
-        # Se um arquivo foi selecionado:
         if arquivo:
-            # Salvo o caminho do arquivo.
             arquivo_sme.set(arquivo)
     def selecionar_sma():
         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SMA")
@@ -246,9 +268,9 @@ def planilha_dep(jupiter):
         arquivo = filedialog.askopenfilename(title="Selecione a planilha do SSC")
         if arquivo:
             arquivo_ssc.set(arquivo)
-    # Se não estiver criando a base de dados do Júpiter:
+
+    # Se não estiver criando a base de dados do Júpiter, defino funções para os campos extras
     if not jupiter:
-        # Também defino as funções necessárias para salvar outros arquivos.
         def selecionar_outros():
             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos Outros Institutos")
             if arquivo:
@@ -258,18 +280,12 @@ def planilha_dep(jupiter):
             if arquivo:
                 arquivo_salas.set(arquivo)
 
-
-
-    # Crio uma legenda para ficar ao lado do botão.
+    # Crio os labels e botões para seleção dos arquivos
     lbl_sme = tk.Label(frame, text="Selecione a planilha do SME:")
-    # Defino a posição do texto na janela.
     lbl_sme.grid(row=0, column=0, pady=5, sticky="w")
-    # Crio o botão para salvar o arquivo do SME.
     btn_selecionar_sme = tk.Button(frame, textvariable=arquivo_sme, command=selecionar_sme, wraplength=250, width=40)
-    # Defino a posição do botão na janela.
     btn_selecionar_sme.grid(row=0, column=1, padx=5, pady=5)
 
-    # As linhas a seguir são análogas.
     lbl_sma = tk.Label(frame, text="Selecione a planilha do SMA:")
     lbl_sma.grid(row=1, column=0, pady=5, sticky="w")
     btn_selecionar_sma = tk.Button(frame, textvariable=arquivo_sma, command=selecionar_sma, wraplength=250, width=40)
@@ -285,9 +301,8 @@ def planilha_dep(jupiter):
     btn_selecionar_ssc = tk.Button(frame, textvariable=arquivo_ssc, command=selecionar_ssc, wraplength=250, width=40)
     btn_selecionar_ssc.grid(row=3, column=1, padx=5, pady=5)
 
-    # Como anteriormente, caso a base sendo criada não é a do JúpiterWeb:
+    # Campos extras para outros institutos e salas, apenas se não for base do Júpiter
     if not jupiter:
-        # Defino algumas legendas e botões adicionais.
         lbl_outros = tk.Label(frame, text="Selecione a planilha dos Outros Institutos:")
         lbl_outros.grid(row=4, column=0, pady=5, sticky="w")
         btn_selecionar_outros = tk.Button(frame, textvariable=arquivo_outros, command=selecionar_outros, wraplength=250, width=40)
@@ -298,77 +313,54 @@ def planilha_dep(jupiter):
         btn_selecionar_salas = tk.Button(frame, textvariable=arquivo_salas, command=selecionar_salas, wraplength=250, width=40)
         btn_selecionar_salas.grid(row=5, column=1, padx=5, pady=5)
 
-
-        # Campo para inserir o valor
+        # Campo para inserir o ano dos dados
         lbl_ano = tk.Label(frame, text="Insira o ano dos dados:")
         lbl_ano.grid(row=6, column=0, sticky="w", pady=5)
         campo_ano = tk.Entry(frame, textvariable=ano_dados)
         campo_ano.grid(row=6, column=1, pady=5)
 
-    # Caso esteja sendo criada a base de dados do Júpiter:
+    # Se for base do Júpiter, crio frame e funções para lista de arquivos extras
     else:
-        # Defino um frame adicional na janela.
         frame2 = tk.Frame(nova_janela)
         frame2.pack(pady=10, padx=10)
 
-        # Defino algumas funções especiais para utilizar nesse novo frame.
-
-        # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
         def add_file():
             file_path = filedialog.askopenfilename(title="Selecione um arquivo")
-            # A diferença, é que se um arquivo foi selecionado, eu o salvo em uma lista, ao invés de uma variável única.
             if file_path:
                 lista_outros.append(file_path)
-                # E também atualizo a lista visualizada no frame utilizando uma outra função definida aqui.
                 update_listbox()
 
-        # Defino uma função para remover um arquivo da lista selecionado pelo usuário.
         def remove_selected():
-            # Tento executar as linhas a seguir, que só devem ser executadas se o usuário escolher um arquivo da lista.
             try:
-                # Salvo o índice do arquivo selecionado pelo usuário.
                 selected_index = file_listbox.curselection()[0]
-                # Removo o arquivo de mesmo índice da lista.
                 lista_outros.pop(selected_index)
-                # E atualizo a lista visualizada no frame.
                 update_listbox()
-            # Se nenhum arquivo ser selecionado, a interação é ignorada, e nada acontece.
             except IndexError:
                 pass
 
-        # Defino uma função que atualiza a visualização da lista no frame.
         def update_listbox():
-            # Primeiro, limpo a lista que estava sendo mostrada anteriormente.
             file_listbox.delete(0, tk.END)
-            # Depois disso, adiciono os arquivos da lista no visor.
             for file in lista_outros:
-                file_listbox.insert(tk.END, file)  # Adiciona os arquivos novamente
+                file_listbox.insert(tk.END, file)
 
-        # Defino um botão para adicionar arquivos, e sua posição na janela.
         add_file_button = tk.Button(frame2, text="Adicionar Arquivo", command=add_file)
         add_file_button.grid(row=0, column=0, pady=5, sticky="w")
 
-        # Defino uma lista para aparecer no visor do frame.
         file_listbox = tk.Listbox(frame2, width=100, height=10)
         file_listbox.grid(row=1, column=0, pady=5)
 
-        # Defino um botão para remover arquivos, e sua posição na janela.
         remove_file_button = tk.Button(frame2, text="Remover Selecionado", command=remove_selected)
         remove_file_button.grid(row=0, column=0, pady=5, sticky="e")
 
-
-    # Defino uma legenda e sua posição na janela, que indicará o campo onde o usuário digitará o nome do arquivo da base de dados.
+    # Campo para inserir o nome do arquivo da base de dados
     lbl_arq = tk.Label(frame, text="Insira o nome para a base de dados:")
     lbl_arq.grid(row=7, column=0, sticky="w", pady=5)
     campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
     campo_arq.grid(row=7, column=1, pady=5)
 
-
-    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+    # Função para salvar os valores dos arquivos selecionados e criar a base de dados
     def salvar_valores():
-        # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-        # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
+        # Valida se todos os arquivos obrigatórios foram selecionados
         if not arquivo_sme.get() or arquivo_sme.get() == "Selecione a planilha do SME":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SME.")
             return
@@ -382,9 +374,8 @@ def planilha_dep(jupiter):
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha do SSC.")
             return
 
-        # Caso não seja a base dos dados do Júpiter que está sendo feita:
+        # Valida campos extras se não for base do Júpiter
         if not jupiter:
-            # Verifico se os arquivos foram selecionados, e os campos preenchidos, novamente alertando se algo estiver faltando.
             if not arquivo_outros.get() or arquivo_outros.get() == "Selecione a planilha dos Outros Institutos":
                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos Outros Institutos.")
                 return
@@ -394,38 +385,36 @@ def planilha_dep(jupiter):
             if not ano_dados.get():
                 messagebox.showwarning("Aviso", "Por favor, insira o ano dos dados.")
                 return
-        # Caso seja a base dos dados do Júpiter que está sendo feita:
         else:
-            # Verifico se foram adicionados arquivos com os dados dos outros institutos, alertando a ausência deles.
+            # Valida se arquivos extras foram adicionados
             if len(lista_outros) == 0:
                 resposta = messagebox.askyesno("Aviso", "Nenhum arquivo dos outros institutos foi selecionado. Deseja continuar sem eles?")
                 if not resposta:
                     messagebox.showwarning("Aviso", "Por favor, selecione a(s) planilha(s) dos Outros Institutos.")
                     return
 
-        # Faço o mesmo alerta de antes caso o usuário não tenha fornecido o nome para a nova base de dados.
+        # Valida se o nome do arquivo foi fornecido
         if not nome_arquivo.get():
             messagebox.showwarning("Aviso", "Por favor, insira o nome da base de dados.")
             return
 
-
-        # Baseando-se em qual base de dados está sendo criada, chamo uma função para concatenar os dados dos arquivos fornecidos.
+        # Chama a função para concatenar os dados e criar a base de dados
         if not jupiter:
             concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
                       arquivo_ssc.get(), arquivo_salas.get(), nome_arquivo.get(), ano_dados.get(), jupiter, arquivo_outros.get())
         else:
             concat_df(arquivo_sme.get(), arquivo_sma.get(), arquivo_scc.get(),
                       arquivo_ssc.get(), None, nome_arquivo.get(), None, jupiter, lista_outros)
-        # messagebox.showinfo("Sucesso", "Valores salvos com sucesso!")
 
-        # Terminada a concatenação, destruo a janela de seleção.
+        # Após criar a base de dados, fecha a janela de seleção
         nova_janela.destroy()
 
-    # Defino um botão e seu espaço na janela para chamar a função que salva os nomes dos arquivos.
+    # Botão para criar a base de dados
     btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
     btn_salvar.pack(pady=10)
 
-    # Uma importante ressalva. Por conta da maneira que os botões, textos e campos podem ser colocados na janela,
+    # Observação sobre a ordem dos botões e widgets na janela
+    # Por conta da maneira que os botões, textos e campos podem ser colocados na janela,
     # é possível deixar certos botões com uma ordem, mesmo que "o espaço entre eles deveria estar vazio".
     # Por exemplo: no caso de estar fazendo a base de dados do Júpiter, algumas posições podem estar denotadas como
     # linha 7 depois de linha 5, mas o espaço onde estaria a linha 6 não possui nada. Neste caso, a linha 7 é jogada para cima,
@@ -437,85 +426,101 @@ def planilha_dep(jupiter):
 
 # Função que lê um dado arquivo.
 def ler_df(caminho_arquivo):
-    # Tento ler um arquivo.
+    """
+    Função que lê um arquivo de planilha e retorna um dataframe correspondente.
+    Aceita arquivos nos formatos .xlsx, .xls e .csv. Caso o arquivo seja incompatível ou ocorra algum erro, exibe uma mensagem de erro.
+    Parâmetros:
+    - caminho_arquivo: caminho do arquivo a ser lido.
+    Retorno:
+    - DataFrame lido do arquivo, ou None em caso de erro.
+    """
+    # Tento ler um arquivo e retorno o dataframe correspondente.
     try:
-        # Dependendo do tipo de arquivo, precisa utilizar leituras de dados diferentes. Vale ressaltar que essa função lê apenas arquivos
-        # de planilha, como '.xlsx', '.xls' e '.csv'. Com o arquivo lido, retorno o dataframe correspondente.
+        # Verifico o tipo de arquivo pelo sufixo e utilizo a leitura adequada.
         if caminho_arquivo.endswith(('.xlsx', '.xls')):
+            # Arquivo Excel: uso pd.read_excel
             df = pd.read_excel(caminho_arquivo)
             return df
         elif caminho_arquivo.endswith('.csv'):
+            # Arquivo CSV: uso pd.read_csv, pulando linhas ruins e usando separador ponto e vírgula
             df = pd.read_csv(caminho_arquivo, on_bad_lines='skip', sep=';', encoding='latin-1')
             return df
         else:
-            # Caso o arquivo fornecido seja incompatível, alerto o usuário.
+            # Caso o arquivo fornecido seja incompatível, exibo mensagem de erro ao usuário.
             raise ValueError("Formato de arquivo não suportado!")
 
-    # No caso de algum erro inesperado ocorrer, alerto o usuário com uma mensagem e o nome do erro.
+    # No caso de algum erro inesperado ocorrer, exibo uma mensagem de erro ao usuário com o nome do erro.
     except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao carregar o arquivo:\n{e}")
+        messagebox.showerror("Erro", f"Erro ao carregar o arquivo:\n{e}")
+        return None
     
 
 """### Concatenar"""
 
 # Função que concatena as planilhas em um único arquivo.
 def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
-    # Crio uma variável para listar os arquivos que serão concatenados.
+    """
+    Função que concatena planilhas de diferentes departamentos em um único arquivo Excel.
+    Pode ser utilizada para criar a base de dados das aulas ou a base do JúpiterWeb, dependendo do parâmetro 'jupiter'.
+    Parâmetros:
+    - SME, SMA, SCC, SSC: caminhos dos arquivos dos departamentos principais.
+    - salas: caminho do arquivo de dados das salas (usado apenas se jupiter=False).
+    - nome_arquivo: nome do arquivo final a ser gerado.
+    - ano: ano dos dados (usado apenas se jupiter=False).
+    - jupiter: booleano, indica se é para criar a base do JúpiterWeb (True) ou das aulas (False).
+    - outros: caminho(s) dos arquivos dos outros institutos (str ou list).
+    """
+    # Lista para armazenar os dataframes que serão concatenados.
     files = []
-    # Caso eu não esteja concatenando os arquivos para a base do JúpiterWeb:
+    
     if not jupiter:
-        # Leio a planilha com os dados das salas e salvo em um dataframe separado.
+        # Caso não seja para o JúpiterWeb, leio a planilha de salas separadamente.
         df_salas = ler_df(salas)
 
-        # Defino uma lista com os nomes dos arquivos a serem concatenados.
+        # Lista com os arquivos dos departamentos e outros institutos.
         name_files = [SME, SMA, SCC, SSC, outros]
 
-        # Para cada nome de arquivo:
+        # Para cada arquivo de departamento/outros:
         for name in name_files:
             # Leio e salvo o arquivo em uma variável.
             df = ler_df(name)
 
-            # Defino uma variável com o nome de um cabeçalho para ser encontrado, caso o cabeçalho não seja a primeira linha da planilha.
+            # Nome do cabeçalho esperado para identificar a linha correta.
             header_name = 'Disciplina (código)'
 
             header_found = False
-            # Para cada linha e célula da primeira coluna do dataframe:
+            # Procuro a linha do cabeçalho na primeira coluna do dataframe.
             for i, valor in enumerate(df.loc[:,df.columns[0]]):
-                # Se o valor da célula for o nome do cabeçalho que estou procurando:
                 if valor == header_name:
-                    # Salvo o número da linha do cabeçalho.
-                    header_row = i+1
-
-                    # Chamo a função que lerá o dataframe da forma correta e o deixará no formato padronizado.
+                    header_row = i + 1  # Linha do cabeçalho
+                    # Padronizo o dataframe a partir da linha do cabeçalho encontrada.
                     df_padronizado = padroniza_dataframe(name, header_row, ano)
-
-                    # Caso o dataframe não esteja vazio, isto é, se o arquivo foi lido corretamente e não tinha nenhum erro aparente:
+                    # Se o dataframe foi lido corretamente e não está vazio:
                     if not df_padronizado.empty:
-                        # Adiciono o dataframe na lista dos que serão concatenados.
                         files.append(df_padronizado)
-                    # Caso tenha ocorrido um erro, retorno para a função anterior, onde o usuário verificará os arquivos selecionados.
                     else:
-                        messagebox.showerror(f"Erro no arquivo",
-                                                (
-                                                    f"O arquivo '{name}' não pode ser lido, está vazio, ou não foram marcadas as "
-                                                    f"disciplinas a serem alocadas. Verifique-o."
-                                                )
-                                             )
+                        # Caso haja erro ou arquivo vazio, exibo mensagem e interrompo.
+                        messagebox.showerror(
+                            f"Erro no arquivo",
+                            (
+                                f"O arquivo '{name}' não pode ser lido, está vazio, ou não foram marcadas as "
+                                f"disciplinas a serem alocadas. Verifique-o."
+                            )
+                        )
                         return
-
-                    # Se o cabeçalho foi encontrado, não há motivo para continuar buscando, então encerro o loop dessa busca.
                     header_found = True
                     break
-
+            # Se não encontrou o cabeçalho esperado, exibe erro e interrompe.
             if not header_found:
-                messagebox.showerror("Erro de Cabeçalho", 
-                                        (
-                                            f"A coluna '{header_name}' não foi encontrada no arquivo {os.path.basename(name)}. "
-                                            "Verifique o cabeçalho do arquivo de entrada."
-                                        )
-                                    )
+                messagebox.showerror(
+                    "Erro de Cabeçalho",
+                    (
+                        f"A coluna '{header_name}' não foi encontrada no arquivo {os.path.basename(name)}. "
+                        "Verifique o cabeçalho do arquivo de entrada."
+                    )
+                )
                 return
-        # Com os arquivos lidos, salvo os nomes predeterminados das planilhas.
+        # Nomes das abas das planilhas no arquivo final.
         sheets = ["SME", "SMA", "SCC", "SSC", "Outros"]
 
     # Para o caso de concatenando os arquivos para a base do Júpiter:
@@ -543,7 +548,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
                 coluna_faltando = str(e).strip("'")
                 messagebox.showerror("Erro de Cabeçalho", 
                                         (
-                                            f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
+                                            f"A coluna '{coluna_faltando}' não foi encontrada no arquivo {os.path.basename(name)}. "
                                             "Verifique o cabeçalho do arquivo de entrada."
                                         )
                                     )
@@ -603,7 +608,7 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
         coluna_faltando = str(e).strip("'")
         messagebox.showerror("Erro de Cabeçalho", 
                                         (
-                                            f"A coluna 'Disciplina' não foi encontrada no arquivo {os.path.basename(name)}. "
+                                            f"A coluna '{coluna_faltando}' não foi encontrada no arquivo {os.path.basename(name)}. "
                                             "Verifique o cabeçalho do arquivo de entrada."
                                         )
                                     )
@@ -616,64 +621,48 @@ def concat_df(SME, SMA, SCC, SSC, salas, nome_arquivo, ano, jupiter, outros):
 
 """## Construir base de dados completa"""
 
-# Função que cria a base de dados completa, isto é, a que faz o cruzamento dos dados das aulas com os dados do JúpiterWeb.
-# Seu parâmetro 'pior_caso' refere-se a uma variável booleana, que recebe o valor False caso seja o momento de criar a Base de Dados Completa,
-# cruzando os dados das aulas com os dados do JúpiterWeb, e True caso seja o momento de criar a Base de Dados de Pior Caso.
-# A Base de Dados de Pior Caso faz uma simples comparação entre os dados de dois anos distintos, misturando dados dos dois anos para
-# montar uma análise com os maiores números de inscritos desses anos.
 def base_dados(pior_caso):
+    """
+    Função que cria a base de dados completa, cruzando os dados das aulas com os dados do JúpiterWeb ou realizando a análise de pior caso.
+    Parâmetros:
+    - pior_caso: booleano. Se False, cria a base de dados cruzando aulas e JúpiterWeb. Se True, faz a análise de pior caso entre dois anos distintos.
+    O usuário seleciona os arquivos necessários via interface gráfica, e o resultado é salvo em um arquivo Excel.
+    """
 
-    # Crio uma nova janela em cima da janela principal da interface.
+    # Cria uma nova janela para a interface de seleção dos arquivos.
     nova_janela = tk.Toplevel(root)
 
-    # Baseado em qual base de dados será criada, defino um nome diferente para a janela.
+    # Define o título da janela conforme o tipo de base de dados a ser criada.
     if not pior_caso:
         nova_janela.title("Construir Base de Dados do Modelo")
-
     else:
         nova_janela.title("Construir Base de Dados de Pior Caso")
 
-    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    # Frame para armazenar os botões e campos da janela.
     frame = tk.Frame(nova_janela)
     frame.pack(pady=10, padx=10)
 
-    # Caso não esteja fazendo a base de pior caso:
+    # Variáveis para armazenar os caminhos dos arquivos selecionados.
     if not pior_caso:
-        # Defino algumas variáveis para salvar o arquivo com a base de dados das aulas,
-        # a base de dados do JúpiterWeb, e a base de dados dos ingressantes.
         arquivo_base = tk.StringVar(value="Selecione a planilha dos dados das aulas")
         arquivo_jptr = tk.StringVar(value="Selecione a planilha dos dados do júpiter")
         arquivo_ing = tk.StringVar(value="Selecione a planilha dos dados dos ingressantes")
         arquivo_esp = tk.StringVar(value="Selecione a planilha com os inscritos das disciplinas com espelho")
-    # Caso esteja fazendo a base de pior caso:
     else:
-        # Defino as variáveis para salvar os arquivos das bases de dados.
         arquivo_base1 = tk.StringVar(value="Selecione a base de dados mais recente")
         arquivo_base2 = tk.StringVar(value="Selecione a base de dados mais antiga")
 
-    # Defino uma variável para salvar o nome da nova base de dados, seja ela a de pior caso ou não.
-    nome_arquivo = tk.StringVar()
+    nome_arquivo = tk.StringVar()  # Nome do arquivo final
 
-    # Funções para selecionar um arquivo. Como a função 'mãe' (base_dados) pode ser utilizada em duas ocasiões diferentes,
-    # essas funções para selecionar arquivos também são diferentes dependendo da ocasião.
+    # Funções para seleção dos arquivos, adaptadas conforme o tipo de base.
     def selecionar_um():
-        # Caso não esteja fazendo a base de pior caso:
         if not pior_caso:
-            # O usuário seleciona o arquivo contendo a base de dados das aulas.
             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das aulas")
-
-            # Se um arquivo foi selecionado:
             if arquivo:
-                # Salvo o caminho do arquivo.
                 arquivo_base.set(arquivo)
-        # Caso esteja fazendo a base de pior caso:
         else:
-            # O usuário seleciona o arquivo contendo a base de dados mais recente.
             arquivo = filedialog.askopenfilename(title="Selecione a base de dados mais recente")
-
-            # Se um arquivo foi selecionado:
             if arquivo:
-                # Salvo o caminho do arquivo.
                 arquivo_base1.set(arquivo)
     def selecionar_dois():
         if not pior_caso:
@@ -685,22 +674,19 @@ def base_dados(pior_caso):
             if arquivo:
                 arquivo_base2.set(arquivo)
 
-    # Caso não esteja fazendo a base de pior caso:
+    # Funções extras para seleção dos arquivos dos ingressantes e espelho, apenas se não for pior caso.
     if not pior_caso:
-        # Defino uma outra função para selecionar o arquivo com a base de dados dos ingressantes, com o mesmo funcionamento das demais.
         def selecionar_tres():
             arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados dos ingressantes")
             if arquivo:
                 arquivo_ing.set(arquivo)
-        # Defino uma função para selecionar o arquivo com os inscritos das disciplinas com espelho.
         def selecionar_quatro():
             arquivo = filedialog.askopenfilename(title="Selecione a planilha com os inscritos das disciplinas com espelho")
             if arquivo:
                 arquivo_esp.set(arquivo)
 
-    # Caso não esteja fazendo a base de pior caso:
+    # Criação dos labels e botões para seleção dos arquivos.
     if not pior_caso:
-        # Defino legendas e botões na janela para o usuário definir os arquivos necessários.
         lbl_base = tk.Label(frame, text="Selecione a planilha dos dados das aulas")
         lbl_base.grid(row=0, column=0, pady=5, sticky="w")
         btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_um, wraplength=250, width=40)
@@ -720,10 +706,7 @@ def base_dados(pior_caso):
         lbl_esp.grid(row=3, column=0, pady=5, sticky="w")
         btn_selecionar_esp = tk.Button(frame, textvariable=arquivo_esp, command=selecionar_quatro, wraplength=250, width=40)
         btn_selecionar_esp.grid(row=3, column=1, padx=5, pady=5)
-
-    # Caso esteja fazendo a base de pior caso:
     else:
-        # Defino legendas e botões na janela para o usuário definir os arquivos necessários.
         lbl_base1 = tk.Label(frame, text="Selecione a base de dados mais recente")
         lbl_base1.grid(row=0, column=0, pady=5, sticky="w")
         btn_selecionar_base1 = tk.Button(frame, textvariable=arquivo_base1, command=selecionar_um, wraplength=250, width=40)
@@ -734,20 +717,16 @@ def base_dados(pior_caso):
         btn_selecionar_base2 = tk.Button(frame, textvariable=arquivo_base2, command=selecionar_dois, wraplength=250, width=40)
         btn_selecionar_base2.grid(row=1, column=1, padx=5, pady=5)
 
-    # Defino a legenda e o campo na janela para o usuário inserir o nome da nova base de dados.
+    # Campo para inserir o nome do arquivo final.
     lbl_arq = tk.Label(frame, text="Insira o nome para a nova base de dados:")
     lbl_arq.grid(row=4, column=0, sticky="w", pady=5)
     campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
     campo_arq.grid(row=4, column=1, pady=5)
 
-
-    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+    # Função que salva os valores dos arquivos e executa a criação da base de dados.
     def salvar_valores():
-        # Caso não esteja fazendo a base de pior caso:
+        # Validação dos campos obrigatórios, conforme o tipo de base.
         if not pior_caso:
-            # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-            # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
-
             if not arquivo_base.get() or arquivo_base.get() == "Selecione a planilha dos dados das aulas":
                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das aulas.")
                 return
@@ -760,11 +739,7 @@ def base_dados(pior_caso):
             if not arquivo_esp.get() or arquivo_esp.get() == "Selecione a planilha com os inscritos das disciplinas com espelho":
                 messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os inscritos das disciplinas com espelho.")
                 return
-
-        # Caso esteja fazendo a base de pior caso:
         else:
-            # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-            # aparece, pedindo para o usuário selecionar um arquivo no campo requerido.
             if not arquivo_base1.get() or arquivo_base1.get() == "Selecione a base de dados mais recente":
                 messagebox.showwarning("Aviso", "Por favor, selecione a primeira base de dados.")
                 return
@@ -772,44 +747,31 @@ def base_dados(pior_caso):
                 messagebox.showwarning("Aviso", "Por favor, selecione a segunda base de dados.")
                 return
 
-        # Crio uma variável auxiliar para salvar o nome da nova base de dados dada pelo usuário.
+        # Validação do nome do arquivo final.
         nome = nome_arquivo.get()
-
-        # Se o usuário não forneceu um nome para a nova base de dados:
         if not nome:
-            # Uma janela alertando o ocorrido é aberta.
             messagebox.showwarning("Aviso", "Por favor, insira o nome da nova base de dados.")
             return
-
-        # Verifico se o nome da nova base de dados termina com '.xlsx':
         if not nome.endswith(".xlsx"):
-            # Em caso negativo, adiciono essa terminologia.
             nome = nome + ".xlsx"
 
-
-        # Caso não esteja fazendo a base de pior caso:
         if not pior_caso:
-            # Tento executar o script do código responsável em cruzar os dados das aulas com os do Júpiter.
+            # Executa o script para cruzar os dados das aulas com os do JúpiterWeb.
             try:
                 file1 = arquivo_base.get()
                 file2 = arquivo_jptr.get()
                 file3 = arquivo_ing.get()
                 file4 = arquivo_esp.get()
-                # subprocess(["python", "jupiter sheet maker.py", [df_filename1, df_filename2, df_filename3]])
                 subprocess.run(
-                    # ["python", "jupiter sheet maker.py", file1, file2, file3, file4, nome],
                     [sys.executable, "jupiter sheet maker.py", file1, file2, file3, file4, nome],
                     check=True,
                     capture_output=True,
                     text=True
-                    )
-                
-                # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
+                )
+                # Mensagem de sucesso ao usuário.
                 messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
-                
-
-            # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
             except subprocess.CalledProcessError as e:
+                # Tratamento de erros específicos do subprocess.
                 if e.returncode == 1:
                     msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
                     messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\n{msg}")
@@ -822,203 +784,451 @@ def base_dados(pior_caso):
                 else:
                     messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
-            
-            # Caso um erro inesperado ocorra, uma janela alertando o erro é apresentada para o usuário.
             except Exception as e:
+                # Tratamento de erros inesperados.
                 messagebox.showerror("Erro", f"Erro inesperado: {e}")
                 return
-            
-            
-        # Caso esteja fazendo a base de pior caso:
         else:
-            # Leio os dois dataframes fornecidos pelo usuário.
-            df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
-            df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
-
-            # Chamo a função que faz um dataframe com o maior número de inscritos de cada ano.
-            df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+            # Realiza a análise de pior caso entre dois anos distintos.
             try:
-                # Com a base de pior caso feita, salvo-a em um arquivo de Excel com o nome fornecido pelo usuário.
+                df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+                df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+                df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
                 with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
                     for sh, df_sh in df_pior_caso.items():
                         df_sh.to_excel(writer, sheet_name=sh, index=False)
-                # Com o processo terminado, mostro uma mensagem confirmando que o arquivo foi criado com sucesso.
                 messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
-
             except PermissionError as e:
-                if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
-                    messagebox.showerror("Erro de Permissão", 
-                                            (
-                                                f"Não foi possível salvar o arquivo {nome_arquivo}. "
-                                                "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
-                                            )
-                                        )
+                if e.errno == 13:
+                    messagebox.showerror(
+                        "Erro de Permissão",
+                        (
+                            f"Não foi possível salvar o arquivo {nome_arquivo}. "
+                            "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                        )
+                    )
                     return
                 else:
                     messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
                     return
             except Exception as e:
-                # Para qualquer outro erro
                 messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
                 return
-    
-        # Terminada a criação da base de dados, destruo a janela de seleção.
+        # Fecha a janela após a criação da base de dados.
         nova_janela.destroy()
 
-    # Defino um botão e seu espaço na janela para chamar a função que salva os nomes dos arquivos.
+    # Botão para executar a função de salvar valores e criar a base de dados.
+    btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
+    btn_salvar.pack(pady=10)
+
+
+    # Cria uma nova janela sobre a janela principal da interface para seleção dos arquivos necessários.
+    nova_janela = tk.Toplevel(root)
+
+    # Define o título da janela de acordo com o tipo de base de dados que será criada.
+    if not pior_caso:
+        # Se não for análise de pior caso, título padrão para base do modelo.
+        nova_janela.title("Construir Base de Dados do Modelo")
+    else:
+        # Se for análise de pior caso, título específico.
+        nova_janela.title("Construir Base de Dados de Pior Caso")
+
+        # Cria o frame para organizar os botões e campos na nova janela.
+        frame = tk.Frame(nova_janela)
+        frame.pack(pady=10, padx=10)
+
+    # Variáveis para armazenar os caminhos dos arquivos selecionados, mudam conforme o tipo de base.
+    if not pior_caso:
+        # Para base do modelo: arquivos das aulas, JúpiterWeb, ingressantes e disciplinas com espelho.
+        arquivo_base = tk.StringVar(value="Selecione a planilha dos dados das aulas")  # Planilha das aulas
+        arquivo_jptr = tk.StringVar(value="Selecione a planilha dos dados do júpiter")  # Planilha do JúpiterWeb
+        arquivo_ing = tk.StringVar(value="Selecione a planilha dos dados dos ingressantes")  # Planilha dos ingressantes
+        arquivo_esp = tk.StringVar(value="Selecione a planilha com os inscritos das disciplinas com espelho")  # Planilha dos espelhos
+    else:
+        # Para análise de pior caso: duas bases de dados de anos diferentes.
+        arquivo_base1 = tk.StringVar(value="Selecione a base de dados mais recente")  # Base mais recente
+        arquivo_base2 = tk.StringVar(value="Selecione a base de dados mais antiga")   # Base mais antiga
+
+    # Variável para armazenar o nome do arquivo final gerado.
+    nome_arquivo = tk.StringVar()
+
+    # Funções para seleção dos arquivos, adaptadas conforme o tipo de base.
+    def selecionar_um():
+        # Seleciona o primeiro arquivo necessário.
+        if not pior_caso:
+            # Seleciona a planilha das aulas.
+            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das aulas")
+            if arquivo:
+                # Salva o caminho do arquivo selecionado.
+                arquivo_base.set(arquivo)
+        else:
+            # Seleciona a base de dados mais recente para pior caso.
+            arquivo = filedialog.askopenfilename(title="Selecione a base de dados mais recente")
+            if arquivo:
+                arquivo_base1.set(arquivo)
+
+    def selecionar_dois():
+        # Seleciona o segundo arquivo necessário.
+        if not pior_caso:
+            # Seleciona a planilha do JúpiterWeb.
+            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados do júpiter")
+            if arquivo:
+                arquivo_jptr.set(arquivo)
+        else:
+            # Seleciona a base de dados mais antiga para pior caso.
+            arquivo = filedialog.askopenfilename(title="Selecione a base de dados mais antiga")
+            if arquivo:
+                arquivo_base2.set(arquivo)
+
+    # Funções extras para seleção dos arquivos dos ingressantes e espelho, apenas se não for pior caso.
+    if not pior_caso:
+        def selecionar_tres():
+            # Seleciona a planilha dos ingressantes.
+            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados dos ingressantes")
+            if arquivo:
+                arquivo_ing.set(arquivo)
+        def selecionar_quatro():
+            # Seleciona a planilha dos inscritos das disciplinas com espelho.
+            arquivo = filedialog.askopenfilename(title="Selecione a planilha com os inscritos das disciplinas com espelho")
+            if arquivo:
+                arquivo_esp.set(arquivo)
+
+
+    # Adiciona os widgets de seleção de arquivos na janela, conforme o tipo de base de dados.
+    if not pior_caso:
+        # Para base do modelo:
+        # Label e botão para selecionar a planilha dos dados das aulas.
+        lbl_base = tk.Label(frame, text="Selecione a planilha dos dados das aulas")
+        lbl_base.grid(row=0, column=0, pady=5, sticky="w")
+        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_um, wraplength=250, width=40)
+        btn_selecionar_base.grid(row=0, column=1, padx=5, pady=5)
+
+        # Label e botão para selecionar a planilha dos dados do JúpiterWeb.
+        lbl_jptr = tk.Label(frame, text="Selecione a planilha dos dados do júpiter")
+        lbl_jptr.grid(row=1, column=0, pady=5, sticky="w")
+        btn_selecionar_jptr = tk.Button(frame, textvariable=arquivo_jptr, command=selecionar_dois, wraplength=250, width=40)
+        btn_selecionar_jptr.grid(row=1, column=1, padx=5, pady=5)
+
+        # Label e botão para selecionar a planilha dos dados dos ingressantes.
+        lbl_ing = tk.Label(frame, text="Selecione a planilha dos dados dos ingressantes")
+        lbl_ing.grid(row=2, column=0, pady=5, sticky="w")
+        btn_selecionar_ing = tk.Button(frame, textvariable=arquivo_ing, command=selecionar_tres, wraplength=250, width=40)
+        btn_selecionar_ing.grid(row=2, column=1, padx=5, pady=5)
+
+        # Label e botão para selecionar a planilha dos inscritos das disciplinas com espelho.
+        lbl_esp = tk.Label(frame, text="Selecione a planilha com os inscritos das disciplinas com espelho")
+        lbl_esp.grid(row=3, column=0, pady=5, sticky="w")
+        btn_selecionar_esp = tk.Button(frame, textvariable=arquivo_esp, command=selecionar_quatro, wraplength=250, width=40)
+        btn_selecionar_esp.grid(row=3, column=1, padx=5, pady=5)
+    else:
+        # Para análise de pior caso:
+        # Label e botão para selecionar a base de dados mais recente.
+        lbl_base1 = tk.Label(frame, text="Selecione a base de dados mais recente")
+        lbl_base1.grid(row=0, column=0, pady=5, sticky="w")
+        btn_selecionar_base1 = tk.Button(frame, textvariable=arquivo_base1, command=selecionar_um, wraplength=250, width=40)
+        btn_selecionar_base1.grid(row=0, column=1, padx=5, pady=5)
+
+        # Label e botão para selecionar a base de dados mais antiga.
+        lbl_base2 = tk.Label(frame, text="Selecione a base de dados mais antiga")
+        lbl_base2.grid(row=1, column=0, pady=5, sticky="w")
+        btn_selecionar_base2 = tk.Button(frame, textvariable=arquivo_base2, command=selecionar_dois, wraplength=250, width=40)
+        btn_selecionar_base2.grid(row=1, column=1, padx=5, pady=5)
+
+    # Campo para o usuário inserir o nome do arquivo final da base de dados.
+    # Label explicativo e campo de entrada para o nome do arquivo.
+    lbl_arq = tk.Label(frame, text="Insira o nome para a nova base de dados:")
+    lbl_arq.grid(row=4, column=0, sticky="w", pady=5)
+    campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
+    campo_arq.grid(row=4, column=1, pady=5)
+
+
+    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
+
+    def salvar_valores():
+        """
+        Função responsável por validar os arquivos selecionados, executar a criação da base de dados e tratar erros.
+        Realiza validação dos campos obrigatórios, executa o script de cruzamento ou análise de pior caso,
+        e exibe mensagens de sucesso ou erro conforme o resultado.
+        """
+        # Validação dos campos obrigatórios conforme o tipo de base de dados.
+        if not pior_caso:
+            # Para base do modelo: verifica se todos os arquivos foram selecionados corretamente.
+            # Se algum arquivo não foi selecionado, exibe aviso e interrompe o processo.
+            if not arquivo_base.get() or arquivo_base.get() == "Selecione a planilha dos dados das aulas":
+                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das aulas.")
+                return
+            if not arquivo_jptr.get() or arquivo_jptr.get() == "Selecione a planilha dos dados do júpiter":
+                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados do júpiter.")
+                return
+            if not arquivo_ing.get() or arquivo_ing.get() == "Selecione a planilha dos dados dos ingressantes":
+                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados dos ingressantes.")
+                return
+            if not arquivo_esp.get() or arquivo_esp.get() == "Selecione a planilha com os inscritos das disciplinas com espelho":
+                messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os inscritos das disciplinas com espelho.")
+                return
+        else:
+            # Para análise de pior caso: verifica se ambos os arquivos foram selecionados.
+            if not arquivo_base1.get() or arquivo_base1.get() == "Selecione a base de dados mais recente":
+                messagebox.showwarning("Aviso", "Por favor, selecione a primeira base de dados.")
+                return
+            if not arquivo_base2.get() or arquivo_base2.get() == "Selecione a base de dados mais antiga":
+                messagebox.showwarning("Aviso", "Por favor, selecione a segunda base de dados.")
+                return
+
+        # Validação do nome do arquivo final.
+        nome = nome_arquivo.get()
+        if not nome:
+            # Se o usuário não forneceu um nome, exibe aviso e interrompe.
+            messagebox.showwarning("Aviso", "Por favor, insira o nome da nova base de dados.")
+            return
+        # Garante que o nome do arquivo termine com '.xlsx'.
+        if not nome.endswith(".xlsx"):
+            nome = nome + ".xlsx"
+
+        if not pior_caso:
+            # Executa o script para cruzar os dados das aulas com os do JúpiterWeb.
+            try:
+                file1 = arquivo_base.get()
+                file2 = arquivo_jptr.get()
+                file3 = arquivo_ing.get()
+                file4 = arquivo_esp.get()
+                # Chama o script externo para gerar a base de dados cruzada.
+                subprocess.run(
+                    [sys.executable, "jupiter sheet maker.py", file1, file2, file3, file4, nome],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+                # Exibe mensagem de sucesso ao usuário.
+                messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
+            except subprocess.CalledProcessError as e:
+                # Tratamento de erros específicos do subprocess.
+                if e.returncode == 1:
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\n{msg}")
+                elif e.returncode == 2:
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\n{msg}")
+                elif e.returncode == 4:
+                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
+                    messagebox.showerror("Erro", f"Erro ao executar o script:\n\n{msg}")
+                else:
+                    messagebox.showerror("Erro", f"Erro inesperado: {e}")
+                return
+            except Exception as e:
+                # Tratamento de erros inesperados.
+                messagebox.showerror("Erro", f"Erro inesperado: {e}")
+                return
+        else:
+            # Realiza a análise de pior caso entre dois anos distintos.
+            try:
+                # Lê os dois dataframes fornecidos pelo usuário.
+                df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+                df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+                # Chama a função que faz um dataframe com o maior número de inscritos de cada ano.
+                df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
+                # Salva a base de pior caso em um arquivo Excel.
+                with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
+                    for sh, df_sh in df_pior_caso.items():
+                        df_sh.to_excel(writer, sheet_name=sh, index=False)
+                # Exibe mensagem de sucesso ao usuário.
+                messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
+            except PermissionError as e:
+                # Tratamento de erro de permissão (arquivo aberto ou bloqueado).
+                if e.errno == 13:
+                    messagebox.showerror(
+                        "Erro de Permissão",
+                        (
+                            f"Não foi possível salvar o arquivo {nome_arquivo}. "
+                            "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
+                        )
+                    )
+                    return
+                else:
+                    messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
+                    return
+            except Exception as e:
+                # Tratamento de outros erros inesperados.
+                messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
+                return
+        # Após criar a base de dados, fecha a janela de seleção.
+        nova_janela.destroy()
+
+    # Botão para executar a função de salvar valores e criar a base de dados.
     btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
     btn_salvar.pack(pady=10)
 
 """### Pior caso"""
 
+
 # Função que faz a análise de pior caso.
 # Note que df1 deve sempre ser a base de dados mais recente, enquanto df2 deve sempre ser a base de dados mais antiga.
 def base_pior_caso(df1, df2, sheets):
-
-    
+    """
+    Realiza a análise de pior caso entre duas bases de dados de anos distintos.
+    Para cada disciplina presente nas planilhas, compara o número de inscritos entre os anos e atualiza para o maior valor encontrado.
+    Parâmetros:
+    - df1: base de dados mais recente (dict de DataFrames por sheet)
+    - df2: base de dados mais antiga (dict de DataFrames por sheet)
+    - sheets: lista de nomes das planilhas a serem analisadas
+    Retorno:
+    - df1 atualizado com os maiores valores de inscritos e ano dos dados.
+    """
     try:
-    # Para cada planilha na base de dados mais recente:
-        # for sh in df1.sheet_names[1:]:
+        # Para cada planilha (sheet) na base de dados mais recente, exceto a primeira (geralmente 'Salas').
         for sh in sheets[1:]:
-            # Considerando que df1 e df2 possuem as mesmas planilhas (ou, pelo menos, deveriam), crio duas variáveis auxiliares
-            # para salvar os dados a mesma planilha de ambas as bases.
+            # Obtém os DataFrames correspondentes à mesma planilha em ambos os anos.
             df1_sh = df1[sh]
             df2_sh = df2[sh]
 
-            # Crio também duas variáveis para salvar as colunas de disciplinas das bases como listas.
+            # Extrai as listas de disciplinas de cada base.
             l1 = df1_sh['Disciplina (código)'].tolist()
             l2 = df2_sh['Disciplina (código)'].tolist()
 
-            # Para cada disciplina 'd' na lista de disciplinas da base de dados mais recente:
+            # Para cada disciplina presente na base mais recente:
             for d in l1:
-                # Verifico se 'd' está na lista de disciplinas da base de dados mais antiga:
+                # Se a disciplina também existe na base mais antiga:
                 if d in l2:
-                    # Em caso positivo, verifico se o número de inscritos do ano mais recente da disciplina é menor
-                    # que o número de inscritos do ano mais antigo da disciplina.
-                    if df1[sh].loc[l1.index(d), 'Vagas por disciplina'] < df2[sh].loc[l2.index(d), 'Vagas por disciplina']:
-                        # Se for o caso, então no ano anterior houveram mais inscritos, isto é, no ano mais recente, pode ser que
-                        # o número de inscritos chegue até esse valor ou o ultrapasse.
-                        # Por conta disso, atualizo o número de inscritos e o ano dos dados da disciplina 'd' na base mais recente.
-                        df1[sh].loc[l1.index(d), 'Vagas por disciplina'] = df2[sh].loc[l2.index(d), 'Vagas por disciplina']
+                    # Compara o número de inscritos entre os anos.
+                    inscritos_recente = df1[sh].loc[l1.index(d), 'Vagas por disciplina']
+                    inscritos_antigo = df2[sh].loc[l2.index(d), 'Vagas por disciplina']
+                    # Se o valor antigo for maior, atualiza na base mais recente.
+                    if inscritos_recente < inscritos_antigo:
+                        df1[sh].loc[l1.index(d), 'Vagas por disciplina'] = inscritos_antigo
                         df1[sh].loc[l1.index(d), 'Ano dos dados'] = df2[sh].loc[l2.index(d), 'Ano dos dados']
-
     except KeyError as e:
+        # Caso falte alguma coluna esperada, exibe mensagem de erro ao usuário.
         coluna_faltando = str(e).strip("'")
         messagebox.showerror("Erro de Cabeçalho", 
-                                (
-                                    f"A coluna '{coluna_faltando}' não foi encontrada em um dos arquivos. "
-                                    "Verifique o cabeçalho dos arquivos de entrada."
-                                )
-                            )
+            (f"A coluna '{coluna_faltando}' não foi encontrada em um dos arquivos. "
+             "Verifique o cabeçalho dos arquivos de entrada.")
+        )
         return
-    
     except Exception as e:
-        # Caso ocorra algum erro, alerto o usuário.
+        # Para qualquer outro erro inesperado, exibe mensagem ao usuário.
         messagebox.showerror("Erro inesperado", f"Ocorreu um erro inesperado:\n\n{e}")
         return
-    # Após concluir a análise, retorno a base de dados atualizada.
+    # Retorna a base de dados atualizada após a análise de pior caso.
     return df1
 
 """## Executar"""
 
-# Função que faz a verificação de dados e execução do modelo.
+
 def execute():
-    # Crio uma nova janela em cima da janela principal da interface.
+    """
+    Função responsável por abrir uma janela para seleção da base de dados, verificação dos dados e execução do modelo.
+    Permite ao usuário:
+    - Selecionar o arquivo da base de dados (completa ou de pior caso)
+    - Executar o script de verificação de dados
+    - Abrir o menu de configuração e execução do modelo
+    """
+    # Cria uma nova janela sobre a principal para as opções de execução.
     nova_janela = tk.Toplevel(root)
     nova_janela.geometry("+200+200")
     nova_janela.title("Verificar Dados e Executar Modelo")
 
-    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    # Frame para organizar os botões e campos na nova janela.
     frame = tk.Frame(nova_janela)
     frame.pack(pady=10, padx=10)
 
-    # Defino uma variável para salvar o arquivo com a base de dados para o modelo, seja ela a completa ou a de pior caso.
+    # Variável que armazena o caminho do arquivo selecionado pelo usuário.
+    # Inicialmente, exibe texto padrão até que o usuário selecione um arquivo.
     arquivo_selecionado1 = tk.StringVar(value="Selecione uma base de dados")
 
-    # Defino a função para selecionar a base de dados.
     def selecionar_arquivo1():
-        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        """
+        Abre o diálogo para o usuário selecionar o arquivo da base de dados.
+        Atualiza a variável arquivo_selecionado1 com o caminho do arquivo escolhido.
+        """
         arquivo = filedialog.askopenfilename(title="Selecione uma base de dados")
-
-        # Se um arquivo foi selecionado:
         if arquivo:
-            # Salvo o caminho do arquivo.
             arquivo_selecionado1.set(arquivo)
 
-
-
-    # Defino um botão, e sua posição na janela, para o usuário escolher a base de dados.
-    btn_selecionar1 = tk.Button(frame, textvariable=arquivo_selecionado1,
-                                command=selecionar_arquivo1, wraplength=250, width=40)
+    # Botão para o usuário escolher a base de dados.
+    # O texto do botão é atualizado conforme o arquivo selecionado.
+    btn_selecionar1 = tk.Button(
+        frame,
+        textvariable=arquivo_selecionado1,
+        command=selecionar_arquivo1,
+        wraplength=250,
+        width=40
+    )
     btn_selecionar1.grid(row=0, column=0, padx=5, pady=5)
 
-
-    # Defino uma linha de separação horizontal na janela, separando o botão de seleção de arquivo do botão de verificação de dados.
+    # Linha de separação horizontal entre seleção de arquivo e verificação de dados.
     vd_separator = ttk.Separator(frame, orient="horizontal")
     vd_separator.grid(row=2, column=0, sticky="ew", pady=(0, 10))
 
-    # Defino um botão, e sua posição na janela, para o usuário abrir o menu de verificação de dados.
-    vd1 = ttk.Button(frame, text="Selecionar Verificação de Dados",
-                     command=lambda: roda_script("verificar_dados.py", arquivo_selecionado1.get(), "", "", "", "", "", ""))
+    # Botão para abrir o menu de verificação de dados.
+    # Chama o script 'verificar_dados.py' usando o arquivo selecionado.
+    vd1 = ttk.Button(
+        frame,
+        text="Selecionar Verificação de Dados",
+        command=lambda: roda_script(
+            "verificar_dados.py",
+            arquivo_selecionado1.get(),
+            "", "", "", "", "", ""
+        )
+    )
     vd1.grid(row=4, column=0, pady=5)
 
-    # Defino uma linha de separação horizontal na janela, separando o botão de verificação de dados do botão de execução do modelo.
+    # Linha de separação horizontal entre verificação de dados e execução do modelo.
     em_separator = ttk.Separator(frame, orient="horizontal")
-    em_separator.grid(row=5, column=0, sticky="ew", pady=(0,10))
+    em_separator.grid(row=5, column=0, sticky="ew", pady=(0, 10))
 
-    # Defino um botão, e sua posição na janela, para o usuário abrir o menu de execução do modelo.
-    em = ttk.Button(frame, text="Selecionar Modelo", command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get()))
+    # Botão para abrir o menu de configuração e execução do modelo.
+    # Chama a função Novo_edit_config passando o arquivo selecionado.
+    em = ttk.Button(
+        frame,
+        text="Selecionar Modelo",
+        command=lambda: Novo_edit_config(file_name=arquivo_selecionado1.get())
+    )
     em.grid(row=6, column=0, pady=5)
 
 """### Roda Script"""
 
-# Função que roda um script em Python. Seus parâmetros são variáveis fornecidas pelo usuário, como qual script
-# o nome da base de dados que será lida, e o peso das variáveis do modelo.
-def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
 
-    # Crio uma janela para mostrar a saída do script, como prints importantes e até saídas de erros.
+def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
+    """
+    Executa um script Python externo com parâmetros fornecidos pelo usuário e exibe a saída em uma janela dedicada.
+    Parâmetros:
+    - script: nome do script Python a ser executado
+    - nome: caminho do arquivo da base de dados
+    - peso_x, peso_y, peso_v, peso_z, alpha, pref: parâmetros do modelo a serem passados ao script
+    Abre uma janela para mostrar a saída do script (prints, erros, etc) em tempo real.
+    Em caso de erro, exibe mensagens apropriadas ao usuário.
+    """
+    # Cria uma nova janela para exibir a saída do script.
     output_window = tk.Toplevel(root)
     output_window.title("Saída do Script")
     output_text = scrolledtext.ScrolledText(output_window, width=120, height=40)
     output_text.pack()
 
-    # Tento executar o script escolhido pelo usuário.
     try:
-        # Executo o script utilizando subprocess.
+        # Executa o script externo usando subprocess, passando todos os parâmetros necessários.
         process = subprocess.Popen(
-            # ["python", script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
             [sys.executable, script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
         )
 
-        # Capturo e exibo a saída linha por linha do script.
-        # Para cada linha da saída:
+        # Lê e exibe a saída do script linha por linha, atualizando a interface em tempo real.
         for line in iter(process.stdout.readline, ""):
-            # Verifico se a linha está vazia, isto é, se cheguei no final da saída do script.
             if line.strip():
-                # Se não cheguei, insiro a linha no final da janela.
-                output_text.insert(tk.END, line)
+                output_text.insert(tk.END, line)  # Adiciona a linha ao final da janela de saída
+                output_text.see(tk.END)           # Rola automaticamente até o final
+                root.update()                     # Atualiza a interface para mostrar a linha mais recente
 
-                # Também coloco para o rodapé rolar automaticamente até o final da janela.
-                output_text.see(tk.END)
-
-                # Por fim, atualizo a interface para que o usuário veja a linha mais recente da saída.
-                root.update()
-
-        # Se algum erro ocorrer durante a execução do script, ele é enviado para a variável stderr, e não é mostrado pela seção anterior.
-        # Assim, salvo o possível erro do script na variável stderr.
+        # Captura possíveis erros enviados para stderr após o término da execução.
         stderr = process.communicate()[1]
-
-        # Se ocorreu um erro, isto é, se stderr não é uma variável vazia:
         if stderr:
-            # Insiro a linha de erro no final da janela.
+            # Se houve erro, exibe no final da janela de saída.
             output_text.insert(tk.END, "\n[ERRO]:\n" + stderr)
-
-            # E rolo automaticamente até o final da janela.
             output_text.see(tk.END)
 
-    # Caso ocorra algum erro durante a execução do script, uma janela alertando o erro é apresentada para o usuário.
     except subprocess.CalledProcessError as e:
+        # Tratamento de erros específicos do subprocess.
         if e.returncode == 1:
             messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\nErro: {e}")
         elif e.returncode == 2:
@@ -1026,80 +1236,70 @@ def roda_script(script, nome, peso_x, peso_y, peso_v, peso_z, alpha, pref):
         else:
             messagebox.showerror("Erro", f"Erro inesperado: {e}")
         return
-    
-    # Caso um erro inesperado ocorra, uma janela alertando o erro é apresentada para o usuário.
     except Exception as e:
+        # Tratamento de erros inesperados.
         messagebox.showerror("Erro", f"Erro inesperado: {e}")
         return
 
 """### Novo Edit Configs"""
 
-# Função que cria uma nova janela para configurar os parâmetros da verificação ou do modelo antes de chamar o script.
-# Seus parâmetros são o nome da base de dados (file_name) e uma variável booleana 'verify', que recebe o valor True quando
-# o menu é de configurações da Verificação dos Dados, e False quando o menu é de configurações para Executar o Modelo
-def Novo_edit_config(file_name):
 
-    # Faço uma breve verificação para saber se foi fornecida uma base de dados.
+def Novo_edit_config(file_name):
+    """
+    Abre uma janela para o usuário configurar os parâmetros do modelo ou da verificação antes de executar o script.
+    Permite escolher entre valores recomendados ou personalizados para cada parâmetro do modelo.
+    Parâmetros:
+    - file_name: nome da base de dados selecionada pelo usuário.
+    Se nenhum arquivo for selecionado, exibe um aviso e interrompe o processo.
+    """
+    # Verifica se foi fornecida uma base de dados válida.
     if file_name == "Selecione uma base de dados":
-        # Se nenhum arquivo foi selecionado, uma janela avisando o ocorrido
-        # aparece, pedindo para o usuário fornecer uma base de dados.
         messagebox.showwarning("Aviso", "Por favor, selecione uma base de dados.")
         return
 
-
-    # Crio uma nova janela em cima da janela principal da interface.
+    # Cria uma nova janela para configuração dos parâmetros.
     configs = tk.Toplevel(root)
     configs.geometry("+360+150")
     configs.title("Personalizar parâmetros")
 
-    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    # Frame para organizar os botões e campos na janela de configuração.
     frame2 = tk.Frame(configs)
     frame2.pack(pady=10, padx=10)
 
-    # Defino 'casais' de variáveis. Cada variável refere-se a um valor de um checkbox de uma linha.
-    # Ex: var11 refere-se ao valor do checkbox da primeira linha e da primeira coluna, enquanto
-    # var22 refere-se ao valor do checkbox da primeira linha e da segunda coluna.
-    var11 = IntVar()
-    var12 = IntVar()
-    var21 = IntVar()
-    var22 = IntVar()
-    var31 = IntVar()
-    var32 = IntVar()
-    var41 = IntVar()
-    var42 = IntVar()
-    var51 = IntVar()
-    var52 = IntVar()
-    var61 = IntVar()
-    var62 = IntVar()
-    # var71 = IntVar()
-    # var72 = IntVar()
+    # Variáveis de controle para os checkboxes de cada parâmetro (recomendado/personalizado).
+    var11 = IntVar()  # Peso de alocação recomendado
+    var12 = IntVar()  # Peso de alocação personalizado
+    var21 = IntVar()  # Peso de troca de sala recomendado
+    var22 = IntVar()  # Peso de troca de sala personalizado
+    var31 = IntVar()  # Peso de agrupamento recomendado
+    var32 = IntVar()  # Peso de agrupamento personalizado
+    var41 = IntVar()  # Peso de superlotação recomendado
+    var42 = IntVar()  # Peso de superlotação personalizado
+    var51 = IntVar()  # Índice de superlotação recomendado
+    var52 = IntVar()  # Índice de superlotação personalizado
+    var61 = IntVar()  # Peso de salas preferencialmente vazias recomendado
+    var62 = IntVar()  # Peso de salas preferencialmente vazias personalizado
 
-    # Defino uma função que atualiza o estado de cada checkbox após marcar, ou desmarcar, um deles.
     def atualizar_estado():
-        # Se o checkbox da primeira linha e primeira coluna estiver marcado:
+        """
+        Atualiza o estado dos checkboxes e campos de entrada conforme as escolhas do usuário.
+        Desabilita o campo personalizado quando o recomendado está marcado e vice-versa.
+        Garante que apenas uma opção por parâmetro esteja ativa e que o campo personalizado só seja habilitado se selecionado.
+        """
+        # Peso de alocação
         if var11.get():
-            # Desabilito o checkbox da primeira linha e segunda coluna.
             checkbox12.config(state=DISABLED)
-        # Se ele não estiver mais marcado:
         else:
-            # Retorno o checkbox da primeira linha e segunda coluna ao normal.
             checkbox12.config(state=NORMAL)
-        # Se o checkbox da primeira linha e segunda coluna estiver marcado:
         if var12.get():
-            # Desabilito o checkbox da primeira linha e segunda coluna.
             checkbox11.config(state=DISABLED)
-            # E habilito o campo correspondente para o usuário inserir um valor.
             peso_x.config(state=NORMAL)
-        # Se ele não estiver mais marcado:
         else:
-            # Retorno o checkbox da primeira linha e primeira coluna ao normal.
             checkbox11.config(state=NORMAL)
-            # E deleto o conteúdo inserido no campo, além de desabilitá-lo novamente.
             peso_x.delete(0, "end")
             peso_x.config(state=DISABLED)
 
-        # As demais condições são análogas às anteriores.
-
+        # Peso de troca de sala
         if var21.get():
             checkbox22.config(state=DISABLED)
         else:
@@ -1112,6 +1312,7 @@ def Novo_edit_config(file_name):
             peso_y.delete(0, "end")
             peso_y.config(state=DISABLED)
 
+        # Peso de agrupamento
         if var31.get():
             checkbox32.config(state=DISABLED)
         else:
@@ -1124,6 +1325,7 @@ def Novo_edit_config(file_name):
             peso_v.delete(0, "end")
             peso_v.config(state=DISABLED)
 
+        # Peso de superlotação
         if var41.get():
             checkbox42.config(state=DISABLED)
         else:
@@ -1136,6 +1338,7 @@ def Novo_edit_config(file_name):
             peso_z.delete(0, "end")
             peso_z.config(state=DISABLED)
 
+        # Índice de superlotação
         if var51.get():
             checkbox52.config(state=DISABLED)
         else:
@@ -1148,6 +1351,7 @@ def Novo_edit_config(file_name):
             alpha.delete(0, "end")
             alpha.config(state=DISABLED)
 
+        # Peso de salas preferencialmente vazias
         if var61.get():
             checkbox62.config(state=DISABLED)
         else:
@@ -1187,7 +1391,6 @@ def Novo_edit_config(file_name):
     ttk.Separator(frame2, orient="horizontal").grid(row=2, column=0, columnspan=3, sticky="ew", pady=(0, 10))
     lblx = tk.Label(frame2, text="Defina um peso de alocação:")
     lblx.grid(row=3, column=0, sticky='w', pady=5)
-    # checkbox1 = Checkbutton(frame1, text="Modelo 1", variable=var1, command=atualizar_estado)
     checkbox11 = Checkbutton(frame2, text="Recomendado: 1", variable=var11, command=atualizar_estado)
     checkbox11.grid(row=3, column=1, sticky='w', pady=5)
     checkbox12 = Checkbutton(frame2, text="Personalizado: ", variable=var12, command=atualizar_estado)
@@ -1285,51 +1488,39 @@ def Novo_edit_config(file_name):
     preencher uma sala que poderia ser usada para alguma outra função, por ela ser mais fácil de ser preenchida, \n\
     do que mantê-la desocupada para a pós.")
 
-    # Defino uma função que detecta as configurações escolhidas pelo usuário.
+
     def executar_configs_perso():
-        # Verifico se ao menos uma das checkbox relacionadas ao peso de alocação foi selecionada,
-        # pois o modelo precisa desse peso obrigatoriamente.
+        """
+        Função responsável por validar as configurações personalizadas dos parâmetros do modelo antes de executar o script.
+        Para cada parâmetro, verifica se ao menos uma opção (recomendado ou personalizado) foi selecionada e se, no caso de personalizado,
+        um valor foi fornecido. Exibe mensagens de aviso caso algum campo obrigatório esteja faltando.
+        Se todas as validações forem aprovadas, executa o script com os valores definidos pelo usuário.
+        """
+        # Validação do peso de alocação: obrigatório selecionar uma opção.
         if not var11.get() and not var12.get():
-            # Se nenhum peso foi fornecido, uma janela alerta o ocorrido e pede para o usuário definir um peso.
             messagebox.showwarning("Aviso", "Por favor, defina um peso de alocação.")
             return
-
-        # Verifico se a checkbox da configuração recomendada está marcado:
         elif var11.get():
-            # Se estiver, dou o valor recomendado para a variável auxiliar.
-            aux_x = '1'
-
-        # Verifico se a checkbox da configuração personalizada está marcado:
+            aux_x = '1'  # Valor recomendado
         else:
-            # Se estiver, dou o valor fornecido pelo usuário para a variável auxiliar.
-            aux_x = peso_x.get()
+            aux_x = peso_x.get()  # Valor personalizado
 
-        # Verifico se ao menos uma das checkbox relacionadas ao peso de troca de sala foi selecionada,
-        # pois o modelo precisa desse peso obrigatoriamente. A lógica é a mesma da de anteriormente.
+        # Validação do peso de troca de sala: obrigatório selecionar uma opção.
         if not var21.get() and not var22.get():
             messagebox.showwarning("Aviso", "Por favor, defina um peso de troca de sala.")
             return
         elif var21.get():
-            aux_y = '500'
+            aux_y = '500'  # Valor recomendado
         else:
-            aux_y = peso_y.get()
+            aux_y = peso_y.get()  # Valor personalizado
 
-        # As condições a seguir seguem a mesma lógica para cada parâmetro e configuração disponível.
-        # Verifico se a checkbox da configuração personalizada está marcada e sem um valor inserido pelo usuário:
+        # Para cada parâmetro, se personalizado estiver marcado mas o campo estiver vazio, exibe aviso.
         if var12.get() and not peso_x.get():
-            # Se for o caso, uma janela alerta o ocorrido e pede para o usuário definir um valor para o parâmetro.
             messagebox.showwarning("Aviso", "Por favor, digite um peso de alocação.")
             return
-
-        # Verifico se a checkbox da configuração recomendada está marcada:
         elif var11.get():
-            # Se estiver, dou o valor recomendado para a variável auxiliar.
             aux_x = '1'
-
-        # Verifico, por fim, se a checkbox da configuração personalizada está marcada.
         else:
-            # Se estiver, para ter entrado nessa condição, o usuário deve ter fornecido um valor para o parâmetro.
-            # Portanto, dou o valor fornecido para a variável auxiliar.
             aux_x = peso_x.get()
 
         if var22.get() and not peso_y.get():
@@ -1372,83 +1563,95 @@ def Novo_edit_config(file_name):
         else:
             aux_p = pref.get()
 
+        # Se todas as validações passaram, executa o script com os parâmetros definidos.
+        roda_script(
+            script="Modelo Universal-Copy1.py",
+            nome=file_name,
+            peso_x=aux_x,
+            peso_y=aux_y,
+            peso_v=aux_v,
+            peso_z=aux_z,
+            alpha=aux_a,
+            pref=aux_p
+        )
 
-        # Se nenhum alerta foi gerado, as configurações personalizadas devem estar corretas,
-        # então só resta rodar o script com elas.
-        roda_script(script="Modelo Universal-Copy1.py",
-                nome=file_name, peso_x=aux_x, peso_y=aux_y, peso_v=aux_v, peso_z=aux_z,
-                alpha=aux_a, pref=aux_p)
-
-
-
-    
-    # Crio uma linha horizontal para separar as escolhas de parâmetro dos botões da janela.
+    # Linha horizontal para separar os parâmetros dos botões de execução.
     ttk.Separator(frame2, orient="horizontal").grid(row=23, column=0, columnspan=2, sticky="w", pady=(0, 10))
 
-    # Defino o botão de Executar o Modelo com os parâmetros Recomendados, que chama a função de rodar script e os
-    # parâmetros recomendados diretamente.
-    ttk.Button(frame2, text="Executar com Recomendados",
-                command=lambda: roda_script(script="Modelo Universal-Copy1.py",
-                                            nome=file_name, peso_x='1', peso_y='500', peso_v="",
-                                            peso_z='10', alpha='0.85', pref='500')).grid(row=24, column=0, sticky='w', pady=5)
+    # Botão para executar o modelo com os parâmetros recomendados.
+    # Chama diretamente roda_script com os valores padrão para cada parâmetro.
+    ttk.Button(
+        frame2,
+        text="Executar com Recomendados",
+        command=lambda: roda_script(
+            script="Modelo Universal-Copy1.py",
+            nome=file_name,
+            peso_x='1',
+            peso_y='500',
+            peso_v="",
+            peso_z='10',
+            alpha='0.85',
+            pref='500'
+        )
+    ).grid(row=24, column=0, sticky='w', pady=5)
 
-    # Defino o botão de Executar o Modelo com os parâmetros Personalizados, que chama a função definida anteriormente
-    # para checar as configurações personalizadas pelo usuário.
-    ttk.Button(frame2, text="Executar com Personalizados",
-                command=executar_configs_perso).grid(row=24, column=2, sticky='w', pady=5)
+    # Botão para executar o modelo com os parâmetros personalizados.
+    # Chama executar_configs_perso, que valida os campos e executa o script com os valores definidos pelo usuário.
+    ttk.Button(
+        frame2,
+        text="Executar com Personalizados",
+        command=executar_configs_perso
+    ).grid(row=24, column=2, sticky='w', pady=5)
 
 
 """## Análise de Espaços Livres (colocar nos arquivos de modelo)"""
 
-# Função que cria uma janela para selecionar arquivos de solução do modelo, que serão analisados
-# para criar planilhas mostrando os espaços livres após as alocações.
+
+# Função que cria uma janela para seleção dos arquivos necessários para gerar a análise dos espaços livres após a alocação do modelo.
 def analise_vazios():
-    # Crio uma nova janela em cima da janela principal da interface.
+    """
+    Abre uma janela para o usuário selecionar os arquivos de solução do modelo e dos dados das salas,
+    além de definir os nomes dos arquivos de saída para a visualização dos espaços livres.
+    Realiza validação dos campos obrigatórios e chama a função de análise após a confirmação dos dados.
+    """
+    # Cria uma nova janela sobre a principal para a interface de análise de espaços livres.
     nova_janela = tk.Toplevel(root)
     nova_janela.title("Análise de Espaços Livres")
 
-    # Crio o frame para armazenar os botões e outros campos da nova janela.
+    # Frame para organizar os botões e campos na nova janela.
     frame = tk.Frame(nova_janela)
     frame.pack(pady=10, padx=10)
 
-    # Defino uma variável para salvar o arquivo com a planilha de Visualização Completa da Solução do modelo.
-    visu = tk.StringVar(value="Selecione a planilha de Visualização Completa da Solução do modelo")
+    # Variáveis para armazenar os caminhos dos arquivos selecionados e nomes dos arquivos de saída.
+    visu = tk.StringVar(value="Selecione a planilha de Visualização Completa da Solução do modelo")  # Solução do modelo
+    salas = tk.StringVar(value="Selecione a planilha dos dados das salas")  # Dados das salas
+    caminho_arquivo = tk.StringVar()  # Nome do arquivo de visualização
+    caminho_arquivo1 = tk.StringVar()  # Nome do arquivo de planilha de espaços livres
 
-    # Defino uma variável para salvar o arquivo com a planilha dos dados das salas.
-    salas = tk.StringVar(value="Selecione a planilha dos dados das salas")
-
-    # Defino uma variável para salvar o nome, fornecido pelo usuário, para o arquivo de Visualização de Espaços Livres.
-    caminho_arquivo = tk.StringVar()
-
-    # Defino uma variável para salvar o nome, fornecido pelo usuário, para o arquivo de Planilha de Espaços Livres.
-    caminho_arquivo1 = tk.StringVar()
-
-    # Defino as funções para selecionar arquivos.
     def selecionar_arquivo1():
-        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        """
+        Abre o diálogo para o usuário selecionar o arquivo de solução do modelo.
+        Atualiza a variável visu com o caminho do arquivo escolhido.
+        """
         arquivo = filedialog.askopenfilename(title="Selecione a planilha de Visualização Completa da Solução do modelo")
-
-        # Se um arquivo foi selecionado:
         if arquivo:
-            # Salvo o caminho do arquivo.
             visu.set(arquivo)
 
-    # Função análoga.
     def selecionar_arquivo2():
-        # O usuário seleciona o arquivo contendo a base de dados das aulas.
+        """
+        Abre o diálogo para o usuário selecionar o arquivo de dados das salas.
+        Atualiza a variável salas com o caminho do arquivo escolhido.
+        """
         arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das salas")
-
-        # Se um arquivo foi selecionado:
         if arquivo:
-            # Salvo o caminho do arquivo.
             salas.set(arquivo)
 
-    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
     def salvar_valores():
-        # Todas as condições a seguir seguem a lógica de que, se um arquivo não foi selecionado, uma janela avisando o ocorrido
-        # aparece, pedindo para o usuário selecionar um arquivo no campo requerido, ou fornecer um nome para os arquivos
-        # que serão criados.
-
+        """
+        Valida os campos obrigatórios e chama a função de análise dos espaços livres.
+        Exibe avisos caso algum campo não tenha sido preenchido corretamente.
+        """
+        # Validação dos campos obrigatórios.
         if not visu.get() or visu.get() == "Selecione a planilha de Visualização Completa da Solução do modelo":
             messagebox.showwarning("Aviso", "Por favor, selecione a planilha de Visualização Completa da Solução do modelo.")
             return
@@ -1462,137 +1665,123 @@ def analise_vazios():
             messagebox.showwarning("Aviso", "Por favor, dê um nome para o arquivo de Planilha de Espaços Livres.")
             return
 
-
-        # Com o arquivo necessário selecionado, e os nomes dos novos arquivos obtidos, chamo a função que fará a análise dos espaços livres.
-        criar_visualizacao_de_vazias(visu.get(), salas.get(), caminho_arquivo.get(), caminho_arquivo1.get(), )
-
-        # E destruo a janela após a conclusão do processo.
+        # Se todos os campos estão preenchidos, chama a função de análise e fecha a janela.
+        criar_visualizacao_de_vazias(
+            visu.get(),
+            salas.get(),
+            caminho_arquivo.get(),
+            caminho_arquivo1.get()
+        )
         nova_janela.destroy()
 
-    # Crio uma legenda para ficar ao lado do botão.
+    # Label e botão para selecionar o arquivo de solução do modelo.
     lbl_visu = tk.Label(frame, text="Selecione a de Dados da Solução do modelo")
-    # Defino a posição do texto na janela.
     lbl_visu.grid(row=0, column=0, pady=5, sticky="w")
-    # Crio o botão para salvar o arquivo da Visualização Completa da Solução do modelo.
     btn_selecionar_visu = tk.Button(frame, textvariable=visu, command=selecionar_arquivo1, wraplength=250, width=40)
-    # Defino a posição do botão na janela.
     btn_selecionar_visu.grid(row=0, column=1, padx=5, pady=5)
 
-    # As linhas a seguir são análogas.
+    # Label e botão para selecionar o arquivo de dados das salas.
     lbl_salas = tk.Label(frame, text="Selecione a planilha dos dados das salas")
     lbl_salas.grid(row=1, column=0, pady=5, sticky="w")
     btn_selecionar_salas = tk.Button(frame, textvariable=salas, command=selecionar_arquivo2, wraplength=250, width=40)
     btn_selecionar_salas.grid(row=1, column=1, padx=5, pady=5)
 
+    # Label e campo para inserir o nome do arquivo de visualização de espaços livres.
     lbl_cam = tk.Label(frame, text="Digite um nome para a Visualização de Espaços Livres:")
     lbl_cam.grid(row=2, column=0, pady=5, sticky="w")
     campo_cam = tk.Entry(frame, textvariable=caminho_arquivo)
     campo_cam.grid(row=2, column=1, pady=5)
 
+    # Label e campo para inserir o nome do arquivo de planilha de espaços livres.
     lbl_cam1 = tk.Label(frame, text="Digite um nome para a Planilha de Espaços Livres:")
     lbl_cam1.grid(row=3, column=0, pady=5, sticky="w")
     campo_cam1 = tk.Entry(frame, textvariable=caminho_arquivo1)
     campo_cam1.grid(row=3, column=1, pady=5)
 
-    # Defino um botção e sua posição na janela, cujo papel é chamar a função que salva os valores dos arquivos para a análise.
-    ttk.Button(frame, text="Gerar Análise de Espaços Livres", command=salvar_valores).grid(row=4,column=0,sticky='ew')
+    # Botão para gerar a análise de espaços livres, chamando a função de validação e análise.
+    ttk.Button(frame, text="Gerar Análise de Espaços Livres", command=salvar_valores).grid(row=4, column=0, sticky='ew')
 
 """### Criar Visualização em cima de Visualização"""
 
-# Função que faz a análise de espaços livres restantes após a alocação feita pelo modelo.
+
+# Função que faz a análise dos espaços livres restantes após a alocação feita pelo modelo.
 def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, caminho_arquivo1):
-    # Defino uma variável que recebe a planilha do Excel da Visualização Completa da Solução do modelo.
+    """
+    Analisa a planilha de solução do modelo e os dados das salas para identificar os horários e salas que permaneceram livres após a alocação.
+    Gera dois arquivos: uma visualização dos espaços livres e uma planilha detalhada dos horários vagos por sala e dia.
+    Parâmetros:
+    - file_path: caminho da planilha de solução do modelo
+    - file_path_salas: caminho da planilha de dados das salas
+    - caminho_arquivo: nome do arquivo de visualização a ser gerado
+    - caminho_arquivo1: nome do arquivo de planilha de espaços livres a ser gerado
+    """
+    # Carrega a planilha de solução do modelo.
     wb = load_workbook(file_path)
     ws = wb.active
 
-    # Defino duas variáveis com o horário inicial e final, isto é, o intervalo dos horários que serão colocados na planilha para a visualização.
+    # Define o intervalo de horários para análise (de 07:00 até 23:30, de 30 em 30 minutos).
     start_time = datetime.strptime("07:00", "%H:%M")
     end_time = datetime.strptime("23:30", "%H:%M")
-
-    # Crio uma lista para conter os valores do intervalo de horários.
     horarios = []
-
-    # Crio uma variável com o horário inicial.
     current_time = start_time
-
-    # Enquanto o horário inicial não for maior que o horário final, isto é, enquanto houver valores para serem colocados no intervalo:
     while current_time <= end_time:
-        # Adiciono o horário atual na lista de horários.
         horarios.append(current_time.strftime("%H:%M"))
-
-        # Faço um acréscimo de 30 minutos no horário atual.
         current_time += timedelta(minutes=30)
+    sala_colunas = len(horarios)  # Número de colunas de horários
 
-    # Crio uma variável com a quantidade de colunas necessárias para colocar todos os horários do intervalo.
-    sala_colunas = len(horarios)
-
-    # Lista com os nomes dos dias da semana que serão usados na visualização.
+    # Lista de dias da semana presentes na visualização.
     dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
 
-    # Defino as linhas e colunas de início e fim para a primeira tabela da planilha, isto é, para preencher os dados da primeira sala.
-    start_row = 1 # Linha de início.
-    start_column = 2 # Coluna de início.
-    end_row = 1 # Linha de término.
-    end_column = 1 + sala_colunas # Coluna de término.
-    start = start_row + 2 # Linha de início para listar os dias da semana.
-    space_between = 3 # Número de linhas entre a tabela de uma sala para a de outra sala.
+    # Define as coordenadas iniciais para análise das tabelas de cada sala.
+    start_row = 1  # Primeira linha da tabela
+    start_column = 2  # Primeira coluna da tabela
+    end_row = 1 # Última linha da tabela
+    end_column = 1 + sala_colunas # Última coluna da tabela
+    start = start_row + 2  # Linha para os dias da semana
+    space_between = 3  # Espaço entre tabelas de salas
 
-    # Defino um preenchimento amarelo para simbolizar os espaços livres das salas.
+    # Preenchimento amarelo para identificar espaços livres.
     yellow_fill = PatternFill(start_color="00E3DE00", end_color="00E3DE00", fill_type="solid")
 
-    # Defino uma variável que guarda o número de salas utilizadas na solução do modelo.
-    # O cálculo feito é baseado no comprimento da planilha, no número de dias da semana mostrados na visualização, e no
-    # espaço entre cada "tabela" de cada sala.
+    # Calcula o número de salas utilizadas na solução do modelo.
     n_salas = int((ws.max_row+1) / (2 + len(dias_semana) + space_between))
 
-    # Salvo os dados das salas em uma variável.
+    # Carrega os dados das salas.
     salas = pd.read_excel(file_path_salas)
 
-    # Crio uma lista para salvar quais salas foram usadas para a alocação do modelo.
+    # Lista para armazenar as salas utilizadas na alocação.
     salas1 = []
 
-    # Crio um dataframe vazio para salvar os intervalos de tempo onde as salas estão disponíveis.
+    # DataFrame para registrar os horários vagos por sala e dia.
     df_vazio = pd.DataFrame(columns=["Sala", "Dia da semana", "Horário vago"])
 
-    # Função para obter a cor da célula.
     def get_cell_color(cell):
-        # Salvo a cor de preenchimento da célula em uma variável.
+        """
+        Retorna o código da cor de preenchimento da célula, ignorando células amarelas (espaços livres).
+        """
         fill = cell.fill
-
-        # if fill and fill.start_color.index != "ffffff":  # Ignorar células sem cor
-        # Verifico se tinha algum preenchimento diferente, ou se o preenchimento é amarelo:
-        if fill and fill.start_color.index != "00E3DE00":  # Ignorar células amarelas
-            # Se houver, retorno o código do preenchimento.
-            return fill.start_color.index  # Retorna o código da cor
-
-        # Caso não houver uma cor de preenchimento definida, retorno vazio.
+        if fill and fill.start_color.index != "00E3DE00":  # Ignora células amarelas
+            return fill.start_color.index
         return None  # Sem cor definida
 
-    # Para cada sala utilizada pelo modelo:
+    # Para cada sala utilizada pelo modelo, analisa os horários livres e registra os intervalos disponíveis.
     for i in range(n_salas+1):
-        # print(type(ws.cell(row=start_row, column=start_column)))
-        # Salvo a sala que está sendo analisada atualmente em uma variável.
+        # Obtém o nome da sala atual na tabela da planilha.
         sala = ws.cell(row=start_row, column=start_column).value
+        salas1.append(sala)  # Adiciona à lista de salas usadas
 
-        # E também a adiciono na lista de salas usadas.
-        salas1.append(sala)
-
-        # Para cada linha da planilha:
+        # Para cada linha referente aos dias da semana na tabela da sala:
         for row in ws.iter_rows(min_row=start, max_row=start+5):
-        # for i, dia in enumerate(dias_semana, start=start):
+            # Inicializa a coluna de início do intervalo livre como None.
+            start_col = None
 
-            # Defino a coluna inicial como vazia.
-            start_col = None  # Início da mesclagem
-            # current_color = None  # Cor atual
-
-            # Para cada par (coluna, célula) da linha sendo analisada:
+            # Percorre cada célula da linha (cada horário):
             for col_idx, cell in enumerate(row, start=1):
-                # Busco identificar a cor do preenchimento da célula.
-                cell_color = get_cell_color(cell)
+                cell_color = get_cell_color(cell)  # Identifica a cor da célula
 
-                # Se a cor da célula atual for branca, possivelmente deixei de estar analisando um horário ocupado:
+                # Se a célula for branca (horário livre):
                 if cell_color == "00000000":
-                    # Verifico se a célula é uma célula mesclada:
+                    # Se não for célula mesclada e não for coluna de dia da semana:
                     if type(cell) != openpyxl.cell.cell.MergedCell:
                         # Se não for, verifico se a coluna inicial está como vazia,
                         # e se a célula atual não faz parte da coluna de dias da semana:
@@ -1604,7 +1793,7 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
 
                 # Se a cor da célula atual não for branca:
                 else:
-                    # Verifico se a célula que estou analisando não é mesclada:
+                    # Se a célula não for mesclada, trata como início de intervalo ocupado:
                     if type(cell) != openpyxl.cell.cell.MergedCell:
                         # Se ela não for, quer dizer que estou analisando a primeira célula de um intervalo ocupado, isto é,
                         # estou analisando a célula do topo esquerdo da mesclagem, que é a única que pode ter seu valor alterado.
@@ -1618,42 +1807,43 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
                     # e verifico se a distância entre a coluna atual e a coluna inicial é maior ou igual que 1,
                     # certificando que não estou olhando para a mesma coluna:
                     if start_col is not None and col_idx - start_col >= 1:
-                        # Aqui é onde eu vou pegar os intervalos do merge
-                        # print(f"a: {start_col}: {horarios[start_col-1]} - {horarios[col_idx-1-2+1]}\n")
-
                         # Se isso for verdade, adiciono uma linha no dataframe contendo os horários disponíveis até então.
                         # Na ordem, esta a sala que estou analisando, o dia da semana com o horário disponível, e
                         # o intervalo de tempo livre do dia em questão.
                         # Como estou analisando linha por linha, a coluna do segundo valor sempre é 1, pois refere-se
                         # à coluna de dias da semana; e eu preciso subtrair o valor 2 de col_idx para ignorar a primeira coluna
                         # da tabela (-1), e para igualar com o índice usual (já que col_idx sempre começa com o valor 1).
-                        df_vazio.loc[len(df_vazio)] = [f"{sala}", f"{ws.cell(row=cell.row, column=1).value}",
-                                                       f"{horarios[start_col]} - {horarios[col_idx-2]}"]
+                        df_vazio.loc[len(df_vazio)] = [
+                            f"{sala}",
+                            f"{ws.cell(row=cell.row, column=1).value}",
+                            f"{horarios[start_col]} - {horarios[col_idx-2]}"
+                        ]
 
                     # Após estes processos, defino novamente a coluna de início como vazia para definir um novo intervalo.
                     start_col = None
 
-
-            # Por garantia, adiciono o último intervalo de horário disponível nos dados, já que a análise da linha
-            # poderia terminar e ir para a próxima sem incluir o último horário disponível dela:
+            # Ao final da linha, garante que o último intervalo livre seja registrado:
             if start_col is not None and start_col < len(row):
-                # print(f"b: {start_col}: {horarios[start_col-1]} - {horarios[col_idx-1-2+1]}\n")
-                # Incluo esses dados da mesma forma como anteriormente.
-                df_vazio.loc[len(df_vazio)] = [f"{sala}", f"{ws.cell(row=cell.row, column=1).value}",
-                                               f"{horarios[start_col]} - {horarios[col_idx-2]}"]
+                df_vazio.loc[len(df_vazio)] = [
+                    f"{sala}",
+                    f"{ws.cell(row=cell.row, column=1).value}",
+                    f"{horarios[start_col]} - {horarios[col_idx-2]}"
+                ]
 
-        # Feito isso, atualizo meus dados de criação, isto é, as coordenadas de onde a tabela da sala seguinte será colocada na planilha.
+        # Atualiza as coordenadas para a próxima sala na planilha.
         start_row = start_row + 2 + len(dias_semana) + space_between
         end_row = start_row
         start = start_row + 2
 
 
-    # Após fazer a análise de espaços livres de todas as salas utilizadas na alocação, verificarei quais ficaram inteiramente de fora.
-    # Para isso, verifico cada sala na planilha de salas:
+    # Após analisar os espaços livres das salas utilizadas, verifica-se quais salas ficaram totalmente de fora da alocação.
+    # Para isso, percorre cada sala presente na planilha de salas original:
     for sala in salas['Sala'].tolist():
-        # Se a sala não está na lista de salas utilizadas:
+        # Se a sala não está na lista de salas utilizadas na alocação:
         if sala not in salas1:
-
+            # Tratamento especial para laboratórios do bloco 6:
+            # Se a sala avulsa (ex: '6-303') não foi usada, mas a sala conjunta ('6-303/6-304') foi utilizada,
+            # ignora a sala avulsa para evitar duplicidade na análise de espaços livres.
             if sala == '6-303' and '6-303/6-304' in salas1:
                 continue
             elif sala == '6-304' and '6-303/6-304' in salas1:
@@ -1663,10 +1853,8 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
             elif sala == '6-306' and '6-305/6-306' in salas1:
                 continue
             else:
-                # Adiciono qual sala não foi utilizada na planilha de dados de espaços livres.
-                # As condições dadas anteriormente são para garantir que o código não inclua as salas de laboratório avulsas
-                # quando apenas as em conjunto foram utilizadas. Por exemplo, se o modelo tiver alocado apenas os laboratórios
-                # do bloco 6 (6-303/6-304 e 6-305/6-306), o algoritmo pode incluir, erroneamente, que a sala 6-303 não foi usada.
+                # Caso a sala realmente não tenha sido utilizada, registra todos os horários como livres para todos os dias da semana.
+                # Isso garante que salas não alocadas apareçam como totalmente disponíveis na planilha de espaços livres.
                 weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
                 
                 for i in range(len(weekdays)):
@@ -1675,23 +1863,21 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
                     df_vazio.loc[last_line, 'Dia da semana'] = weekdays[i]
                     df_vazio.loc[last_line, 'Horário vago'] = "07:00 - 23:30"
 
-
-    ## Verifico se o nome da nova base de dados termina com '.xlsx':
+    # Garanto que o nome do arquivo de visualização termine com '.xlsx'.
     if not caminho_arquivo.endswith(".xlsx"):
-        # Em caso negativo, adiciono essa terminologia.
         caminho_arquivo = caminho_arquivo + ".xlsx"
 
-    # Verifico se o nome da nova base de dados termina com '.xlsx':
+    # Garanto que o nome da nova base de dados termina com '.xlsx':
     if not caminho_arquivo1.endswith(".xlsx"):
-        # Em caso negativo, adiciono essa terminologia.
         caminho_arquivo1 = caminho_arquivo1 + ".xlsx"
 
     try:
-        # Por fim, salvo os arquivos criados com seus respectivos métodos.
+        # Tenta salvar o arquivo de visualização dos espaços livres (workbook modificado).
         wb.save(os.path.join(saidas, caminho_arquivo))
     
     except PermissionError as e:
-        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+        # Se ocorrer erro de permissão (arquivo aberto ou bloqueado), exibe mensagem específica ao usuário.
+        if e.errno == 13:
             messagebox.showerror("Erro de Permissão", 
                                     (
                                         f"Não foi possível salvar o arquivo {os.path.basename(caminho_arquivo)}. "
@@ -1700,20 +1886,21 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
                                 )
             return
         else:
+            # Para outros erros de permissão, exibe mensagem genérica.
             messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
             return
     except Exception as e:
-        # Para qualquer outro erro
+        # Para qualquer outro erro inesperado, exibe mensagem genérica.
         messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
         return
     
 
     try:
+        # Tenta salvar o DataFrame de horários vagos como arquivo Excel.
         df_vazio.to_excel(os.path.join(saidas, caminho_arquivo1), sheet_name="Resultados", index=False)
-
-        
     except PermissionError as e:
-        if e.errno == 13:  # Erro de permissão (arquivo aberto ou bloqueado)
+        # Se ocorrer erro de permissão (arquivo aberto ou bloqueado), exibe mensagem específica ao usuário.
+        if e.errno == 13:
             messagebox.showerror("Erro de Permissão", 
                                     (
                                         f"Não foi possível salvar o arquivo {os.path.basename(caminho_arquivo1)}. "
@@ -1722,14 +1909,15 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
                                 )
             return
         else:
+            # Para outros erros de permissão, exibe mensagem genérica.
             messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
             return
     except Exception as e:
-        # Para qualquer outro erro
+        # Para qualquer outro erro inesperado, exibe mensagem genérica.
         messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
         return
     
-    # E abro uma janela avisando o usuário de que os arquivos foram salvos.
+    # Ao final, informa ao usuário que os arquivos foram salvos com sucesso e indica a pasta de saída.
     messagebox.showinfo("Suesso", 
                         f"Arquivo {caminho_arquivo} criado com sucesso!\n\
                         \nArquivo {caminho_arquivo1} criado com sucesso!\n\
@@ -1742,7 +1930,12 @@ def criar_visualizacao_de_vazias(file_path, file_path_salas, caminho_arquivo, ca
 # Estruturalmente, a função é bem semelhante à de construir a primeira base de dados (a das aulas), com a única diferença
 # sendo dois campos a mais para inserir a bases de dados feita anteriormente, e a solução dada pelo modelo.
 def preencher_planilha_dados():
-
+    """
+    Abre uma janela para o usuário preencher planilhas de dados automaticamente, sem necessidade de edição manual das alocações.
+    Permite ao usuário escolher entre preenchimento completo (todas as informações disponíveis) ou parcial (selecionando quais alocações manter).
+    O usuário pode selecionar arquivos de base de dados, solução do modelo e arquivos adicionais para preenchimento.
+    Realiza validações dos campos obrigatórios e chama funções auxiliares para executar o preenchimento conforme as escolhas do usuário.
+    """
     preencher_completo = messagebox.askyesno("Preencher Planilha de Dados",
         "Deseja preencher a planilha de dados com todas as informações disponíveis? \n\n"
         "Caso não, você poderá escolher quais alocações serão mantidas."
@@ -1763,7 +1956,7 @@ def preencher_planilha_dados():
         frame2.pack(pady=10, padx=10)
 
     
-        # Defino algumas funções especiais para utilizar nesse novo frame.
+        # Permite ao usuário selecionar múltiplos arquivos para serem preenchidos automaticamente.
 
         # Defino uma função para salvar um arquivo, da mesma forma como as funções anteriores.
         def add_file():
@@ -1815,6 +2008,7 @@ def preencher_planilha_dados():
     var_base = tk.BooleanVar(value=False)  # Variável para armazenar o estado da checkbox.
     arquivo_base = tk.StringVar(value="Selecione a Base de Dados")
     arquivo_sol = tk.StringVar(value="Selecione a Solução do Modelo")
+                
     def selecionar_base():
         # O usuário seleciona o arquivo contendo a base de dados das aulas.
         arquivo = filedialog.askopenfilename(title="Selecione a Base de Dados")
