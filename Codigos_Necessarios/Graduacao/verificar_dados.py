@@ -7,80 +7,83 @@ import sys # Implementação de saídas de erro
 import traceback # Implementação de inspeção para auxiliar nas saídas de erro.
 
 
-"""## Leitura dos dados"""
+"""
+## Leitura dos dados
+Etapa responsável por carregar os dados das planilhas de cada departamento e das salas, além de extrair listas auxiliares para análise.
+"""
 
-sheets = ["SME", "SMA", "SCC", "SSC", "Outros"] # Planilhas a serem lidas no arquivo com os dados de cada departamento
-
+# Caminho do arquivo Excel passado como argumento
 file_path = sys.argv[1]
 
-# Criação e mescla do dataframe (dados das aulas)
-df = pd.read_excel(file_path, sheet_name=sheets)
+# Lê o arquivo principal com todas as planilhas (salas e disciplinas)
+df_completo = pd.ExcelFile(sys.argv[1])
+# Extrai os nomes das planilhas presentes no arquivo
+sheet_names = df_completo.sheet_names
+
+# Lê e mescla os dados das aulas de todos os departamentos em um único DataFrame
+df = pd.read_excel(file_path, sheet_name=sheet_names[1:])
 df = pd.concat(df.values(), ignore_index=True)
-# print(df)
+# print(df)  # Para depuração
 
-# Dataframe com os dados das salas
-salas = pd.read_excel(file_path, sheet_name="Salas")
-# print(salas)
+# Lê os dados das salas
+salas = pd.read_excel(file_path, sheet_name=sheet_names[0])
+# print(salas)  # Para depuração
 
-# Lista da capacidade de cada sala do dataframe
+# Lista da capacidade de cada sala
 cap_s = salas['Lugares'].tolist()
-# print(cap_s)
+# print(cap_s)  # Para depuração
 
 # Lista do tamanho de cada disciplina (número de inscritos)
 tam_t = df['Vagas por disciplina'].tolist()
-# print(tam_t)
+# print(tam_t)  # Para depuração
 
 print('\nBase de Dados lida.')
 
-"""## Tratamento dos Dados"""
+
+"""
+## Tratamento dos Dados
+Etapa responsável por padronizar horários, tratar células irregulares e garantir consistência dos dados para análise posterior.
+"""
 
 # Função para converter horário no formato 'HH:MM' para valor decimal em horas
 def horario_para_decimal(horario):
-    # Se, por algum acaso, houver um horário definido como 20h40, ele é convertido para 20:40
+    # Se houver horário no formato '20h40', converte para '20:40'
     if 'h' in horario:
         horario = horario.replace('h',':')
-    # Separo e identifico os componentes daquele horário, ou seja, salvo o valor de horas e o de minutos
+    # Separa horas e minutos
     horas, minutos = map(int, horario.split(':'))
-    # Retorno um valor numérico daquele horário seguindo a ideia de "porcentagem" de hora.
-    # Ex: 40 minutos são dois terços de uma hora (40/60 = 2/3), logo, 20:40 pode ser traduzido como 20 + 40/60 = 20.67
+    # Retorna valor decimal (ex: 20:40 -> 20.67)
     return horas + minutos / 60
 
-# Função para processar a célula no formato 'Dia - HH:MM/HH:MM'
+# Função para processar célula no formato 'Dia - HH:MM/HH:MM'
 def processar_horario(celula):
-    # Verifico se a célula que está sendo analisada possui um horário definido (se há algo escrito nela e separado por um traço "-")
+    # Verifica se a célula possui horário definido
     if isinstance(celula, str) and "-" in celula:
-        # Deleto qualquer espaço " " da célula para garantir uma leitura organizada,
-        # já que algumas vezes pode haver mais de um espaço, ou a ausência dos mesmos
+        # Remove espaços extras
         celula = str(celula).replace(' ', '')
-        # print(celula)
-        # Separo e salvo o dia da semana o qual a aula é dada, e o horário do dia que ela é ministrada
+        # Separa dia e horários
         dia, horarios = celula.split('-')
-        # Separo o horário de início e de término daquela aula
         inicio, fim = horarios.split('/')
-        # Salvo o horário do ínicio e do fim daquela aula
+        # Converte horários para decimal
         start_a = horario_para_decimal(inicio)
         end_a = horario_para_decimal(fim)
-        # Retorno o dia e os horários daquela aula
         return dia, start_a, end_a
     else:
-        # Se a célula é vazia ou não possui o traço "-", é uma célula irregular com horário não definido, logo, retorno valor 0
+        # Célula irregular ou vazia
         return 0, 0, 0
 
-# Lista das colunas de horários
+# Lista das colunas de horários a serem processadas
 colunas_horarios = ['Horário 1', 'Horário 2', 'Horário 3', 'Horário 4']
 result = []
-# Processar cada coluna de horários
-# Para cada coluna de horários
+# Processa cada coluna de horários e traduz para formato padronizado
 for coluna in colunas_horarios:
-    # Aplico o processamento e tradução do horário
     resultados = df[coluna].apply(processar_horario).to_list()
-    # Adiciono numa lista os horários traduzidos de cada coluna
     result.extend(resultados)
 
-# Crio um dataframe com os dados padronizados de todas as aulas
+# Cria DataFrame com dados padronizados de todas as aulas
 A = pd.DataFrame(result, columns=['Dia', 'start_a', 'end_a'])
 
-# Salvo as colunas do dataframe em listas separadas
+# Salva colunas do DataFrame em listas separadas para facilitar análise
 dia_a = A['Dia'].to_list()
 start_a = A['start_a'].to_list()
 end_a = A['end_a'].to_list()
@@ -88,209 +91,155 @@ end_a = A['end_a'].to_list()
 # print(len(A))
 # print(start_a)
 
-# Para cada célula vazia na coluna 'Sala' do dataframe principal, eu coloco o valor da célula como 0
+# Preenche células vazias na coluna 'Sala' com valor 0
 for s in range(len(df['Sala'])):
     if pd.isna(df.loc[s, 'Sala']):
         df.loc[s, 'Sala'] = '0'
 
+# Preenche células vazias na coluna 'Turma' com valor 1
 for d in range(len(tam_t)):
     if pd.isna(df.loc[d, 'Turma']):
         df.loc[d, 'Turma'] = 1
 
-"""## Dados de Entrada"""
 
-# Faço uma lista de índices de cada turma/disciplina do dataframe principal, então a primeira disciplina é 0, a segunda 1, etc.
+"""## Dados de Entrada
+
+Bloco responsável por criar listas e dicionários que representam os índices das turmas/disciplina, salas, laboratórios, cursos e suas relações. Essas estruturas são fundamentais para a modelagem e análise dos dados de alocação de aulas e salas."""
+
+# Lista de índices de cada turma/disciplina (0, 1, ..., n-1)
 T = range(len(df['Disciplina (código)']))
-# print(T[38]) # retorna um índice que equivale à posição de uma disciplina na lista
-# print(df.loc[T[38], 'Disciplina (código)']) # retorna a sigla da disciplina (o índice equivale a linha - 2)
+# Exemplo de uso: T[38] retorna o índice da disciplina na posição 38
+# Exemplo: df.loc[T[38], 'Disciplina (código)'] retorna o código da disciplina
 
-
-# Faço uma lista de índices de cada sala do dataframe principal, então a primeira sala é 0, a segunda 1, etc.
+# Lista de índices de cada sala (0, 1, ..., m-1)
 S = range(len(salas['Sala']))
-# print(salas.loc[S[2], 'Sala']) # retorna uma sala
+# Exemplo de uso: salas.loc[S[2], 'Sala'] retorna o nome da sala na posição 2
 
-# Faço uma lista de quais salas são de laboratório (salvo como índices)
+# Lista binária indicando se cada sala é laboratório (1 = sim, 0 = não)
 sigma_s = [1 if salas.loc[s, 'Laboratório'] == 'Sim' else 0 for s in S]
-# print(sigma_s) # sigma_s = 1 se a sala s eh de laboratório
+# sigma_s[s] = 1 se sala s é laboratório
 
-# Faço uma lista de quais turmas/disciplinas requisitaram aula em laboratório
+# Lista binária indicando se cada turma/disciplina precisa de laboratório (1 = sim, 0 = não)
 tal_t = [0 if df.loc[t, 'Utilizará laboratório? (sim ou não)'] == 'Não' else 1 for t in T]
-# print(tal_t) # tal_t = 1 se a turma/disciplina t precisar de laboratório
+# tal_t[t] = 1 se turma t precisa de laboratório
 
-# Para não precisar chamar o mesmo método que calcula o comprimento das listas mais importantes, eu salvo eles em variáveis
-lenT = len(T)
-lenA = len(A)
-lenS = len(S)
+# Salva os comprimentos das listas principais para evitar recomputação
+lenT = len(T)   # Número de turmas/disciplina
+lenA = len(A)   # Número total de aulas
+lenS = len(S)   # Número de salas
 
-# Lista dos cursos, ou currículos, do ICMC
+# Lista dos cursos/currículos do ICMC
 curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
-# Faço o mesmo esquema de salvar o comprimento da lista de cursos
-lenC = len(curriculos)
-# Crio uma dicionário em formato de matriz para identificar quais turmas/disciplinas são ministradas para cada curso do instituto
-# Inicio todos os valores da matriz como 0 para atualizá-los
-Y_tc = {(t,c): 0 for t in range(lenT) for c in range(lenC)}
-# Para cada turma/disciplina
+lenC = len(curriculos)  # Número de cursos
+
+# Dicionário Y_tc: (turma, curso) -> 1 se a turma é ministrada para o curso, 0 caso contrário
+Y_tc = {(t, c): 0 for t in range(lenT) for c in range(lenC)}
 for t in range(lenT):
-    # Analiso a célula de curso daquela turma/disciplina
     celula = df.loc[t, 'Curso(s)']
-    # Se houver uma vírgula na célula, provavelmente é por ter mais de um curso que possui essa turma/disciplina
+    # Se há mais de um curso, separa por vírgula e marca todos os cursos presentes
     if ',' in celula:
-        # Para cada ', ' na célula, esperasse que haja um outro curso, ou seja, se a célula for 'BMACC, BMA, LMA',
-        # o valor da variável 'c' será 'BMACC', 'BMA' e 'LMA'
         for c in celula.split(', '):
-            # Se aquela curso está na lista dos cursos do instituto
             if c in curriculos:
-                # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-                Y_tc.update({(t,curriculos.index(c)): 1})
+                Y_tc[(t, curriculos.index(c))] = 1
     else:
-        # Se há um único curso para o qual aquela turma/disciplina é ministrada, verifico se é um dos cursos do ICMC
+        # Se há apenas um curso, marca se estiver na lista
         if celula in curriculos:
-            # Altero o valor da minha matriz, identificando que aquela turma/disciplina é ministrada para algum curso do ICMC
-            Y_tc.update({(t,curriculos.index(celula)): 1})
+            Y_tc[(t, curriculos.index(celula))] = 1
+# Y_tc[(t, c)] = 1 se turma t é ministrada para curso c
 
-# print(Y_tc)
 
-"""## Dados de Preprocessamento"""
+"""## Dados de Preprocessamento
 
-# A variável A_t é uma lista onde cada elemento é uma lista dos índices das aulas de uma determinada turma/disciplina
-# Ex: Se A_t[0] é dada por [0, 1, 2], então as aulas 0, 1 e 2 são da turma/disciplina 0
+Bloco responsável por criar listas e dicionários auxiliares para análise e restrições do problema de alocação. Aqui são definidos agrupamentos de aulas, restrições de capacidade, conflitos de horário, uso de espaço e distâncias entre salas."""
+
+# A_t: lista de listas, cada sublista contém os índices das aulas de uma turma/disciplina
+# Exemplo: A_t[0] = [0, 1, 2] significa que as aulas 0, 1 e 2 pertencem à turma 0
 A_t = []
-# Para cada turma/disciplina
 for t in range(lenT):
-    # Adiciono uma lista com os índices de cada aula daquela turma/disciplina
-    # O cálculo feito trabalha no fato de que lenA = n * lenT, pois lenT é o número de turmas/disciplinas,
-    # e LenA é o número de turmas/disciplinas multiplicado pelo número de colunas de horários.
-    # Ex: Suponha que tenhamos 4 colunas de horário e 4 turmas/disciplinas, então lenT = 4, lenA = 16, lenA/lenT = 4
-    # O incremento de i garante que vamos obter sempre o índice da mesma aula. Definindo a primeira turma/disciplina do nosso exemplo como 1,
-    # a próxima aula dessa turma/disciplina é a 5 = 1 + 4 = t + 1*lenT, a terceira seria a 9 = 1 + 8 = t + 2 * lenT
+    # Para cada turma, calcula os índices das aulas associadas
     A_t.append([t + (i * lenT) for i in range(int(lenA/lenT))])
-# print(A_t) # lista de listas
-# print(A_t[0]) # uma lista específica
-# print(A_t[0][1]) # um termo de uma lista específica
+# A_t é útil para mapear aulas por turma
 
-# A variável A_tt segue a mesma ideia de A_t, com a diferença de que as listas de A_tt não incluem os índices das aulas sem horário definido
+# A_tt: igual ao A_t, mas exclui aulas sem horário definido (start_a[a] == 0)
 A_tt = [[a for a in A_t[t] if start_a[a] != 0] for t in range(lenT)]
-# print(A_tt)
+# A_tt permite filtrar apenas aulas válidas para análise
 
-# A variável A_s é uma lista onde cada elemento é uma lista de aulas de uma mesma turma/disciplina que são seguidas uma da outra
-# Ex: se uma turma/disciplina possui uma aula na segunda das 10:10 às 11:50 e outra das 14:20 às 16:00, os índices dessas aulas estão juntos
-# em uma lista de A_s, e essa será usada para garantir que ambas estejam na mesma sala
-# Uma importante suposição ao criar essa lista é que não existem turmas/disciplinas com três aulas seguidas em um mesmo dia
+# A_s: lista de listas, cada sublista contém índices de aulas seguidas de uma mesma turma no mesmo dia
+# Usada para garantir que aulas consecutivas fiquem na mesma sala
 A_s = []
-# Para cada turma/disciplina de A_t (assumindo que, no máximo, existam turmas/disciplinas com duas aulas seguidas)
 for t in A_t:
-    # Se o dia das aulas é o mesmo, e é diferente de 0, ou seja, está definido
+    # Verifica se as duas primeiras aulas da turma são no mesmo dia e estão definidas
     if dia_a[t[0]] == dia_a[t[1]] and dia_a[t[0]] != 0:
-        # Verifico se o fim da primeira aula somado a um intervalo é maior que o começo da segunda aula
-        # Ex: Usando o exemplo anterior, o fim da primeira aula é às 11:50, que é traduzido para 11.83.
-        # 11.83 + 2 + 0.17 + 0.33 = 14.33, que é o valor traduzido do ínicio da segunda aula dado por 14:20
-        # Ex: Se, ao invés disso, fossem duas aulas no horário da manhã, teríamos 9.83 (valor traduzido de 09:50) como fim da primeira aula,
-        # logo, 9.83 + 2 + 0.17 + 0.33 = 12.33, que é maior que 10.17 (valor traduzido de 10:10, o início da segunda aula)
-        # Os valores desta soma levam em conta as 2 horas e meia entre 11:50 e 14:20, o maior intervalo de tempo entre duas aulas seguidas
+        # Verifica se o intervalo entre as aulas é compatível (não há sobreposição indevida)
         if end_a[t[0]] + 2 + 10/60 + 20/60 >= start_a[t[1]]:
-            # Sabendo que as aulas são seguidas, faço uma lista com as aulas que possuem horário definido
             seguido = [x for x in t if start_a[x] != 0]
-#         print(seguido)
-            # Se a lista possui mais de um horário, então é uma lista com o índice de duas aulas que são seguidas uma da outra
             if len(seguido) > 1:
-                # Portanto, adiciono essa lista em A_s
                 A_s.append(seguido)
+# A_s é usada para restrições de alocação de aulas consecutivas
 
-# print("A_s =", A_s)
-
-# A variável A_c é uma lista onde cada elemento é uma lista das turmas/disciplinas que são ministradas para um determinado curso 'c' do instituto.
+# A_c: lista de listas, cada sublista contém índices das aulas ministradas para cada curso
 A_c = []
 for c in range(lenC):
-    # A ideia é semelhante à criação das listas anteriores, utilizando uma conta "esperta" para simbolizar o índice correto,
-    # com a condição de colocar na lista as turmas/disciplinas corretas (Y_tc = 1).
-    A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t,c] == 1])
+    # Para cada curso, inclui todas as aulas das turmas que o ministram
+    A_c.append([t + (i * lenT) for i in range(int(lenA/lenT)) for t in range(lenT) if Y_tc[t, c] == 1])
+# A_c[c] contém todas as aulas do curso c
 
-# print("A_c =", A_c[0])
+# eta_as: dicionário (aula, sala) -> 1 se sala comporta a aula, 0 caso contrário
+# Usa a capacidade da sala e o tamanho da turma
+eta_as = {(a, s): 1 if tam_t[int((a % lenT))] <= cap_s[s] else 0 for a in range(lenA) for s in range(lenS)}
+# eta_as[(a, s)] = 1 se sala s comporta aula a
 
-# A variável eta_as é um dicionário em formato de matriz para identificar quais aulas cabem em determinadas salas, ou seja
-# eta_as = 1 se a sala s pode alocar a aula a, e é 0 caso contrário
-# O cálculo usando 'a % lenT' retorna um valor que varia traduz para um índice da turma/disciplina a qual a aula 'a' pertence
-# Ex: se lenT = 4, temos que 0 % 4 = 0; 1 % 4 = 1; 2 % 4 = 2; 3 % 4 = 3; 4 % 4 = 0, 5 % 4 = 1; ...
-# Logo, como imaginamos, a quinta aula (índice 4, já que começamos do 0) deveria pertencer a turma/disciplina 0, e, de fato,
-# 0 % 4 = 4 % 4 = 0
-eta_as = {(a, s): 1 if tam_t[int((a % lenT ))] <= cap_s[s] \
-          else 0 for a in range(lenA) for s in range(lenS)}
-# print(eta_as) # dicionário com pares (a,s) com valor 1 se s consegue alocar a aula a
-# print(eta_as[2,8]) # valor específico de um par
+# theta_aal: dicionário (aula, aula) -> 1 se há conflito de horário entre as aulas, 0 caso contrário
+# Conflito ocorre se as aulas são no mesmo dia e os horários se sobrepõem
+theta_aal = {(a, al): 1 if (dia_a[a] == dia_a[al] and (start_a[a] < end_a[al] and start_a[al] < end_a[a])) else 0 for a in range(lenA) for al in range(lenA)}
+# theta_aal[(a, al)] = 1 se há conflito de horário entre aula a e aula al
 
-# A variável theta_aal é um dicionário em formato de matriz para identificar quais aulas possuem conflito de horário, ou seja,
-# theta_aal = 1 quando as aulas 'a' e 'al' possuem conflito de horário
-# O conflito é detectado quando, para o mesmo dia, o ínicio da aula 'a' é estritamente menor que o fim da aula 'al'
-# ao mesmo tempo que o início de 'al' é estritamente menor que o final de 'a'
-# Ex: Uma aula 'a' dada de segunda das 14:20 até às 17:10 e outra 'al' dada na segunda das 16:20 às 18:00 obviamente têm conflito de horário
-# Utilizando os valores traduzidos, podemos verificar que 14.33 < 18 e 16.33 < 17.17
-# Agora, se 'a' fosse das 14:20 às 16:00, teríamos ainda que 14.33 < 18, mas teríamos que 16.33 > 16, logo, não é considerado conflito
-theta_aal = {(a, al): 1 if (dia_a[a] == dia_a[al] and (start_a[a] < end_a[al] and start_a[al] < end_a[a])) \
-             else 0 for a in range(lenA) for al in range(lenA)}
-# print(theta_aal)
-
-# A variável uso_as é um dicionário em formato de matriz para contabilizar o quanto de espaço vazio uma aula deixa em uma determinada sala
-# Ex: se uma aula 'a' tem 30 alunos, ela ocupa 67% de uma sala 's' com 45 lugares (deixando 33% da sala vazia),
-# mas 100% de uma sala 's' com 30 lugares (deixando 0% da sala vazia). Quando menor o valor de uso_as, melhor.
+# uso_as: dicionário (aula, sala) -> percentual de espaço vazio na sala ao alocar a aula
+# Quanto menor o valor, melhor o aproveitamento da sala
 uso_as = {(a, s): 100 * (1 - (tam_t[int((a % lenT))]/cap_s[s])) for a in range(lenA) for s in range(lenS)}
-# print(uso_as)
+# uso_as[(a, s)] = percentual de espaço vazio
 
-# A variável dis é um dicionário em formato de matriz para contabilizar a distância (arbitrária) de ir de uma sala 's' até uma sala 'sl'.
-# Ex: A distância de uma sala do bloco 3 até uma sala do bloco 5 é de 6 unidades de distância, enquanto a distância de uma sala do bloco 3
-# até uma sala do bloco 4 é de 1 unidade de distância.
+# dis: dicionário (sala, sala) -> distância arbitrária entre duas salas
+# Usado para restrições de deslocamento entre salas
 dis = {(s, sl): salas.loc[s, sl] for s in range(len(salas)) for sl in salas.columns[3:-1]}
-# print("dis =", dis)
+# dis[(s, sl)] = distância entre sala s e sala sl
 
+# Lista de salas preferencialmente vazias
 pref = salas['Preferencialmente Vazia'].tolist()
 
-"""## Dados para fixar os laboratórios e aulas com sala definida, como LEM"""
+"""## Dados para fixar os laboratórios e aulas com sala definida, como LEM
 
-# A variável labs é uma lista com todas as turmas/disciplinas que precisam de laboratório, identificadas pela lista tal_t
-# Conceitualmente, para os laboratórios, essa lista é como se fosse o T
+Bloco responsável por definir restrições específicas de alocação: aulas que exigem laboratório, aulas com sala fixa, e proibições de horários/salas. Essas estruturas garantem que certas aulas sejam obrigatoriamente alocadas em laboratórios ou salas específicas, e que restrições de uso sejam respeitadas pelo modelo.
+"""
+
+# labs: lista de índices das turmas/disciplina que precisam de laboratório (tal_t = 1)
 labs = [t for t in T if tal_t[t] == 1]
-# print(labs) # retorna o índice da disciplina
-
-# A variável salas_labs é uma lista das salas de laboratório
-# Conceitualmente, para os laboratórios, essa lista é como se fosse o S
+# salas_labs: lista de índices das salas que são laboratórios
 salas_labs = [i for i in range(len(salas['Laboratório'])) if salas.loc[i, 'Laboratório'] == "Sim"]
-# print(salas_labs)
 
-# A variável ind_labs é uma lista que indica quais aulas de uma turma/disciplina deverá ser em um laboratório
-# Ex: Se a terceira aula da disciplina de laboratório 0 é a de laboratório, então o primeiro elemento de ind_labs
-# seria uma lista com apenas o índice 3. Caso a primeira e segunda aula da disciplina de laboratório 0 fossem de laboratório,
-# então o primeiro elemento de ind_labs seria a lista [1,2]
+# ind_labs: lista de listas, cada sublista indica quais aulas de cada turma/disciplina devem ser em laboratório
+# Exemplo: ind_labs[0] = [1,2] significa que as aulas 1 e 2 da turma labs[0] devem ser em laboratório
 ind_labs = []
-# Para cada turma/disciplina que precisa de uma sala de laboratório disponível
 for l in labs:
-    # Adiciono os valores da célula separados por vírgula, ou seja, se na célula está escrito 'Sim,1,2',
-    # a lista adicionada é ['Sim', '1', '2']
-    ind_labs.append((df.loc[l, 'Utilizará laboratório? (sim ou não)'].replace(' ', '')).split(','))
-    # Removo o 'Sim' da última lista adicionada, então no nosso exemplo, a lista adicionada agora é dada por ['1', '2']
-    if "Sim" in ind_labs[-1]:
-        ind_labs[-1].remove("Sim")
-    elif "sim" in ind_labs[-1]:
-        ind_labs[-1].remove("sim")
-    # Por fim, converto os elementos dessa lista para serem valores inteiros
-    ind_labs[-1] = [int(item) for item in ind_labs[-1]]
+    # Extrai os índices das aulas que devem ser em laboratório, removendo o texto 'Sim' e convertendo para inteiro
+    valores = (df.loc[l, 'Utilizará laboratório? (sim ou não)'].replace(' ', '')).split(',')
+    if "Sim" in valores:
+        valores.remove("Sim")
+    elif "sim" in valores:
+        valores.remove("sim")
+    ind_labs.append([int(item) for item in valores])
 
-# print(ind_labs) # lista de listas, pra saber os horários de cada disciplina
-
-# A variável aula_labs é uma lista com os índices de todas as aulas que devem ser ministradas em laboratório
+# aula_labs: lista de índices de todas as aulas que devem ser ministradas em laboratório
+# Calcula o índice global da aula usando a relação entre turma e posição da aula
 aula_labs = [(labs[t] + (lenT * (i-1))) for t in range(len(labs)) for i in ind_labs[t]]
-# print(aula_labs)
 
-# A variável lab_tal é uma lista que funciona da mesma forma que a variável tal_t, mas usando o índice da aula, e não o da turma/disciplina
-# Defino todos os seus valores como 0 inicialmente, ou seja, admito que todas as aulas não são de laboratório
+# lab_tal: lista binária, cada posição indica se a aula é de laboratório (1) ou não (0)
 lab_tal = [0 for _ in range(lenA)]
-# Para cada aula que é de laboratório, altero o índice dela para 1 em lab_tal
 for a in aula_labs:
     lab_tal[a] = 1
 
-# print(lab_tal)
-
-# A variável sala_fixa é uma lista de 1's e 0's, onde cada elemento dela remete ao índice de uma aula. Se o i-ésimo termo da lista é 1,
-# então a i-ésima aula possui uma sala fixada. Se o valor é 0, ela não possui sala fixada
-# Ex: Se a aula 37 possui uma sala fixa, então sala_fixa[37] = 1 (lembrando do uso da aula 0 neste caso)
+# sala_fixa: lista de nomes de salas fixadas para cada aula; '0' indica sem sala fixa
+# Se a célula de sala tem mais de um valor, seleciona o correto conforme o horário
 sala_fixa = []
 for a in range(lenA):
     sala_valor = str((df.loc[a % lenT, 'Sala']))
@@ -304,8 +253,8 @@ for a in range(lenA):
         sala_fixa.append(sala_valor)
     else:
         sala_fixa.append('0')
-# print(sala_fixa)
 
+# Aplica restrição de sala fixa: zera todas as possibilidades de sala para a aula, exceto a sala fixada
 for aula in range(lenA):
     if sala_fixa[aula] != '0':
         fixada = salas['Sala'].tolist().index(sala_fixa[aula])
@@ -313,6 +262,7 @@ for aula in range(lenA):
             eta_as[aula, sala] = 0
         eta_as[aula, fixada] = 1
 
+# Aplica restrição de laboratório: aulas de laboratório só podem ser alocadas em salas de laboratório, e vice-versa
 for aula in range(lenA):
     if lab_tal[aula] == 1:
         for sala in range(lenS):
@@ -323,23 +273,28 @@ for aula in range(lenA):
             if sala in salas_labs:
                 eta_as[aula, sala] = 0
 
-
+# sala_proibida: dicionário que armazena restrições de salas proibidas para cada aula
+# Se a célula de proibição tem mais de um valor, aplica restrição para todas as salas listadas
 sala_proibida = {}
 for a in range(lenA):
-    
-    if not pd.isna(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]):
-
-        cell = str(df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)])
-        
+    cell = df.loc[int(a % lenT), 'Proibir Horário ' + str(int(a / lenT) + 1)]
+    if not pd.isna(cell):
+        cell = str(cell)
         if ',' in cell:
-            sala_proibida.update({a : cell.split(', ')})
-            for sala in cell.split(', '):
+            salas_proibidas = cell.split(', ')
+            sala_proibida[a] = salas_proibidas
+            for sala in salas_proibidas:
                 s = salas[salas['Sala'] == sala].index[0]
-                eta_as[a,s] = 0
+                eta_as[a, s] = 0
         else:
-            sala_proibida.update({a : cell})
+            sala_proibida[a] = cell
             s = salas[salas['Sala'] == cell].index[0]
-            eta_as[a,s] = 0
+            eta_as[a, s] = 0
+
+# seguidas: lista que indica se a turma tem aulas seguidas (2) ou não (1); usada para penalizar trocas de sala
+seguidas = [1 for _ in range(lenT)]
+for t in A_s:
+    seguidas[int(t[0] % lenT)] = 2
 
 """## Verificação dos Dados
 
