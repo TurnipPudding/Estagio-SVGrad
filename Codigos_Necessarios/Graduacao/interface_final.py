@@ -2876,6 +2876,9 @@ def planilhas_sti(file_path):
         else:
             return None, None
 
+    # Aplica a função à coluna 'Horário' e cria novas colunas 'Hora de Início' e 'Hora de Fim'.
+    sti['Hora de Início'], sti['Hora de Fim'] = zip(*sti['Horário'].apply(extrair_horarios))
+
     # Padroniza os nomes das salas para o STI (separando salas conjuntas)
     Sala = []
     for i in sti['Sala']:
