@@ -26,10 +26,59 @@ from datetime import datetime, timedelta # Funções para a leitura de horários
 import sys
 import re # Biblioteca Regex para trabalhar com expressões regulares.
 
-"""# Teste de Interface mais Clara
+"""## Tooltip"""
 
-## Padroniza dataframe
-"""
+# Classe Tooltip utilizada para mostrar textos ao sobrevoar o mouse em alguma parte da interface.
+# Permite criar uma pequena janela de texto explicativo ao passar o mouse sobre um widget.
+class Tooltip:
+    """
+    Classe Tooltip para exibir textos explicativos ao sobrevoar o mouse em widgets da interface.
+    Parâmetros:
+    - widget: widget da interface ao qual o tooltip será associado.
+    - text: texto a ser exibido no tooltip.
+    """
+    def __init__(self, widget, text):
+        self.widget = widget  # Widget ao qual o tooltip está associado
+        self.text = text      # Texto a ser exibido no tooltip
+        self.tooltip_window = None  # Janela do tooltip (inicialmente inexistente)
+
+        # Eventos para mostrar e ocultar o tooltip ao passar o mouse
+        widget.bind("<Enter>", self.show_tooltip)
+        widget.bind("<Leave>", self.hide_tooltip)
+
+    def show_tooltip(self, event=None):
+        # Cria a janela do tooltip ao passar o mouse sobre o widget
+        if self.tooltip_window is not None:
+            # Se já existe uma janela de tooltip, não faz nada
+            return
+
+        # Calcula a posição X e Y do tooltip em relação ao widget
+        x = self.widget.winfo_rootx() + 20  # Posição X do tooltip
+        y = self.widget.winfo_rooty() + 20  # Posição Y do tooltip
+
+        # Cria uma nova janela de tooltip
+        self.tooltip_window = tk.Toplevel(self.widget)
+        self.tooltip_window.wm_overrideredirect(True)  # Remove bordas da janela
+        self.tooltip_window.geometry(f"+{x}+{y}")
+
+        # Cria o label com o texto do tooltip
+        label = tk.Label(
+            self.tooltip_window,
+            text=self.text,
+            background="lightyellow",
+            relief="solid",
+            borderwidth=1,
+            font=("Arial", 10)
+        )
+        label.pack(ipadx=5, ipady=3)
+
+    def hide_tooltip(self, event=None):
+        # Destroi a janela do tooltip ao retirar o mouse do widget
+        if self.tooltip_window:
+            self.tooltip_window.destroy()
+            self.tooltip_window = None
+
+"""### Padroniza dataframe"""
 
 # Função que padroniza os dataframes para terem o mesmo formato.
 def padroniza_dataframe(file_name, header_row, ano):
@@ -166,57 +215,7 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Retorno o dataframe com todas as padronizações necessárias.
     return df
 
-"""## Tooltip"""
 
-# Classe Tooltip utilizada para mostrar textos ao sobrevoar o mouse em alguma parte da interface.
-# Permite criar uma pequena janela de texto explicativo ao passar o mouse sobre um widget.
-class Tooltip:
-    """
-    Classe Tooltip para exibir textos explicativos ao sobrevoar o mouse em widgets da interface.
-    Parâmetros:
-    - widget: widget da interface ao qual o tooltip será associado.
-    - text: texto a ser exibido no tooltip.
-    """
-    def __init__(self, widget, text):
-        self.widget = widget  # Widget ao qual o tooltip está associado
-        self.text = text      # Texto a ser exibido no tooltip
-        self.tooltip_window = None  # Janela do tooltip (inicialmente inexistente)
-
-        # Eventos para mostrar e ocultar o tooltip ao passar o mouse
-        widget.bind("<Enter>", self.show_tooltip)
-        widget.bind("<Leave>", self.hide_tooltip)
-
-    def show_tooltip(self, event=None):
-        # Cria a janela do tooltip ao passar o mouse sobre o widget
-        if self.tooltip_window is not None:
-            # Se já existe uma janela de tooltip, não faz nada
-            return
-
-        # Calcula a posição X e Y do tooltip em relação ao widget
-        x = self.widget.winfo_rootx() + 20  # Posição X do tooltip
-        y = self.widget.winfo_rooty() + 20  # Posição Y do tooltip
-
-        # Cria uma nova janela de tooltip
-        self.tooltip_window = tk.Toplevel(self.widget)
-        self.tooltip_window.wm_overrideredirect(True)  # Remove bordas da janela
-        self.tooltip_window.geometry(f"+{x}+{y}")
-
-        # Cria o label com o texto do tooltip
-        label = tk.Label(
-            self.tooltip_window,
-            text=self.text,
-            background="lightyellow",
-            relief="solid",
-            borderwidth=1,
-            font=("Arial", 10)
-        )
-        label.pack(ipadx=5, ipady=3)
-
-    def hide_tooltip(self, event=None):
-        # Destroi a janela do tooltip ao retirar o mouse do widget
-        if self.tooltip_window:
-            self.tooltip_window.destroy()
-            self.tooltip_window = None
 
 """## Ler planilhas dos institutos (Base de dados das aulas e do jupiter)"""
 
@@ -1376,7 +1375,7 @@ def Novo_edit_config(file_name):
     Tooltip(btnl, "Recomendado:\n\
     Peso de alocação: 1\n\
     Peso de troca de sala: 500\n\
-    Peso de agrupamento: 1\n\
+    Peso de agrupamento: Não utilizado\n\
     Peso de superlotação: 10\n\
     Índice de superlotação: 0.85\n\
     Peso de salas preferencialmente vazias: 1\n\
