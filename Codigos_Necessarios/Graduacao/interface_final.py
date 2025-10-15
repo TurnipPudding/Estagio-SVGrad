@@ -1162,7 +1162,7 @@ def execute():
     # Chama o script 'verificar_dados.py' usando o arquivo selecionado.
     vd1 = ttk.Button(
         frame,
-        text="Selecionar Verificação de Dados",
+        text="Verificar Dados",
         command=lambda: roda_script(
             "verificar_dados.py",
             arquivo_selecionado1.get(),
@@ -1602,6 +1602,655 @@ def Novo_edit_config(file_name):
         command=executar_configs_perso
     ).grid(row=24, column=2, sticky='w', pady=5)
 
+
+def gerar_relatorios():
+    """
+    Abre uma janela secundária com opções de geração de relatórios.
+    Permite ao usuário escolher entre diferentes tipos de visualização e exportação dos dados da solução do modelo.
+    Cada botão chama a função correspondente para gerar o relatório desejado.
+    """
+    # Cria uma nova janela modal sobre a principal para o menu de relatórios.
+    nova_janela = tk.Toplevel(root)
+    nova_janela.geometry("+200+200")
+    nova_janela.title("Menu para Geração de Relatórios")
+
+    # Frame para organizar os botões de relatório.
+    frame = tk.Frame(nova_janela)
+    frame.pack(pady=10, padx=10)
+
+    # Botão para visualização completa da solução (por sala e horário).
+    ttk.Button(frame, text="Visualização Completa da Solução", command=lambda: menu_relatorios(func="visualizacao_completa")).grid(column=0, row=0, sticky="w", pady=5)
+    # Botão para visualização por curso (aba para cada currículo).
+    ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=1, sticky="w", pady=5)
+    # Botão para visualização por departamento (aba para cada departamento).
+    ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=2, sticky="w", pady=5)
+    # Botão para exportar planilhas no formato exigido pela intranet/STI.
+    ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=5, sticky="w", pady=5)
+    # Botão para gerar relatório de espaços livres após alocação do modelo.
+    ttk.Button(frame, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0, row=4, sticky="w", pady=5)
+
+
+def menu_relatorios(func):
+    """
+    Cria uma janela para seleção de arquivo e geração de relatório.
+    Permite ao usuário escolher o arquivo com os dados da solução do modelo e chama a função de visualização correspondente.
+    Parâmetros:
+        func (str): Nome da função de visualização a ser chamada ('visualizacao_completa', 'visualizacao_curso', 'visualizacao_dep', 'planilhas_sti').
+    Fluxo:
+        - Abre janela para seleção do arquivo de dados.
+        - Valida seleção do arquivo.
+        - Gera lista de horários e salas a partir do arquivo.
+        - Chama a função de visualização/exportação conforme selecionado.
+        - Fecha a janela após execução.
+    """
+    # Cria janela secundária para seleção de arquivo e geração do relatório.
+    menu = tk.Toplevel(root)
+    menu.title("Visualização Completa da Solução")
+    menu.geometry("+250+150")
+
+    frame2 = tk.Frame(menu)
+    frame2.pack(pady=10, padx=10)
+
+    # Variável para armazenar o caminho do arquivo selecionado pelo usuário.
+    arquivo_selecionado = tk.StringVar(value="Selecione o arquivo com os Dados da solução do Modelo")
+    
+    def selecionar_arquivo():
+        """Abre diálogo para seleção do arquivo de dados e salva o caminho na variável."""
+        arquivo = filedialog.askopenfilename(title="Selecione o arquivo com os Dados da solução do Modelo")
+        if arquivo:
+            arquivo_selecionado.set(arquivo)
+
+    # Legenda e botão para seleção do arquivo de dados.
+    lbl_arquivo = tk.Label(frame2, text="Selecione o arquivo com os Dados da solução do Modelo")
+    lbl_arquivo.grid(row=0, column=0, pady=5, sticky='w')
+    btn_selecionar_arquivo = tk.Button(frame2, textvariable=arquivo_selecionado, command=selecionar_arquivo, wraplength=250, width=40)
+    btn_selecionar_arquivo.grid(row=0, column=1, padx=5, pady=5)
+
+    def salvar_valores(func):
+        """
+        Valida seleção do arquivo, prepara dados e chama a função de visualização/exportação.
+        - Exibe aviso se nenhum arquivo foi selecionado.
+        - Gera lista de horários de 30 em 30 minutos entre 07:00 e 23:30.
+        - Lê o arquivo Excel selecionado e ordena por sala.
+        - Extrai lista de salas e prepara parâmetros para visualização.
+        - Chama a função correspondente ao tipo de relatório.
+        - Fecha a janela após execução.
+        """
+        # Validação da seleção do arquivo
+        if not arquivo_selecionado.get() or arquivo_selecionado.get() == "Selecione o arquivo com os Dados da solução do Modelo":
+            messagebox.showwarning("Aviso", "Por favor, selecione o arquivo com os Dados da solução do Modelo.")
+            return
+
+        # Gera intervalo de horários para visualização (07:00 até 23:30, de 30 em 30 minutos)
+        start_time = datetime.strptime("07:00", "%H:%M")
+        end_time = datetime.strptime("23:30", "%H:%M")
+        horarios = []
+        current_time = start_time
+        while current_time <= end_time:
+            horarios.append(current_time.strftime("%H:%M"))
+            current_time += timedelta(minutes=30)
+
+        # Lê o arquivo Excel selecionado
+        dfv = pd.read_excel(arquivo_selecionado.get())
+        # Ordena o DataFrame por sala
+        dfv = dfv.sort_values(by='Sala')
+        # Extrai lista de salas únicas
+        salas1 = dfv['Sala'].unique().tolist()
+        # Quantidade de colunas de horários
+        sala_colunas = len(horarios)
+        # Dias da semana para visualização
+        dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+
+        # Chama a função de visualização/exportação conforme parâmetro
+        if func == "visualizacao_completa":
+            visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana)
+        elif func == "visualizacao_curso":
+            visualizacao_curso(dfv, salas1, horarios, sala_colunas, dias_semana)
+        elif func == "visualizacao_dep":
+            visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana)
+        elif func == "planilhas_sti":
+            planilhas_intranet(arquivo_selecionado.get())
+
+        # Fecha a janela após execução
+        menu.destroy()
+    # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
+    ttk.Button(frame2, text="Gerar Visualização", command=lambda: salvar_valores(func)).grid(row=1, column=0, columnspan=2, pady=10)
+
+def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
+    """
+    Gera a visualização dos horários alocados para cada sala, preenchendo a planilha Excel com as disciplinas e horários.
+    Para cada sala, utiliza os dados do DataFrame de solução para preencher os horários e disciplinas alocadas.
+    Parâmetros:
+        dfv: DataFrame com os dados de alocação das aulas
+        space_between: número de linhas entre tabelas de salas
+        start_row, start_column, end_row, end_column: coordenadas iniciais/finais para cada tabela de sala
+        start: linha inicial para os dias da semana
+        salas1: lista de salas utilizadas
+        dias_semana: lista dos dias da semana
+        horarios: lista dos horários disponíveis
+        ws: worksheet do Excel a ser preenchida
+        aulas: contador de aulas alocadas
+    Retorna:
+        Número total de aulas alocadas na planilha
+    """
+
+    # Função interna para padronizar o formato dos horários das aulas para facilitar a visualização e evitar inconsistências.
+    def padronizar_horario_intranet(horario):
+        """
+        Padroniza o formato do horário recebido, ajustando espaços, separadores e arredondando horários conforme regras de alocação.
+        Parâmetros:
+            horario: string no formato 'Dia-HoraInicio/HoraFim', podendo conter espaços ou 'h' como separador
+        Retorna:
+            String padronizada no formato 'Dia - HH:MM/HH:MM', com horários ajustados para facilitar a visualização e evitar sobreposições.
+        """
+        # Remove espaços do horário, se houver.
+        if ' ' in horario:
+            horario = str(horario).replace(' ', '')
+        # Substitui 'h' por ':', se houver, para uniformizar o formato.
+        if 'h' in horario:
+            horario = str(horario).replace('h', ':')
+        # Separa o dia do intervalo de horário.
+        dia, intervalo = horario.split('-')
+        # Separa o horário de início e fim da aula.
+        start, end = intervalo.split('/')
+        # Converte os horários para objetos datetime para facilitar manipulação.
+        start_dt = datetime.strptime(start, "%H:%M")
+        end_dt = datetime.strptime(end, "%H:%M")
+
+        # Ajusta o horário de início: para horários antes das 18h, zera os minutos (ex: 8:10 vira 8:00).
+        if start_dt.hour < 18:
+            start_dt = start_dt.replace(minute=0)
+        # Horários de início a partir das 18h permanecem como estão.
+
+        # Ajusta o horário de fim conforme regras específicas:
+        if end_dt.hour <= 18:
+            # Se minutos < 30, arredonda para hora anterior com 30 minutos (ex: 18:00 vira 17:30).
+            if end_dt.minute < 30:
+                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
+            # Se minutos > 30, fixa em 30 minutos (ex: 09:50 vira 09:30).
+            elif end_dt.minute > 30:
+                end_dt = end_dt.replace(minute=30)
+        else:
+            # Para horários de fim após 18h:
+            # Se minutos entre 1 e 29, fixa em 0 minutos (ex: 19:10 vira 19:00).
+            if end_dt.minute < 30 and end_dt.minute > 0:
+                end_dt = end_dt.replace(minute=0)
+            # Se minutos > 30, fixa em 30 minutos (ex: 20:40 vira 20:30).
+            elif end_dt.minute > 30:
+                end_dt = end_dt.replace(minute=30)
+            # Se minutos = 0, considera que a aula termina meia hora antes (ex: 19:00 vira 18:30).
+            else:
+                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
+
+        # Retorna o horário padronizado para visualização.
+        return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
+
+    def preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
+        """
+        Preenche a planilha Excel com os nomes das disciplinas alocadas em cada sala, organizando visualmente por dia e horário.
+        Parâmetros:
+            start_row, start_column, end_row, end_column: coordenadas para mesclagem e posicionamento da tabela da sala
+            start: linha inicial para os dias da semana
+            sala: nome ou número da sala a ser preenchida
+            dias_semana: lista dos dias da semana
+            horarios: lista dos horários disponíveis
+            aula: lista dos horários das aulas alocadas na sala
+            disciplina: lista dos códigos das disciplinas alocadas
+            ws: worksheet do Excel a ser preenchida
+            aulas: contador de aulas já alocadas
+        Retorna:
+            Número total de aulas alocadas após o preenchimento
+        """
+        # Preenchimento verde para identificar células de disciplinas alocadas.
+        green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
+
+        # Estilo de borda fina para delimitar células da tabela.
+        thin_border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin")
+        )
+
+        # Mescla células para exibir o nome/número da sala no topo da tabela.
+        ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
+        ws.cell(row=start_row, column=start_column).value = sala
+        ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
+        # Aplica borda em todas as células mescladas do cabeçalho da sala.
+        for col in range(1, end_column):
+            ws.cell(row=start_row, column=col+1).border = thin_border
+
+        # Preenche a primeira coluna da tabela com os dias da semana e aplica borda.
+        for i, dia in enumerate(dias_semana, start=start):
+            ws.cell(row=i, column=start_column-1).value = dia
+            ws.cell(row=i, column=start_column-1).border = thin_border
+
+        # Preenche o cabeçalho de horários nas colunas correspondentes e aplica borda/alinhamento.
+        for j, horario in enumerate(horarios, start=start_column):
+            ws.cell(row=start_row+1, column=j).value = horario
+            ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
+            ws.cell(row=start_row+1, column=j).border = thin_border
+
+        # Aplica borda em todas as células da tabela de horários/dias.
+        for row in range(start, start + len(dias_semana)):
+            for col in range(start_column, start_column + len(horarios)):
+                ws.cell(row=row, column=col).border = thin_border
+
+        # Preenche as células com as disciplinas alocadas, mesclando conforme o intervalo de cada aula.
+        for h in aula:
+            # Separa o dia e o intervalo da aula (ex: 'Terça - 08:00/09:30').
+            dia_h, int_h = h.split(' - ')
+            start_h, end_h = int_h.split('/')
+            # Para cada dia da semana, verifica se corresponde ao dia da aula.
+            for i, dia in enumerate(dias_semana, start=start):
+                if ws.cell(row=i, column=start_column-1).value == dia_h:
+                    # Identifica os índices das colunas de início e fim do intervalo da aula.
+                    index_start = horarios.index(start_h)
+                    index_end = horarios.index(end_h)
+                    # Mescla as células do intervalo e preenche com o nome da disciplina.
+                    ws.merge_cells(start_row=i, start_column=index_start+2, end_row=i, end_column=index_end+2)
+                    merged_cell = ws.cell(row=i, column=index_start+2)
+                    merged_cell.value = disciplina[aula.index(h)]
+                    merged_cell.fill = green_fill
+                    merged_cell.alignment = Alignment(horizontal="center", vertical="center")
+                    # Incrementa o contador de aulas alocadas.
+                    aulas += 1
+        # Retorna o número total de aulas alocadas na planilha.
+        return aulas
+
+
+    def ajusta_largura(ws):
+        """
+        Ajusta automaticamente a largura de cada coluna da planilha Excel com base no maior conteúdo presente,
+        garantindo melhor visualização dos dados e evitando cortes de texto. Considera células mescladas e ignora erros de leitura.
+        Parâmetros:
+            ws: worksheet do Excel a ser ajustada
+        """
+        for col in ws.columns:
+            max_length = 0  # Comprimento máximo encontrado na coluna
+            # Verifica se a primeira célula é mesclada (MergedCell), pois ela não possui column_letter
+            if type(col[0]) == openpyxl.cell.cell.MergedCell:
+                # Usa a célula abaixo para obter a letra da coluna
+                column = col[1].column_letter
+            else:
+                column = col[0].column_letter
+            # Percorre todas as células da coluna para encontrar o maior comprimento de texto
+            for cell in col:
+                try:
+                    # Atualiza o comprimento máximo se o valor da célula for maior
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    # Ignora erros de leitura em células mescladas ou vazias
+                    pass
+            # Ajusta a largura da coluna proporcional ao maior conteúdo encontrado
+            ws.column_dimensions[column].width = (max_length) * 1.1
+
+    
+
+    
+
+    # Para cada sala utilizada na solução, preenche a tabela correspondente na planilha
+    for sala in salas1:
+        # Filtra as aulas alocadas para a sala atual
+        df_filtrado = dfv[dfv['Sala'] == sala]
+        # Lista dos horários das aulas (padronizados)
+        aula = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist()
+        # Lista dos códigos das disciplinas alocadas
+        disciplina = df_filtrado['Disciplina'].tolist()
+        # Preenche a tabela da sala na planilha e atualiza o contador de aulas
+        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
+        # Atualiza as coordenadas para posicionar a próxima tabela de sala
+        start_row = start_row + 2 + len(dias_semana) + space_between
+        end_row = start_row
+        start = start_row + 2
+
+    # Após preencher todas as salas, ajusta a largura das colunas para melhor visualização
+    ajusta_largura(ws)
+
+    return aulas
+    
+
+def visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana):
+    """
+    Gera uma planilha Excel com a visualização completa da solução de alocação de aulas por sala e horário.
+    Cria uma tabela para cada sala, preenchendo os horários e disciplinas alocadas, e salva o arquivo na pasta de saída.
+    Parâmetros:
+        dfv: DataFrame com os dados de alocação das aulas
+        salas1: lista de salas utilizadas
+        horarios: lista dos horários disponíveis
+        sala_colunas: número de colunas de horários
+        dias_semana: lista dos dias da semana
+    """
+    # Cria o workbook e a worksheet ativa para a visualização dos horários
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Horário de Aulas"
+
+    # Define as coordenadas iniciais para a primeira tabela de sala
+    start_row = 1  # Linha de início da tabela
+    start_column = 2  # Coluna de início da tabela
+    end_row = 1  # Linha de término da tabela
+    end_column = 1 + sala_colunas  # Coluna de término da tabela
+    start = start_row + 2  # Linha para os dias da semana
+    space_between = 3  # Espaço entre tabelas de salas
+    aulas = 0  # Contador de aulas alocadas
+
+    # Chama a função que preenche todas as tabelas de salas na planilha
+    aulas = funcao_visualizacao(
+        dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
+    )
+
+    # Define o nome e caminho do arquivo de saída
+    full_name = "Visualização completa da Solução.xlsx"
+    file_path = os.path.join(saidas, full_name)
+
+    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
+    try:
+        wb.save(file_path)
+    except PermissionError as e:
+        if e.errno == 13:
+            # Erro de permissão: arquivo provavelmente está aberto em outro programa
+            messagebox.showerror(
+                "Erro de Permissão",
+                (
+                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                    "Feche o arquivo e tente novamente."
+                    f"\n\nDetalhes do erro: {e}"
+                )
+            )
+            return
+        else:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        return
+
+    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
+    messagebox.showinfo(
+        "Sucesso!",
+        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
+    )
+    return
+
+    
+def visualizacao_curso(dfv, salas1, horarios, sala_colunas, dias_semana):
+    """
+    Gera uma planilha Excel com a visualização dos horários alocados por curso, criando uma aba para cada currículo.
+    Para cada curso, preenche as tabelas de salas com as disciplinas e horários alocados, e salva o arquivo na pasta de saída.
+    Parâmetros:
+        dfv: DataFrame com os dados de alocação das aulas
+        salas1: lista de salas utilizadas (será sobrescrita para cada curso)
+        horarios: lista dos horários disponíveis
+        sala_colunas: número de colunas de horários
+        dias_semana: lista dos dias da semana
+    """
+    # Cria o workbook para a visualização por curso
+    wb = Workbook()
+    # Lista dos currículos/cursos para gerar uma aba para cada um
+    curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
+    aulas = 0  # Contador de aulas alocadas
+    for c in curriculos:
+        # Cria uma nova aba para o curso atual
+        ws = wb.create_sheet(title=c)
+
+        # Define as coordenadas iniciais para a primeira tabela de sala
+        start_row = 1  # Linha de início da tabela
+        start_column = 2  # Coluna de início da tabela
+        end_row = 1  # Linha de término da tabela
+        end_column = 1 + sala_colunas  # Coluna de término da tabela
+        start = start_row + 2  # Linha para os dias da semana
+        space_between = 3  # Espaço entre tabelas de salas
+
+        # Filtra o DataFrame para o curso atual
+        df_filtrado = dfv[dfv['Cursos'].str.contains(c, na=False)]
+        # Lista das salas utilizadas para o curso
+        salas1 = df_filtrado['Sala'].unique().tolist()
+
+        # Preenche as tabelas de salas na aba do curso
+        aulas = funcao_visualizacao(
+            df_filtrado, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
+        )
+
+    # Remove a primeira aba criada automaticamente (vazia)
+    wb.remove(wb.active)
+    full_name = "Visualização por Curso.xlsx"
+    file_path = os.path.join(saidas, full_name)
+
+    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
+    try:
+        wb.save(file_path)
+    except PermissionError as e:
+        if e.errno == 13:
+            # Erro de permissão: arquivo provavelmente está aberto em outro programa
+            messagebox.showerror(
+                "Erro de Permissão",
+                (
+                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                    "Feche o arquivo e tente novamente."
+                    f"\n\nDetalhes do erro: {e}"
+                )
+            )
+            return
+        else:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        return
+
+    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
+    messagebox.showinfo(
+        "Sucesso!",
+        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
+    )
+    return
+
+    
+def visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana):
+    """
+    Gera uma planilha Excel com a visualização dos horários alocados por departamento, criando uma aba para cada departamento do ICMC
+    e uma aba especial para disciplinas de outros departamentos. Para cada departamento, preenche as tabelas de salas com as disciplinas
+    e horários alocados, e salva o arquivo na pasta de saída.
+    Parâmetros:
+        dfv: DataFrame com os dados de alocação das aulas
+        salas1: lista de salas utilizadas (será sobrescrita para cada departamento)
+        horarios: lista dos horários disponíveis
+        sala_colunas: número de colunas de horários
+        dias_semana: lista dos dias da semana
+    """
+    # Cria o workbook para a visualização por departamento
+    wb = Workbook()
+    # Lista dos departamentos do ICMC e uma categoria para disciplinas externas
+    departamentos = ['SME', 'SMA', 'SCC', 'SSC', 'Outras']
+    aulas = 0  # Contador de aulas alocadas
+    for d in departamentos:
+        # Cria uma nova aba para o departamento atual
+        ws = wb.create_sheet(title=d)
+
+        # Define as coordenadas iniciais para a primeira tabela de sala
+        start_row = 1  # Linha de início da tabela
+        start_column = 2  # Coluna de início da tabela
+        end_row = 1  # Linha de término da tabela
+        end_column = 1 + sala_colunas  # Coluna de término da tabela
+        start = start_row + 2  # Linha para os dias da semana
+        space_between = 3  # Espaço entre tabelas de salas
+        aulas = 0  # Reinicia o contador para cada aba
+
+        # Filtra o DataFrame para o departamento atual
+        if d == 'Outras':
+            # Filtra disciplinas que não pertencem aos departamentos do ICMC
+            filtro = ~(
+                dfv['Disciplina'].str.startswith('SME', na=False) |
+                dfv['Disciplina'].str.startswith('SMA', na=False) |
+                dfv['Disciplina'].str.startswith('SCC', na=False) |
+                dfv['Disciplina'].str.startswith('SSC', na=False)
+            )
+            df_filtrado = dfv[filtro]
+        else:
+            # Filtra disciplinas do departamento atual
+            df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
+
+        # Lista das salas utilizadas para o departamento
+        salas1 = df_filtrado['Sala'].unique().tolist()
+
+        # Preenche as tabelas de salas na aba do departamento
+        aulas = funcao_visualizacao(
+            df_filtrado, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
+        )
+
+    # Remove a primeira aba criada automaticamente (vazia)
+    wb.remove(wb.active)
+    full_name = "Visualização por Departamento.xlsx"
+    file_path = os.path.join(saidas, full_name)
+
+    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
+    try:
+        wb.save(file_path)
+    except PermissionError as e:
+        if e.errno == 13:
+            # Erro de permissão: arquivo provavelmente está aberto em outro programa
+            messagebox.showerror(
+                "Erro de Permissão",
+                (
+                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                    "Feche o arquivo e tente novamente."
+                    f"\n\nDetalhes do erro: {e}"
+                )
+            )
+            return
+        else:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        return
+
+    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
+    messagebox.showinfo(
+        "Sucesso!",
+        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
+    )
+    return
+
+def planilhas_intranet(file_path):
+    """
+    Gera planilhas CSV para o sistema da intranet a partir da planilha de alocação criada pelo modelo.
+    Extrai, organiza e converte os dados para o formato exigido pelo STI, criando uma planilha geral e uma para cada sala.
+    Parâmetros:
+        file_path: caminho da planilha de alocação criada pelo modelo
+    """
+    file_list = []
+
+    # Lê a planilha de alocação criada pelo modelo
+    sti = pd.read_excel(file_path)
+
+    # Função auxiliar para extrair o horário de início e fim das aulas
+    def extrair_horarios(horario):
+        # Remove espaços extras e deixa minúsculo para uniformizar
+        horario = horario.strip().lower()
+        # Expressão regular para identificar o padrão: dia da semana e dois horários
+        pattern = r"(\bseg(?:unda)?\b|\bter(?:ça)?\b|\bqua(?:rta)?\b|\bqui(?:nta)?\b|\bsex(?:ta)?\b|\bs[áa]b(?:ado)?\b|\bdom(?:ingo)?\b)\s*-?\s*(\d{2}:\d{2})\s*[/-]?\s*(\d{2}:\d{2})"
+        match = re.search(pattern, horario)
+        if match:
+            dia = match.group(1).capitalize()  # Dia da semana
+            horario_inicio = match.group(2)    # Horário de início
+            horario_fim = match.group(3)       # Horário de fim
+            # Retorna os valores como formato padrão
+            return f"{dia} - {horario_inicio}", f"{dia} - {horario_fim}"
+        else:
+            return None, None
+
+    # Aplica a função à coluna 'Horário' e cria novas colunas 'Hora de Início' e 'Hora de Fim'.
+    sti['Hora de Início'], sti['Hora de Fim'] = zip(*sti['Horário'].apply(extrair_horarios))
+
+    # Padroniza os nomes das salas para o STI (separando salas conjuntas)
+    Sala = []
+    for i in sti['Sala']:
+        if i != '6-305/6-306' and i != '6-303/6-304':
+            Sala.append(i)
+        elif i == '6-305/6-306':
+            Sala.append('6-305')
+        else:
+            Sala.append('6-303')
+
+    # Organiza os dados para o formato exigido pelo STI
+    dados_organizados = {
+        'Sala': Sala,
+        'Disciplina': sti['Disciplina'],
+        'Descrição': sti['Nomes'],
+        'Aula': ["Aula" for i in range(len(sti['Sala']))],
+        'Dia e hora início': sti['Hora de Início'],
+        'Dia e hora fim': sti['Hora de Fim'],
+        'Docente': sti['NUSP'],
+        'Compartilhada com outra sala?': ["S" if (sti['Sala'][i] == '6-305/6-306' or sti['Sala'][i] == '6-303/6-304') else "N" for i in range(len(sti['Sala']))]
+    }
+
+    # Converte o dicionário para um DataFrame
+    sti_planilha = pd.DataFrame(dados_organizados)
+
+    # Caminho do arquivo geral a ser criado
+    full_name = "Planilha da Intranet Completa.csv"
+    pasta_dados = saidas
+    file_path = os.path.join(pasta_dados, full_name)
+
+    # Salva o arquivo geral, tratando erros de permissão e outros imprevistos
+    try:
+        sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+        file_list.append(full_name)
+    except PermissionError as e:
+        if e.errno == 13:
+            # Erro de permissão: arquivo provavelmente está aberto em outro programa
+            messagebox.showerror(
+                "Erro de Permissão",
+                (
+                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                    "Feche o arquivo e tente novamente."
+                    f"\n\nDetalhes do erro: {e}"
+                )
+            )
+            return
+        else:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+    except Exception as e:
+        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+        return
+
+    # Para cada sala, cria um arquivo separado com os dados daquela sala
+    for sala in sti_planilha['Sala'].unique():
+        sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
+        full_name = f"Planilha da Intranet - {sala}.csv"
+        file_path = os.path.join(pasta_dados, full_name)
+        try:
+            sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
+            file_list.append(full_name)
+        except PermissionError as e:
+            if e.errno == 13:
+                # Erro de permissão: arquivo provavelmente está aberto em outro programa
+                messagebox.showerror(
+                    "Erro de Permissão",
+                    (
+                        f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
+                        "Feche o arquivo e tente novamente."
+                        f"\n\nDetalhes do erro: {e}"
+                    )
+                )
+                return
+            else:
+                messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+                return
+        except Exception as e:
+            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
+            return
+
+    # Informa ao usuário que os arquivos foram criados com sucesso
+    messagebox.showinfo(
+        "Sucesso!",
+        f"Os seguintes arquivos foram criados na pasta {saidas}:\n\n" + "\n".join(file_list)
+    )
+    return
 
 """## Análise de Espaços Livres (colocar nos arquivos de modelo)"""
 
@@ -2429,654 +3078,12 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
     
 
 
-def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
-    """
-    Gera a visualização dos horários alocados para cada sala, preenchendo a planilha Excel com as disciplinas e horários.
-    Para cada sala, utiliza os dados do DataFrame de solução para preencher os horários e disciplinas alocadas.
-    Parâmetros:
-        dfv: DataFrame com os dados de alocação das aulas
-        space_between: número de linhas entre tabelas de salas
-        start_row, start_column, end_row, end_column: coordenadas iniciais/finais para cada tabela de sala
-        start: linha inicial para os dias da semana
-        salas1: lista de salas utilizadas
-        dias_semana: lista dos dias da semana
-        horarios: lista dos horários disponíveis
-        ws: worksheet do Excel a ser preenchida
-        aulas: contador de aulas alocadas
-    Retorna:
-        Número total de aulas alocadas na planilha
-    """
-
-    # Função interna para padronizar o formato dos horários das aulas para facilitar a visualização e evitar inconsistências.
-    def padronizar_horario_intranet(horario):
-        """
-        Padroniza o formato do horário recebido, ajustando espaços, separadores e arredondando horários conforme regras de alocação.
-        Parâmetros:
-            horario: string no formato 'Dia-HoraInicio/HoraFim', podendo conter espaços ou 'h' como separador
-        Retorna:
-            String padronizada no formato 'Dia - HH:MM/HH:MM', com horários ajustados para facilitar a visualização e evitar sobreposições.
-        """
-        # Remove espaços do horário, se houver.
-        if ' ' in horario:
-            horario = str(horario).replace(' ', '')
-        # Substitui 'h' por ':', se houver, para uniformizar o formato.
-        if 'h' in horario:
-            horario = str(horario).replace('h', ':')
-        # Separa o dia do intervalo de horário.
-        dia, intervalo = horario.split('-')
-        # Separa o horário de início e fim da aula.
-        start, end = intervalo.split('/')
-        # Converte os horários para objetos datetime para facilitar manipulação.
-        start_dt = datetime.strptime(start, "%H:%M")
-        end_dt = datetime.strptime(end, "%H:%M")
-
-        # Ajusta o horário de início: para horários antes das 18h, zera os minutos (ex: 8:10 vira 8:00).
-        if start_dt.hour < 18:
-            start_dt = start_dt.replace(minute=0)
-        # Horários de início a partir das 18h permanecem como estão.
-
-        # Ajusta o horário de fim conforme regras específicas:
-        if end_dt.hour <= 18:
-            # Se minutos < 30, arredonda para hora anterior com 30 minutos (ex: 18:00 vira 17:30).
-            if end_dt.minute < 30:
-                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
-            # Se minutos > 30, fixa em 30 minutos (ex: 09:50 vira 09:30).
-            elif end_dt.minute > 30:
-                end_dt = end_dt.replace(minute=30)
-        else:
-            # Para horários de fim após 18h:
-            # Se minutos entre 1 e 29, fixa em 0 minutos (ex: 19:10 vira 19:00).
-            if end_dt.minute < 30 and end_dt.minute > 0:
-                end_dt = end_dt.replace(minute=0)
-            # Se minutos > 30, fixa em 30 minutos (ex: 20:40 vira 20:30).
-            elif end_dt.minute > 30:
-                end_dt = end_dt.replace(minute=30)
-            # Se minutos = 0, considera que a aula termina meia hora antes (ex: 19:00 vira 18:30).
-            else:
-                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
-
-        # Retorna o horário padronizado para visualização.
-        return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
-
-    def preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
-        """
-        Preenche a planilha Excel com os nomes das disciplinas alocadas em cada sala, organizando visualmente por dia e horário.
-        Parâmetros:
-            start_row, start_column, end_row, end_column: coordenadas para mesclagem e posicionamento da tabela da sala
-            start: linha inicial para os dias da semana
-            sala: nome ou número da sala a ser preenchida
-            dias_semana: lista dos dias da semana
-            horarios: lista dos horários disponíveis
-            aula: lista dos horários das aulas alocadas na sala
-            disciplina: lista dos códigos das disciplinas alocadas
-            ws: worksheet do Excel a ser preenchida
-            aulas: contador de aulas já alocadas
-        Retorna:
-            Número total de aulas alocadas após o preenchimento
-        """
-        # Preenchimento verde para identificar células de disciplinas alocadas.
-        green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
-
-        # Estilo de borda fina para delimitar células da tabela.
-        thin_border = Border(
-            left=Side(style="thin"),
-            right=Side(style="thin"),
-            top=Side(style="thin"),
-            bottom=Side(style="thin")
-        )
-
-        # Mescla células para exibir o nome/número da sala no topo da tabela.
-        ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
-        ws.cell(row=start_row, column=start_column).value = sala
-        ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
-        # Aplica borda em todas as células mescladas do cabeçalho da sala.
-        for col in range(1, end_column):
-            ws.cell(row=start_row, column=col+1).border = thin_border
-
-        # Preenche a primeira coluna da tabela com os dias da semana e aplica borda.
-        for i, dia in enumerate(dias_semana, start=start):
-            ws.cell(row=i, column=start_column-1).value = dia
-            ws.cell(row=i, column=start_column-1).border = thin_border
-
-        # Preenche o cabeçalho de horários nas colunas correspondentes e aplica borda/alinhamento.
-        for j, horario in enumerate(horarios, start=start_column):
-            ws.cell(row=start_row+1, column=j).value = horario
-            ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
-            ws.cell(row=start_row+1, column=j).border = thin_border
-
-        # Aplica borda em todas as células da tabela de horários/dias.
-        for row in range(start, start + len(dias_semana)):
-            for col in range(start_column, start_column + len(horarios)):
-                ws.cell(row=row, column=col).border = thin_border
-
-        # Preenche as células com as disciplinas alocadas, mesclando conforme o intervalo de cada aula.
-        for h in aula:
-            # Separa o dia e o intervalo da aula (ex: 'Terça - 08:00/09:30').
-            dia_h, int_h = h.split(' - ')
-            start_h, end_h = int_h.split('/')
-            # Para cada dia da semana, verifica se corresponde ao dia da aula.
-            for i, dia in enumerate(dias_semana, start=start):
-                if ws.cell(row=i, column=start_column-1).value == dia_h:
-                    # Identifica os índices das colunas de início e fim do intervalo da aula.
-                    index_start = horarios.index(start_h)
-                    index_end = horarios.index(end_h)
-                    # Mescla as células do intervalo e preenche com o nome da disciplina.
-                    ws.merge_cells(start_row=i, start_column=index_start+2, end_row=i, end_column=index_end+2)
-                    merged_cell = ws.cell(row=i, column=index_start+2)
-                    merged_cell.value = disciplina[aula.index(h)]
-                    merged_cell.fill = green_fill
-                    merged_cell.alignment = Alignment(horizontal="center", vertical="center")
-                    # Incrementa o contador de aulas alocadas.
-                    aulas += 1
-        # Retorna o número total de aulas alocadas na planilha.
-        return aulas
 
 
-    def ajusta_largura(ws):
-        """
-        Ajusta automaticamente a largura de cada coluna da planilha Excel com base no maior conteúdo presente,
-        garantindo melhor visualização dos dados e evitando cortes de texto. Considera células mescladas e ignora erros de leitura.
-        Parâmetros:
-            ws: worksheet do Excel a ser ajustada
-        """
-        for col in ws.columns:
-            max_length = 0  # Comprimento máximo encontrado na coluna
-            # Verifica se a primeira célula é mesclada (MergedCell), pois ela não possui column_letter
-            if type(col[0]) == openpyxl.cell.cell.MergedCell:
-                # Usa a célula abaixo para obter a letra da coluna
-                column = col[1].column_letter
-            else:
-                column = col[0].column_letter
-            # Percorre todas as células da coluna para encontrar o maior comprimento de texto
-            for cell in col:
-                try:
-                    # Atualiza o comprimento máximo se o valor da célula for maior
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    # Ignora erros de leitura em células mescladas ou vazias
-                    pass
-            # Ajusta a largura da coluna proporcional ao maior conteúdo encontrado
-            ws.column_dimensions[column].width = (max_length) * 1.1
+
 
     
 
-    
-
-    # Para cada sala utilizada na solução, preenche a tabela correspondente na planilha
-    for sala in salas1:
-        # Filtra as aulas alocadas para a sala atual
-        df_filtrado = dfv[dfv['Sala'] == sala]
-        # Lista dos horários das aulas (padronizados)
-        aula = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist()
-        # Lista dos códigos das disciplinas alocadas
-        disciplina = df_filtrado['Disciplina'].tolist()
-        # Preenche a tabela da sala na planilha e atualiza o contador de aulas
-        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-        # Atualiza as coordenadas para posicionar a próxima tabela de sala
-        start_row = start_row + 2 + len(dias_semana) + space_between
-        end_row = start_row
-        start = start_row + 2
-
-    # Após preencher todas as salas, ajusta a largura das colunas para melhor visualização
-    ajusta_largura(ws)
-
-    return aulas
-    
-
-def visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana):
-    """
-    Gera uma planilha Excel com a visualização completa da solução de alocação de aulas por sala e horário.
-    Cria uma tabela para cada sala, preenchendo os horários e disciplinas alocadas, e salva o arquivo na pasta de saída.
-    Parâmetros:
-        dfv: DataFrame com os dados de alocação das aulas
-        salas1: lista de salas utilizadas
-        horarios: lista dos horários disponíveis
-        sala_colunas: número de colunas de horários
-        dias_semana: lista dos dias da semana
-    """
-    # Cria o workbook e a worksheet ativa para a visualização dos horários
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Horário de Aulas"
-
-    # Define as coordenadas iniciais para a primeira tabela de sala
-    start_row = 1  # Linha de início da tabela
-    start_column = 2  # Coluna de início da tabela
-    end_row = 1  # Linha de término da tabela
-    end_column = 1 + sala_colunas  # Coluna de término da tabela
-    start = start_row + 2  # Linha para os dias da semana
-    space_between = 3  # Espaço entre tabelas de salas
-    aulas = 0  # Contador de aulas alocadas
-
-    # Chama a função que preenche todas as tabelas de salas na planilha
-    aulas = funcao_visualizacao(
-        dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
-    )
-
-    # Define o nome e caminho do arquivo de saída
-    full_name = "Visualização completa da Solução.xlsx"
-    file_path = os.path.join(saidas, full_name)
-
-    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
-    try:
-        wb.save(file_path)
-    except PermissionError as e:
-        if e.errno == 13:
-            # Erro de permissão: arquivo provavelmente está aberto em outro programa
-            messagebox.showerror(
-                "Erro de Permissão",
-                (
-                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
-                    "Feche o arquivo e tente novamente."
-                    f"\n\nDetalhes do erro: {e}"
-                )
-            )
-            return
-        else:
-            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-            return
-    except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-        return
-
-    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
-    messagebox.showinfo(
-        "Sucesso!",
-        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
-    )
-    return
-
-    
-def visualizacao_curso(dfv, salas1, horarios, sala_colunas, dias_semana):
-    """
-    Gera uma planilha Excel com a visualização dos horários alocados por curso, criando uma aba para cada currículo.
-    Para cada curso, preenche as tabelas de salas com as disciplinas e horários alocados, e salva o arquivo na pasta de saída.
-    Parâmetros:
-        dfv: DataFrame com os dados de alocação das aulas
-        salas1: lista de salas utilizadas (será sobrescrita para cada curso)
-        horarios: lista dos horários disponíveis
-        sala_colunas: número de colunas de horários
-        dias_semana: lista dos dias da semana
-    """
-    # Cria o workbook para a visualização por curso
-    wb = Workbook()
-    # Lista dos currículos/cursos para gerar uma aba para cada um
-    curriculos = ['BMACC', 'BMA', 'LMA', 'MAT-NG', 'BECD', 'BCC', 'BSI', 'BCDados']
-    aulas = 0  # Contador de aulas alocadas
-    for c in curriculos:
-        # Cria uma nova aba para o curso atual
-        ws = wb.create_sheet(title=c)
-
-        # Define as coordenadas iniciais para a primeira tabela de sala
-        start_row = 1  # Linha de início da tabela
-        start_column = 2  # Coluna de início da tabela
-        end_row = 1  # Linha de término da tabela
-        end_column = 1 + sala_colunas  # Coluna de término da tabela
-        start = start_row + 2  # Linha para os dias da semana
-        space_between = 3  # Espaço entre tabelas de salas
-
-        # Filtra o DataFrame para o curso atual
-        df_filtrado = dfv[dfv['Cursos'].str.contains(c, na=False)]
-        # Lista das salas utilizadas para o curso
-        salas1 = df_filtrado['Sala'].unique().tolist()
-
-        # Preenche as tabelas de salas na aba do curso
-        aulas = funcao_visualizacao(
-            df_filtrado, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
-        )
-
-    # Remove a primeira aba criada automaticamente (vazia)
-    wb.remove(wb.active)
-    full_name = "Visualização por Curso.xlsx"
-    file_path = os.path.join(saidas, full_name)
-
-    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
-    try:
-        wb.save(file_path)
-    except PermissionError as e:
-        if e.errno == 13:
-            # Erro de permissão: arquivo provavelmente está aberto em outro programa
-            messagebox.showerror(
-                "Erro de Permissão",
-                (
-                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
-                    "Feche o arquivo e tente novamente."
-                    f"\n\nDetalhes do erro: {e}"
-                )
-            )
-            return
-        else:
-            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-            return
-    except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-        return
-
-    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
-    messagebox.showinfo(
-        "Sucesso!",
-        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
-    )
-    return
-
-    
-def visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana):
-    """
-    Gera uma planilha Excel com a visualização dos horários alocados por departamento, criando uma aba para cada departamento do ICMC
-    e uma aba especial para disciplinas de outros departamentos. Para cada departamento, preenche as tabelas de salas com as disciplinas
-    e horários alocados, e salva o arquivo na pasta de saída.
-    Parâmetros:
-        dfv: DataFrame com os dados de alocação das aulas
-        salas1: lista de salas utilizadas (será sobrescrita para cada departamento)
-        horarios: lista dos horários disponíveis
-        sala_colunas: número de colunas de horários
-        dias_semana: lista dos dias da semana
-    """
-    # Cria o workbook para a visualização por departamento
-    wb = Workbook()
-    # Lista dos departamentos do ICMC e uma categoria para disciplinas externas
-    departamentos = ['SME', 'SMA', 'SCC', 'SSC', 'Outras']
-    aulas = 0  # Contador de aulas alocadas
-    for d in departamentos:
-        # Cria uma nova aba para o departamento atual
-        ws = wb.create_sheet(title=d)
-
-        # Define as coordenadas iniciais para a primeira tabela de sala
-        start_row = 1  # Linha de início da tabela
-        start_column = 2  # Coluna de início da tabela
-        end_row = 1  # Linha de término da tabela
-        end_column = 1 + sala_colunas  # Coluna de término da tabela
-        start = start_row + 2  # Linha para os dias da semana
-        space_between = 3  # Espaço entre tabelas de salas
-        aulas = 0  # Reinicia o contador para cada aba
-
-        # Filtra o DataFrame para o departamento atual
-        if d == 'Outras':
-            # Filtra disciplinas que não pertencem aos departamentos do ICMC
-            filtro = ~(
-                dfv['Disciplina'].str.startswith('SME', na=False) |
-                dfv['Disciplina'].str.startswith('SMA', na=False) |
-                dfv['Disciplina'].str.startswith('SCC', na=False) |
-                dfv['Disciplina'].str.startswith('SSC', na=False)
-            )
-            df_filtrado = dfv[filtro]
-        else:
-            # Filtra disciplinas do departamento atual
-            df_filtrado = dfv[dfv['Disciplina'].str.startswith(d, na=False)]
-
-        # Lista das salas utilizadas para o departamento
-        salas1 = df_filtrado['Sala'].unique().tolist()
-
-        # Preenche as tabelas de salas na aba do departamento
-        aulas = funcao_visualizacao(
-            df_filtrado, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas
-        )
-
-    # Remove a primeira aba criada automaticamente (vazia)
-    wb.remove(wb.active)
-    full_name = "Visualização por Departamento.xlsx"
-    file_path = os.path.join(saidas, full_name)
-
-    # Tenta salvar o arquivo Excel, tratando erros de permissão e outros imprevistos
-    try:
-        wb.save(file_path)
-    except PermissionError as e:
-        if e.errno == 13:
-            # Erro de permissão: arquivo provavelmente está aberto em outro programa
-            messagebox.showerror(
-                "Erro de Permissão",
-                (
-                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
-                    "Feche o arquivo e tente novamente."
-                    f"\n\nDetalhes do erro: {e}"
-                )
-            )
-            return
-        else:
-            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-            return
-    except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-        return
-
-    # Informa ao usuário que o arquivo foi criado com sucesso e o número de aulas alocadas
-    messagebox.showinfo(
-        "Sucesso!",
-        f"O arquivo '{full_name}' foi criado com sucesso!\nNúmero de aulas alocadas: {aulas}"
-    )
-    return
-
-def planilhas_sti(file_path):
-    """
-    Gera planilhas CSV para o sistema da intranet a partir da planilha de alocação criada pelo modelo.
-    Extrai, organiza e converte os dados para o formato exigido pelo STI, criando uma planilha geral e uma para cada sala.
-    Parâmetros:
-        file_path: caminho da planilha de alocação criada pelo modelo
-    """
-    file_list = []
-
-    # Lê a planilha de alocação criada pelo modelo
-    sti = pd.read_excel(file_path)
-
-    # Função auxiliar para extrair o horário de início e fim das aulas
-    def extrair_horarios(horario):
-        # Remove espaços extras e deixa minúsculo para uniformizar
-        horario = horario.strip().lower()
-        # Expressão regular para identificar o padrão: dia da semana e dois horários
-        pattern = r"(\bseg(?:unda)?\b|\bter(?:ça)?\b|\bqua(?:rta)?\b|\bqui(?:nta)?\b|\bsex(?:ta)?\b|\bs[áa]b(?:ado)?\b|\bdom(?:ingo)?\b)\s*-?\s*(\d{2}:\d{2})\s*[/-]?\s*(\d{2}:\d{2})"
-        match = re.search(pattern, horario)
-        if match:
-            dia = match.group(1).capitalize()  # Dia da semana
-            horario_inicio = match.group(2)    # Horário de início
-            horario_fim = match.group(3)       # Horário de fim
-            # Retorna os valores como formato padrão
-            return f"{dia} - {horario_inicio}", f"{dia} - {horario_fim}"
-        else:
-            return None, None
-
-    # Aplica a função à coluna 'Horário' e cria novas colunas 'Hora de Início' e 'Hora de Fim'.
-    sti['Hora de Início'], sti['Hora de Fim'] = zip(*sti['Horário'].apply(extrair_horarios))
-
-    # Padroniza os nomes das salas para o STI (separando salas conjuntas)
-    Sala = []
-    for i in sti['Sala']:
-        if i != '6-305/6-306' and i != '6-303/6-304':
-            Sala.append(i)
-        elif i == '6-305/6-306':
-            Sala.append('6-305')
-        else:
-            Sala.append('6-303')
-
-    # Organiza os dados para o formato exigido pelo STI
-    dados_organizados = {
-        'Sala': Sala,
-        'Disciplina': sti['Disciplina'],
-        'Descrição': sti['Nomes'],
-        'Aula': ["Aula" for i in range(len(sti['Sala']))],
-        'Dia e hora início': sti['Hora de Início'],
-        'Dia e hora fim': sti['Hora de Fim'],
-        'Docente': sti['NUSP'],
-        'Compartilhada com outra sala?': ["S" if (sti['Sala'][i] == '6-305/6-306' or sti['Sala'][i] == '6-303/6-304') else "N" for i in range(len(sti['Sala']))]
-    }
-
-    # Converte o dicionário para um DataFrame
-    sti_planilha = pd.DataFrame(dados_organizados)
-
-    # Caminho do arquivo geral a ser criado
-    full_name = "Planilha da Intranet Completa.csv"
-    pasta_dados = saidas
-    file_path = os.path.join(pasta_dados, full_name)
-
-    # Salva o arquivo geral, tratando erros de permissão e outros imprevistos
-    try:
-        sti_planilha.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-        file_list.append(full_name)
-    except PermissionError as e:
-        if e.errno == 13:
-            # Erro de permissão: arquivo provavelmente está aberto em outro programa
-            messagebox.showerror(
-                "Erro de Permissão",
-                (
-                    f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
-                    "Feche o arquivo e tente novamente."
-                    f"\n\nDetalhes do erro: {e}"
-                )
-            )
-            return
-        else:
-            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-            return
-    except Exception as e:
-        messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-        return
-
-    # Para cada sala, cria um arquivo separado com os dados daquela sala
-    for sala in sti_planilha['Sala'].unique():
-        sti_planilha_aux = sti_planilha[sti_planilha['Sala'] == sala]
-        full_name = f"Planilha da Intranet - {sala}.csv"
-        file_path = os.path.join(pasta_dados, full_name)
-        try:
-            sti_planilha_aux.to_csv(file_path, index=False, sep=';', encoding='latin-1')
-            file_list.append(full_name)
-        except PermissionError as e:
-            if e.errno == 13:
-                # Erro de permissão: arquivo provavelmente está aberto em outro programa
-                messagebox.showerror(
-                    "Erro de Permissão",
-                    (
-                        f"O arquivo '{full_name}' está aberto em algum programa (como o Excel). "
-                        "Feche o arquivo e tente novamente."
-                        f"\n\nDetalhes do erro: {e}"
-                    )
-                )
-                return
-            else:
-                messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-                return
-        except Exception as e:
-            messagebox.showerror("Erro", f"Ocorreu um erro inesperado ao criar o arquivo '{full_name}': {e}")
-            return
-
-    # Informa ao usuário que os arquivos foram criados com sucesso
-    messagebox.showinfo(
-        "Sucesso!",
-        f"Os seguintes arquivos foram criados na pasta {saidas}:\n\n" + "\n".join(file_list)
-    )
-    return
-
-def menu_relatorios(func):
-    """
-    Cria uma janela para seleção de arquivo e geração de relatório.
-    Permite ao usuário escolher o arquivo com os dados da solução do modelo e chama a função de visualização correspondente.
-    Parâmetros:
-        func (str): Nome da função de visualização a ser chamada ('visualizacao_completa', 'visualizacao_curso', 'visualizacao_dep', 'planilhas_sti').
-    Fluxo:
-        - Abre janela para seleção do arquivo de dados.
-        - Valida seleção do arquivo.
-        - Gera lista de horários e salas a partir do arquivo.
-        - Chama a função de visualização/exportação conforme selecionado.
-        - Fecha a janela após execução.
-    """
-    # Cria janela secundária para seleção de arquivo e geração do relatório.
-    menu = tk.Toplevel(root)
-    menu.title("Visualização Completa da Solução")
-    menu.geometry("+250+150")
-
-    frame2 = tk.Frame(menu)
-    frame2.pack(pady=10, padx=10)
-
-    # Variável para armazenar o caminho do arquivo selecionado pelo usuário.
-    arquivo_selecionado = tk.StringVar(value="Selecione o arquivo com os Dados da solução do Modelo")
-    
-    def selecionar_arquivo():
-        """Abre diálogo para seleção do arquivo de dados e salva o caminho na variável."""
-        arquivo = filedialog.askopenfilename(title="Selecione o arquivo com os Dados da solução do Modelo")
-        if arquivo:
-            arquivo_selecionado.set(arquivo)
-
-    # Legenda e botão para seleção do arquivo de dados.
-    lbl_arquivo = tk.Label(frame2, text="Selecione o arquivo com os Dados da solução do Modelo")
-    lbl_arquivo.grid(row=0, column=0, pady=5, sticky='w')
-    btn_selecionar_arquivo = tk.Button(frame2, textvariable=arquivo_selecionado, command=selecionar_arquivo, wraplength=250, width=40)
-    btn_selecionar_arquivo.grid(row=0, column=1, padx=5, pady=5)
-
-    def salvar_valores(func):
-        """
-        Valida seleção do arquivo, prepara dados e chama a função de visualização/exportação.
-        - Exibe aviso se nenhum arquivo foi selecionado.
-        - Gera lista de horários de 30 em 30 minutos entre 07:00 e 23:30.
-        - Lê o arquivo Excel selecionado e ordena por sala.
-        - Extrai lista de salas e prepara parâmetros para visualização.
-        - Chama a função correspondente ao tipo de relatório.
-        - Fecha a janela após execução.
-        """
-        # Validação da seleção do arquivo
-        if not arquivo_selecionado.get() or arquivo_selecionado.get() == "Selecione o arquivo com os Dados da solução do Modelo":
-            messagebox.showwarning("Aviso", "Por favor, selecione o arquivo com os Dados da solução do Modelo.")
-            return
-
-        # Gera intervalo de horários para visualização (07:00 até 23:30, de 30 em 30 minutos)
-        start_time = datetime.strptime("07:00", "%H:%M")
-        end_time = datetime.strptime("23:30", "%H:%M")
-        horarios = []
-        current_time = start_time
-        while current_time <= end_time:
-            horarios.append(current_time.strftime("%H:%M"))
-            current_time += timedelta(minutes=30)
-
-        # Lê o arquivo Excel selecionado
-        dfv = pd.read_excel(arquivo_selecionado.get())
-        # Ordena o DataFrame por sala
-        dfv = dfv.sort_values(by='Sala')
-        # Extrai lista de salas únicas
-        salas1 = dfv['Sala'].unique().tolist()
-        # Quantidade de colunas de horários
-        sala_colunas = len(horarios)
-        # Dias da semana para visualização
-        dias_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
-
-        # Chama a função de visualização/exportação conforme parâmetro
-        if func == "visualizacao_completa":
-            visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana)
-        elif func == "visualizacao_curso":
-            visualizacao_curso(dfv, salas1, horarios, sala_colunas, dias_semana)
-        elif func == "visualizacao_dep":
-            visualizacao_dep(dfv, salas1, horarios, sala_colunas, dias_semana)
-        elif func == "planilhas_sti":
-            planilhas_sti(arquivo_selecionado.get())
-
-        # Fecha a janela após execução
-        menu.destroy()
-    # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
-    ttk.Button(frame2, text="Gerar Visualização", command=lambda: salvar_valores(func)).grid(row=1, column=0, columnspan=2, pady=10)
-
-    
-def gerar_relatorios():
-    """
-    Abre uma janela secundária com opções de geração de relatórios.
-    Permite ao usuário escolher entre diferentes tipos de visualização e exportação dos dados da solução do modelo.
-    Cada botão chama a função correspondente para gerar o relatório desejado.
-    """
-    # Cria uma nova janela modal sobre a principal para o menu de relatórios.
-    nova_janela = tk.Toplevel(root)
-    nova_janela.geometry("+200+200")
-    nova_janela.title("Menu para Geração de Relatórios")
-
-    # Frame para organizar os botões de relatório.
-    frame = tk.Frame(nova_janela)
-    frame.pack(pady=10, padx=10)
-
-    # Botão para gerar relatório de espaços livres após alocação do modelo.
-    ttk.Button(frame, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0, row=0, sticky="w", pady=5)
-    # Botão para visualização completa da solução (por sala e horário).
-    ttk.Button(frame, text="Visualização Completa da Solução", command=lambda: menu_relatorios(func="visualizacao_completa")).grid(column=0, row=1, sticky="w", pady=5)
-    # Botão para visualização por curso (aba para cada currículo).
-    ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=2, sticky="w", pady=5)
-    # Botão para visualização por departamento (aba para cada departamento).
-    ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=3, sticky="w", pady=5)
-    # Botão para exportar planilhas no formato exigido pela intranet/STI.
-    ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=4, sticky="w", pady=5)
 
 
 
