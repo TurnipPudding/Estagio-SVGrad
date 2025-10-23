@@ -1385,18 +1385,27 @@ def gerar_relatorios():
     frame.pack(pady=10, padx=10)
 
     # Botão para visualização completa da solução (por sala e horário).
-    ttk.Button(frame, text="Visualização Completa da Solução", command=lambda: menu_relatorios(func="visualizacao_completa")).grid(column=0, row=0, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização Completa da Solução", 
+               command=lambda: menu_relatorios(func="visualizacao_completa", 
+                                               title="Visualização Completa da Solução")).grid(column=0, row=0, sticky="w", pady=5)
     # Botão para visualização por curso (aba para cada currículo).
-    ttk.Button(frame, text="Visualização por Curso", command=lambda: menu_relatorios(func="visualizacao_curso")).grid(column=0, row=1, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização por Curso", 
+               command=lambda: menu_relatorios(func="visualizacao_curso",
+                                               title="Visualização por Curso")).grid(column=0, row=1, sticky="w", pady=5)
     # Botão para visualização por departamento (aba para cada departamento).
-    ttk.Button(frame, text="Visualização por Departamento", command=lambda: menu_relatorios(func="visualizacao_dep")).grid(column=0, row=2, sticky="w", pady=5)
+    ttk.Button(frame, text="Visualização por Departamento", 
+               command=lambda: menu_relatorios(func="visualizacao_dep",
+                                               title="Visualização por Departamento")).grid(column=0, row=2, sticky="w", pady=5)
     # Botão para exportar planilhas no formato exigido pela intranet/STI.
-    ttk.Button(frame, text="Gerar Planilhas para a Intranet", command=lambda: menu_relatorios(func="planilhas_sti")).grid(column=0, row=5, sticky="w", pady=5)
+    ttk.Button(frame, text="Gerar Planilhas para a Intranet", 
+               command=lambda: menu_relatorios(func="planilhas_sti",
+                                               title="Gerar Planilhas para a Intranet")).grid(column=0, row=3, sticky="w", pady=5)
     # Botão para gerar relatório de espaços livres após alocação do modelo.
-    ttk.Button(frame, text="Relatório de Espaços Livres", command=analise_vazios).grid(column=0, row=4, sticky="w", pady=5)
+    ttk.Button(frame, text="Relatório de Espaços Livres", 
+               command=analise_vazios).grid(column=0, row=4, sticky="w", pady=5)
 
 
-def menu_relatorios(func):
+def menu_relatorios(func, title):
     """
     Cria uma janela para seleção de arquivo e geração de relatório.
     Permite ao usuário escolher o arquivo com os dados da solução do modelo e chama a função de visualização correspondente.
@@ -1411,7 +1420,7 @@ def menu_relatorios(func):
     """
     # Cria janela secundária para seleção de arquivo e geração do relatório.
     menu = tk.Toplevel(root)
-    menu.title("Visualização Completa da Solução")
+    menu.title(title)
     menu.geometry("+250+150")
 
     frame2 = tk.Frame(menu)
