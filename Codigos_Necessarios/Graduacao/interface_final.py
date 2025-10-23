@@ -821,241 +821,7 @@ def base_dados(pior_caso):
     btn_salvar.pack(pady=10)
 
 
-    # Cria uma nova janela sobre a janela principal da interface para seleção dos arquivos necessários.
-    nova_janela = tk.Toplevel(root)
 
-    # Define o título da janela de acordo com o tipo de base de dados que será criada.
-    if not pior_caso:
-        # Se não for análise de pior caso, título padrão para base do modelo.
-        nova_janela.title("Construir Base de Dados do Modelo")
-    else:
-        # Se for análise de pior caso, título específico.
-        nova_janela.title("Construir Base de Dados de Pior Caso")
-
-        # Cria o frame para organizar os botões e campos na nova janela.
-        frame = tk.Frame(nova_janela)
-        frame.pack(pady=10, padx=10)
-
-    # Variáveis para armazenar os caminhos dos arquivos selecionados, mudam conforme o tipo de base.
-    if not pior_caso:
-        # Para base do modelo: arquivos das aulas, JúpiterWeb, ingressantes e disciplinas com espelho.
-        arquivo_base = tk.StringVar(value="Selecione a planilha dos dados das aulas")  # Planilha das aulas
-        arquivo_jptr = tk.StringVar(value="Selecione a planilha dos dados do júpiter")  # Planilha do JúpiterWeb
-        arquivo_ing = tk.StringVar(value="Selecione a planilha dos dados dos ingressantes")  # Planilha dos ingressantes
-        arquivo_esp = tk.StringVar(value="Selecione a planilha com os inscritos das disciplinas com espelho")  # Planilha dos espelhos
-    else:
-        # Para análise de pior caso: duas bases de dados de anos diferentes.
-        arquivo_base1 = tk.StringVar(value="Selecione a base de dados mais recente")  # Base mais recente
-        arquivo_base2 = tk.StringVar(value="Selecione a base de dados mais antiga")   # Base mais antiga
-
-    # Variável para armazenar o nome do arquivo final gerado.
-    nome_arquivo = tk.StringVar()
-
-    # Funções para seleção dos arquivos, adaptadas conforme o tipo de base.
-    def selecionar_um():
-        # Seleciona o primeiro arquivo necessário.
-        if not pior_caso:
-            # Seleciona a planilha das aulas.
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados das aulas")
-            if arquivo:
-                # Salva o caminho do arquivo selecionado.
-                arquivo_base.set(arquivo)
-        else:
-            # Seleciona a base de dados mais recente para pior caso.
-            arquivo = filedialog.askopenfilename(title="Selecione a base de dados mais recente")
-            if arquivo:
-                arquivo_base1.set(arquivo)
-
-    def selecionar_dois():
-        # Seleciona o segundo arquivo necessário.
-        if not pior_caso:
-            # Seleciona a planilha do JúpiterWeb.
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados do júpiter")
-            if arquivo:
-                arquivo_jptr.set(arquivo)
-        else:
-            # Seleciona a base de dados mais antiga para pior caso.
-            arquivo = filedialog.askopenfilename(title="Selecione a base de dados mais antiga")
-            if arquivo:
-                arquivo_base2.set(arquivo)
-
-    # Funções extras para seleção dos arquivos dos ingressantes e espelho, apenas se não for pior caso.
-    if not pior_caso:
-        def selecionar_tres():
-            # Seleciona a planilha dos ingressantes.
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha dos dados dos ingressantes")
-            if arquivo:
-                arquivo_ing.set(arquivo)
-        def selecionar_quatro():
-            # Seleciona a planilha dos inscritos das disciplinas com espelho.
-            arquivo = filedialog.askopenfilename(title="Selecione a planilha com os inscritos das disciplinas com espelho")
-            if arquivo:
-                arquivo_esp.set(arquivo)
-
-
-    # Adiciona os widgets de seleção de arquivos na janela, conforme o tipo de base de dados.
-    if not pior_caso:
-        # Para base do modelo:
-        # Label e botão para selecionar a planilha dos dados das aulas.
-        lbl_base = tk.Label(frame, text="Selecione a planilha dos dados das aulas")
-        lbl_base.grid(row=0, column=0, pady=5, sticky="w")
-        btn_selecionar_base = tk.Button(frame, textvariable=arquivo_base, command=selecionar_um, wraplength=250, width=40)
-        btn_selecionar_base.grid(row=0, column=1, padx=5, pady=5)
-
-        # Label e botão para selecionar a planilha dos dados do JúpiterWeb.
-        lbl_jptr = tk.Label(frame, text="Selecione a planilha dos dados do júpiter")
-        lbl_jptr.grid(row=1, column=0, pady=5, sticky="w")
-        btn_selecionar_jptr = tk.Button(frame, textvariable=arquivo_jptr, command=selecionar_dois, wraplength=250, width=40)
-        btn_selecionar_jptr.grid(row=1, column=1, padx=5, pady=5)
-
-        # Label e botão para selecionar a planilha dos dados dos ingressantes.
-        lbl_ing = tk.Label(frame, text="Selecione a planilha dos dados dos ingressantes")
-        lbl_ing.grid(row=2, column=0, pady=5, sticky="w")
-        btn_selecionar_ing = tk.Button(frame, textvariable=arquivo_ing, command=selecionar_tres, wraplength=250, width=40)
-        btn_selecionar_ing.grid(row=2, column=1, padx=5, pady=5)
-
-        # Label e botão para selecionar a planilha dos inscritos das disciplinas com espelho.
-        lbl_esp = tk.Label(frame, text="Selecione a planilha com os inscritos das disciplinas com espelho")
-        lbl_esp.grid(row=3, column=0, pady=5, sticky="w")
-        btn_selecionar_esp = tk.Button(frame, textvariable=arquivo_esp, command=selecionar_quatro, wraplength=250, width=40)
-        btn_selecionar_esp.grid(row=3, column=1, padx=5, pady=5)
-    else:
-        # Para análise de pior caso:
-        # Label e botão para selecionar a base de dados mais recente.
-        lbl_base1 = tk.Label(frame, text="Selecione a base de dados mais recente")
-        lbl_base1.grid(row=0, column=0, pady=5, sticky="w")
-        btn_selecionar_base1 = tk.Button(frame, textvariable=arquivo_base1, command=selecionar_um, wraplength=250, width=40)
-        btn_selecionar_base1.grid(row=0, column=1, padx=5, pady=5)
-
-        # Label e botão para selecionar a base de dados mais antiga.
-        lbl_base2 = tk.Label(frame, text="Selecione a base de dados mais antiga")
-        lbl_base2.grid(row=1, column=0, pady=5, sticky="w")
-        btn_selecionar_base2 = tk.Button(frame, textvariable=arquivo_base2, command=selecionar_dois, wraplength=250, width=40)
-        btn_selecionar_base2.grid(row=1, column=1, padx=5, pady=5)
-
-    # Campo para o usuário inserir o nome do arquivo final da base de dados.
-    # Label explicativo e campo de entrada para o nome do arquivo.
-    lbl_arq = tk.Label(frame, text="Insira o nome para a nova base de dados:")
-    lbl_arq.grid(row=4, column=0, sticky="w", pady=5)
-    campo_arq = tk.Entry(frame, textvariable=nome_arquivo)
-    campo_arq.grid(row=4, column=1, pady=5)
-
-
-    # Defino uma função que salva os valores das variáveis contendo o nome dos arquivos escolhidos.
-
-    def salvar_valores():
-        """
-        Função responsável por validar os arquivos selecionados, executar a criação da base de dados e tratar erros.
-        Realiza validação dos campos obrigatórios, executa o script de cruzamento ou análise de pior caso,
-        e exibe mensagens de sucesso ou erro conforme o resultado.
-        """
-        # Validação dos campos obrigatórios conforme o tipo de base de dados.
-        if not pior_caso:
-            # Para base do modelo: verifica se todos os arquivos foram selecionados corretamente.
-            # Se algum arquivo não foi selecionado, exibe aviso e interrompe o processo.
-            if not arquivo_base.get() or arquivo_base.get() == "Selecione a planilha dos dados das aulas":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados das aulas.")
-                return
-            if not arquivo_jptr.get() or arquivo_jptr.get() == "Selecione a planilha dos dados do júpiter":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados do júpiter.")
-                return
-            if not arquivo_ing.get() or arquivo_ing.get() == "Selecione a planilha dos dados dos ingressantes":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha dos dados dos ingressantes.")
-                return
-            if not arquivo_esp.get() or arquivo_esp.get() == "Selecione a planilha com os inscritos das disciplinas com espelho":
-                messagebox.showwarning("Aviso", "Por favor, selecione a planilha com os inscritos das disciplinas com espelho.")
-                return
-        else:
-            # Para análise de pior caso: verifica se ambos os arquivos foram selecionados.
-            if not arquivo_base1.get() or arquivo_base1.get() == "Selecione a base de dados mais recente":
-                messagebox.showwarning("Aviso", "Por favor, selecione a primeira base de dados.")
-                return
-            if not arquivo_base2.get() or arquivo_base2.get() == "Selecione a base de dados mais antiga":
-                messagebox.showwarning("Aviso", "Por favor, selecione a segunda base de dados.")
-                return
-
-        # Validação do nome do arquivo final.
-        nome = nome_arquivo.get()
-        if not nome:
-            # Se o usuário não forneceu um nome, exibe aviso e interrompe.
-            messagebox.showwarning("Aviso", "Por favor, insira o nome da nova base de dados.")
-            return
-        # Garante que o nome do arquivo termine com '.xlsx'.
-        if not nome.endswith(".xlsx"):
-            nome = nome + ".xlsx"
-
-        if not pior_caso:
-            # Executa o script para cruzar os dados das aulas com os do JúpiterWeb.
-            try:
-                file1 = arquivo_base.get()
-                file2 = arquivo_jptr.get()
-                file3 = arquivo_ing.get()
-                file4 = arquivo_esp.get()
-                # Chama o script externo para gerar a base de dados cruzada.
-                subprocess.run(
-                    [sys.executable, "jupiter sheet maker.py", file1, file2, file3, file4, nome],
-                    check=True,
-                    capture_output=True,
-                    text=True
-                )
-                # Exibe mensagem de sucesso ao usuário.
-                messagebox.showinfo("Sucesso!", f"Base de dados para o modelo criada com sucesso. Verifique o arquivo {nome}.")
-            except subprocess.CalledProcessError as e:
-                # Tratamento de erros específicos do subprocess.
-                if e.returncode == 1:
-                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
-                    messagebox.showerror("Erro", f"Erro ao executar o script. Verifique os arquivos de entrada.\n\n{msg}")
-                elif e.returncode == 2:
-                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
-                    messagebox.showerror("Erro", f"Erro de permissão. Verifique se o arquivo {nome} está aberto em outro programa.\n\n{msg}")
-                elif e.returncode == 4:
-                    msg = e.stderr.strip() if e.stderr else "Erro desconhecido."
-                    messagebox.showerror("Erro", f"Erro ao executar o script:\n\n{msg}")
-                else:
-                    messagebox.showerror("Erro", f"Erro inesperado: {e}")
-                return
-            except Exception as e:
-                # Tratamento de erros inesperados.
-                messagebox.showerror("Erro", f"Erro inesperado: {e}")
-                return
-        else:
-            # Realiza a análise de pior caso entre dois anos distintos.
-            try:
-                # Lê os dois dataframes fornecidos pelo usuário.
-                df1 = pd.read_excel(arquivo_base1.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
-                df2 = pd.read_excel(arquivo_base2.get(), sheet_name=["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
-                # Chama a função que faz um dataframe com o maior número de inscritos de cada ano.
-                df_pior_caso = base_pior_caso(df1, df2, ["Salas", "SME", "SMA", "SCC", "SSC", "Outros"])
-                # Salva a base de pior caso em um arquivo Excel.
-                with pd.ExcelWriter(os.path.join(saidas, nome), engine="openpyxl") as writer:
-                    for sh, df_sh in df_pior_caso.items():
-                        df_sh.to_excel(writer, sheet_name=sh, index=False)
-                # Exibe mensagem de sucesso ao usuário.
-                messagebox.showinfo("Sucesso!", f"Arquivo {nome} criado com sucesso!\nVerifique a pasta {saidas} para encontrá-lo.")
-            except PermissionError as e:
-                # Tratamento de erro de permissão (arquivo aberto ou bloqueado).
-                if e.errno == 13:
-                    messagebox.showerror(
-                        "Erro de Permissão",
-                        (
-                            f"Não foi possível salvar o arquivo {nome_arquivo}. "
-                            "Verifique se ele está aberto em outro programa (como o Excel) e tente novamente."
-                        )
-                    )
-                    return
-                else:
-                    messagebox.showerror("Erro", f"Erro de permissão:\n\n{str(e)}")
-                    return
-            except Exception as e:
-                # Tratamento de outros erros inesperados.
-                messagebox.showerror("Erro inesperado!", f"Ocorreu um erro inesperado:\n\n{str(e)}")
-                return
-        # Após criar a base de dados, fecha a janela de seleção.
-        nova_janela.destroy()
-
-    # Botão para executar a função de salvar valores e criar a base de dados.
-    btn_salvar = tk.Button(nova_janela, text="Criar base de dados", command=salvar_valores)
-    btn_salvar.pack(pady=10)
 
 """### Pior caso"""
 
@@ -1716,199 +1482,7 @@ def menu_relatorios(func):
     # Defino um botão e sua posição na janela para chamar a função que salva os nomes dos arquivos.
     ttk.Button(frame2, text="Gerar Visualização", command=lambda: salvar_valores(func)).grid(row=1, column=0, columnspan=2, pady=10)
 
-def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
-    """
-    Gera a visualização dos horários alocados para cada sala, preenchendo a planilha Excel com as disciplinas e horários.
-    Para cada sala, utiliza os dados do DataFrame de solução para preencher os horários e disciplinas alocadas.
-    Parâmetros:
-        dfv: DataFrame com os dados de alocação das aulas
-        space_between: número de linhas entre tabelas de salas
-        start_row, start_column, end_row, end_column: coordenadas iniciais/finais para cada tabela de sala
-        start: linha inicial para os dias da semana
-        salas1: lista de salas utilizadas
-        dias_semana: lista dos dias da semana
-        horarios: lista dos horários disponíveis
-        ws: worksheet do Excel a ser preenchida
-        aulas: contador de aulas alocadas
-    Retorna:
-        Número total de aulas alocadas na planilha
-    """
 
-    # Função interna para padronizar o formato dos horários das aulas para facilitar a visualização e evitar inconsistências.
-    def padronizar_horario_intranet(horario):
-        """
-        Padroniza o formato do horário recebido, ajustando espaços, separadores e arredondando horários conforme regras de alocação.
-        Parâmetros:
-            horario: string no formato 'Dia-HoraInicio/HoraFim', podendo conter espaços ou 'h' como separador
-        Retorna:
-            String padronizada no formato 'Dia - HH:MM/HH:MM', com horários ajustados para facilitar a visualização e evitar sobreposições.
-        """
-        # Remove espaços do horário, se houver.
-        if ' ' in horario:
-            horario = str(horario).replace(' ', '')
-        # Substitui 'h' por ':', se houver, para uniformizar o formato.
-        if 'h' in horario:
-            horario = str(horario).replace('h', ':')
-        # Separa o dia do intervalo de horário.
-        dia, intervalo = horario.split('-')
-        # Separa o horário de início e fim da aula.
-        start, end = intervalo.split('/')
-        # Converte os horários para objetos datetime para facilitar manipulação.
-        start_dt = datetime.strptime(start, "%H:%M")
-        end_dt = datetime.strptime(end, "%H:%M")
-
-        # Ajusta o horário de início: para horários antes das 18h, zera os minutos (ex: 8:10 vira 8:00).
-        if start_dt.hour < 18:
-            start_dt = start_dt.replace(minute=0)
-        # Horários de início a partir das 18h permanecem como estão.
-
-        # Ajusta o horário de fim conforme regras específicas:
-        if end_dt.hour <= 18:
-            # Se minutos < 30, arredonda para hora anterior com 30 minutos (ex: 18:00 vira 17:30).
-            if end_dt.minute < 30:
-                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
-            # Se minutos > 30, fixa em 30 minutos (ex: 09:50 vira 09:30).
-            elif end_dt.minute > 30:
-                end_dt = end_dt.replace(minute=30)
-        else:
-            # Para horários de fim após 18h:
-            # Se minutos entre 1 e 29, fixa em 0 minutos (ex: 19:10 vira 19:00).
-            if end_dt.minute < 30 and end_dt.minute > 0:
-                end_dt = end_dt.replace(minute=0)
-            # Se minutos > 30, fixa em 30 minutos (ex: 20:40 vira 20:30).
-            elif end_dt.minute > 30:
-                end_dt = end_dt.replace(minute=30)
-            # Se minutos = 0, considera que a aula termina meia hora antes (ex: 19:00 vira 18:30).
-            else:
-                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
-
-        # Retorna o horário padronizado para visualização.
-        return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
-
-    def preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
-        """
-        Preenche a planilha Excel com os nomes das disciplinas alocadas em cada sala, organizando visualmente por dia e horário.
-        Parâmetros:
-            start_row, start_column, end_row, end_column: coordenadas para mesclagem e posicionamento da tabela da sala
-            start: linha inicial para os dias da semana
-            sala: nome ou número da sala a ser preenchida
-            dias_semana: lista dos dias da semana
-            horarios: lista dos horários disponíveis
-            aula: lista dos horários das aulas alocadas na sala
-            disciplina: lista dos códigos das disciplinas alocadas
-            ws: worksheet do Excel a ser preenchida
-            aulas: contador de aulas já alocadas
-        Retorna:
-            Número total de aulas alocadas após o preenchimento
-        """
-        # Preenchimento verde para identificar células de disciplinas alocadas.
-        green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
-
-        # Estilo de borda fina para delimitar células da tabela.
-        thin_border = Border(
-            left=Side(style="thin"),
-            right=Side(style="thin"),
-            top=Side(style="thin"),
-            bottom=Side(style="thin")
-        )
-
-        # Mescla células para exibir o nome/número da sala no topo da tabela.
-        ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
-        ws.cell(row=start_row, column=start_column).value = sala
-        ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
-        # Aplica borda em todas as células mescladas do cabeçalho da sala.
-        for col in range(1, end_column):
-            ws.cell(row=start_row, column=col+1).border = thin_border
-
-        # Preenche a primeira coluna da tabela com os dias da semana e aplica borda.
-        for i, dia in enumerate(dias_semana, start=start):
-            ws.cell(row=i, column=start_column-1).value = dia
-            ws.cell(row=i, column=start_column-1).border = thin_border
-
-        # Preenche o cabeçalho de horários nas colunas correspondentes e aplica borda/alinhamento.
-        for j, horario in enumerate(horarios, start=start_column):
-            ws.cell(row=start_row+1, column=j).value = horario
-            ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
-            ws.cell(row=start_row+1, column=j).border = thin_border
-
-        # Aplica borda em todas as células da tabela de horários/dias.
-        for row in range(start, start + len(dias_semana)):
-            for col in range(start_column, start_column + len(horarios)):
-                ws.cell(row=row, column=col).border = thin_border
-
-        # Preenche as células com as disciplinas alocadas, mesclando conforme o intervalo de cada aula.
-        for h in aula:
-            # Separa o dia e o intervalo da aula (ex: 'Terça - 08:00/09:30').
-            dia_h, int_h = h.split(' - ')
-            start_h, end_h = int_h.split('/')
-            # Para cada dia da semana, verifica se corresponde ao dia da aula.
-            for i, dia in enumerate(dias_semana, start=start):
-                if ws.cell(row=i, column=start_column-1).value == dia_h:
-                    # Identifica os índices das colunas de início e fim do intervalo da aula.
-                    index_start = horarios.index(start_h)
-                    index_end = horarios.index(end_h)
-                    # Mescla as células do intervalo e preenche com o nome da disciplina.
-                    ws.merge_cells(start_row=i, start_column=index_start+2, end_row=i, end_column=index_end+2)
-                    merged_cell = ws.cell(row=i, column=index_start+2)
-                    merged_cell.value = disciplina[aula.index(h)]
-                    merged_cell.fill = green_fill
-                    merged_cell.alignment = Alignment(horizontal="center", vertical="center")
-                    # Incrementa o contador de aulas alocadas.
-                    aulas += 1
-        # Retorna o número total de aulas alocadas na planilha.
-        return aulas
-
-
-    def ajusta_largura(ws):
-        """
-        Ajusta automaticamente a largura de cada coluna da planilha Excel com base no maior conteúdo presente,
-        garantindo melhor visualização dos dados e evitando cortes de texto. Considera células mescladas e ignora erros de leitura.
-        Parâmetros:
-            ws: worksheet do Excel a ser ajustada
-        """
-        for col in ws.columns:
-            max_length = 0  # Comprimento máximo encontrado na coluna
-            # Verifica se a primeira célula é mesclada (MergedCell), pois ela não possui column_letter
-            if type(col[0]) == openpyxl.cell.cell.MergedCell:
-                # Usa a célula abaixo para obter a letra da coluna
-                column = col[1].column_letter
-            else:
-                column = col[0].column_letter
-            # Percorre todas as células da coluna para encontrar o maior comprimento de texto
-            for cell in col:
-                try:
-                    # Atualiza o comprimento máximo se o valor da célula for maior
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
-                except:
-                    # Ignora erros de leitura em células mescladas ou vazias
-                    pass
-            # Ajusta a largura da coluna proporcional ao maior conteúdo encontrado
-            ws.column_dimensions[column].width = (max_length) * 1.1
-
-    
-
-    
-
-    # Para cada sala utilizada na solução, preenche a tabela correspondente na planilha
-    for sala in salas1:
-        # Filtra as aulas alocadas para a sala atual
-        df_filtrado = dfv[dfv['Sala'] == sala]
-        # Lista dos horários das aulas (padronizados)
-        aula = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist()
-        # Lista dos códigos das disciplinas alocadas
-        disciplina = df_filtrado['Disciplina'].tolist()
-        # Preenche a tabela da sala na planilha e atualiza o contador de aulas
-        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
-        # Atualiza as coordenadas para posicionar a próxima tabela de sala
-        start_row = start_row + 2 + len(dias_semana) + space_between
-        end_row = start_row
-        start = start_row + 2
-
-    # Após preencher todas as salas, ajusta a largura das colunas para melhor visualização
-    ajusta_largura(ws)
-
-    return aulas
     
 
 def visualizacao_completa(dfv, salas1, horarios, sala_colunas, dias_semana):
@@ -2251,6 +1825,200 @@ def planilhas_intranet(file_path):
         f"Os seguintes arquivos foram criados na pasta {saidas}:\n\n" + "\n".join(file_list)
     )
     return
+
+def funcao_visualizacao(dfv, space_between, start_row, start_column, end_row, end_column, start, salas1, dias_semana, horarios, ws, aulas):
+    """
+    Gera a visualização dos horários alocados para cada sala, preenchendo a planilha Excel com as disciplinas e horários.
+    Para cada sala, utiliza os dados do DataFrame de solução para preencher os horários e disciplinas alocadas.
+    Parâmetros:
+        dfv: DataFrame com os dados de alocação das aulas
+        space_between: número de linhas entre tabelas de salas
+        start_row, start_column, end_row, end_column: coordenadas iniciais/finais para cada tabela de sala
+        start: linha inicial para os dias da semana
+        salas1: lista de salas utilizadas
+        dias_semana: lista dos dias da semana
+        horarios: lista dos horários disponíveis
+        ws: worksheet do Excel a ser preenchida
+        aulas: contador de aulas alocadas
+    Retorna:
+        Número total de aulas alocadas na planilha
+    """
+
+    # Função interna para padronizar o formato dos horários das aulas para facilitar a visualização e evitar inconsistências.
+    def padronizar_horario_intranet(horario):
+        """
+        Padroniza o formato do horário recebido, ajustando espaços, separadores e arredondando horários conforme regras de alocação.
+        Parâmetros:
+            horario: string no formato 'Dia-HoraInicio/HoraFim', podendo conter espaços ou 'h' como separador
+        Retorna:
+            String padronizada no formato 'Dia - HH:MM/HH:MM', com horários ajustados para facilitar a visualização e evitar sobreposições.
+        """
+        # Remove espaços do horário, se houver.
+        if ' ' in horario:
+            horario = str(horario).replace(' ', '')
+        # Substitui 'h' por ':', se houver, para uniformizar o formato.
+        if 'h' in horario:
+            horario = str(horario).replace('h', ':')
+        # Separa o dia do intervalo de horário.
+        dia, intervalo = horario.split('-')
+        # Separa o horário de início e fim da aula.
+        start, end = intervalo.split('/')
+        # Converte os horários para objetos datetime para facilitar manipulação.
+        start_dt = datetime.strptime(start, "%H:%M")
+        end_dt = datetime.strptime(end, "%H:%M")
+
+        # Ajusta o horário de início: para horários antes das 18h, zera os minutos (ex: 8:10 vira 8:00).
+        if start_dt.hour < 18:
+            start_dt = start_dt.replace(minute=0)
+        # Horários de início a partir das 18h permanecem como estão.
+
+        # Ajusta o horário de fim conforme regras específicas:
+        if end_dt.hour <= 18:
+            # Se minutos < 30, arredonda para hora anterior com 30 minutos (ex: 18:00 vira 17:30).
+            if end_dt.minute < 30:
+                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
+            # Se minutos > 30, fixa em 30 minutos (ex: 09:50 vira 09:30).
+            elif end_dt.minute > 30:
+                end_dt = end_dt.replace(minute=30)
+        else:
+            # Para horários de fim após 18h:
+            # Se minutos entre 1 e 29, fixa em 0 minutos (ex: 19:10 vira 19:00).
+            if end_dt.minute < 30 and end_dt.minute > 0:
+                end_dt = end_dt.replace(minute=0)
+            # Se minutos > 30, fixa em 30 minutos (ex: 20:40 vira 20:30).
+            elif end_dt.minute > 30:
+                end_dt = end_dt.replace(minute=30)
+            # Se minutos = 0, considera que a aula termina meia hora antes (ex: 19:00 vira 18:30).
+            else:
+                end_dt = end_dt.replace(minute=30, hour=end_dt.hour - 1)
+
+        # Retorna o horário padronizado para visualização.
+        return str(f'{dia} - {start_dt.strftime("%H:%M")}/{end_dt.strftime("%H:%M")}')
+
+    def preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas):
+        """
+        Preenche a planilha Excel com os nomes das disciplinas alocadas em cada sala, organizando visualmente por dia e horário.
+        Parâmetros:
+            start_row, start_column, end_row, end_column: coordenadas para mesclagem e posicionamento da tabela da sala
+            start: linha inicial para os dias da semana
+            sala: nome ou número da sala a ser preenchida
+            dias_semana: lista dos dias da semana
+            horarios: lista dos horários disponíveis
+            aula: lista dos horários das aulas alocadas na sala
+            disciplina: lista dos códigos das disciplinas alocadas
+            ws: worksheet do Excel a ser preenchida
+            aulas: contador de aulas já alocadas
+        Retorna:
+            Número total de aulas alocadas após o preenchimento
+        """
+        # Preenchimento verde para identificar células de disciplinas alocadas.
+        green_fill = PatternFill(start_color="99CC00", end_color="99CC00", fill_type="solid")
+
+        # Estilo de borda fina para delimitar células da tabela.
+        thin_border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin")
+        )
+
+        # Mescla células para exibir o nome/número da sala no topo da tabela.
+        ws.merge_cells(start_row=start_row, start_column=start_column, end_row=end_row, end_column=end_column)
+        ws.cell(row=start_row, column=start_column).value = sala
+        ws.cell(row=start_row, column=start_column).alignment = Alignment(horizontal="center", vertical="center")
+        # Aplica borda em todas as células mescladas do cabeçalho da sala.
+        for col in range(1, end_column):
+            ws.cell(row=start_row, column=col+1).border = thin_border
+
+        # Preenche a primeira coluna da tabela com os dias da semana e aplica borda.
+        for i, dia in enumerate(dias_semana, start=start):
+            ws.cell(row=i, column=start_column-1).value = dia
+            ws.cell(row=i, column=start_column-1).border = thin_border
+
+        # Preenche o cabeçalho de horários nas colunas correspondentes e aplica borda/alinhamento.
+        for j, horario in enumerate(horarios, start=start_column):
+            ws.cell(row=start_row+1, column=j).value = horario
+            ws.cell(row=start_row+1, column=j).alignment = Alignment(horizontal="center", vertical="center")
+            ws.cell(row=start_row+1, column=j).border = thin_border
+
+        # Aplica borda em todas as células da tabela de horários/dias.
+        for row in range(start, start + len(dias_semana)):
+            for col in range(start_column, start_column + len(horarios)):
+                ws.cell(row=row, column=col).border = thin_border
+
+        # Preenche as células com as disciplinas alocadas, mesclando conforme o intervalo de cada aula.
+        for h in aula:
+            # Separa o dia e o intervalo da aula (ex: 'Terça - 08:00/09:30').
+            dia_h, int_h = h.split(' - ')
+            start_h, end_h = int_h.split('/')
+            # Para cada dia da semana, verifica se corresponde ao dia da aula.
+            for i, dia in enumerate(dias_semana, start=start):
+                if ws.cell(row=i, column=start_column-1).value == dia_h:
+                    # Identifica os índices das colunas de início e fim do intervalo da aula.
+                    index_start = horarios.index(start_h)
+                    index_end = horarios.index(end_h)
+                    # Mescla as células do intervalo e preenche com o nome da disciplina.
+                    ws.merge_cells(start_row=i, start_column=index_start+2, end_row=i, end_column=index_end+2)
+                    merged_cell = ws.cell(row=i, column=index_start+2)
+                    merged_cell.value = disciplina[aula.index(h)]
+                    merged_cell.fill = green_fill
+                    merged_cell.alignment = Alignment(horizontal="center", vertical="center")
+                    # Incrementa o contador de aulas alocadas.
+                    aulas += 1
+        # Retorna o número total de aulas alocadas na planilha.
+        return aulas
+
+
+    def ajusta_largura(ws):
+        """
+        Ajusta automaticamente a largura de cada coluna da planilha Excel com base no maior conteúdo presente,
+        garantindo melhor visualização dos dados e evitando cortes de texto. Considera células mescladas e ignora erros de leitura.
+        Parâmetros:
+            ws: worksheet do Excel a ser ajustada
+        """
+        for col in ws.columns:
+            max_length = 0  # Comprimento máximo encontrado na coluna
+            # Verifica se a primeira célula é mesclada (MergedCell), pois ela não possui column_letter
+            if type(col[0]) == openpyxl.cell.cell.MergedCell:
+                # Usa a célula abaixo para obter a letra da coluna
+                column = col[1].column_letter
+            else:
+                column = col[0].column_letter
+            # Percorre todas as células da coluna para encontrar o maior comprimento de texto
+            for cell in col:
+                try:
+                    # Atualiza o comprimento máximo se o valor da célula for maior
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    # Ignora erros de leitura em células mescladas ou vazias
+                    pass
+            # Ajusta a largura da coluna proporcional ao maior conteúdo encontrado
+            ws.column_dimensions[column].width = (max_length) * 1.1
+
+    
+
+    
+
+    # Para cada sala utilizada na solução, preenche a tabela correspondente na planilha
+    for sala in salas1:
+        # Filtra as aulas alocadas para a sala atual
+        df_filtrado = dfv[dfv['Sala'] == sala]
+        # Lista dos horários das aulas (padronizados)
+        aula = df_filtrado['Horário'].apply(lambda x: padronizar_horario_intranet(x)).tolist()
+        # Lista dos códigos das disciplinas alocadas
+        disciplina = df_filtrado['Disciplina'].tolist()
+        # Preenche a tabela da sala na planilha e atualiza o contador de aulas
+        aulas = preencher_planilha(start_row, start_column, end_row, end_column, start, sala, dias_semana, horarios, aula, disciplina, ws, aulas)
+        # Atualiza as coordenadas para posicionar a próxima tabela de sala
+        start_row = start_row + 2 + len(dias_semana) + space_between
+        end_row = start_row
+        start = start_row + 2
+
+    # Após preencher todas as salas, ajusta a largura das colunas para melhor visualização
+    ajusta_largura(ws)
+
+    return aulas
 
 """## Análise de Espaços Livres (colocar nos arquivos de modelo)"""
 
@@ -2896,7 +2664,7 @@ def preenchimento(lista_elenco, file_path_sol, file_path_base, preencher_parcial
     - lista_elenco: lista de caminhos dos arquivos de elenco a serem preenchidos
     - file_path_sol: caminho da planilha de solução do modelo
     - file_path_base: caminho da planilha de base de dados do modelo
-    - preencher_parcial: booleano indicando se o preenchimento é parcial (True) ou
+    - preencher_parcial: booleano indicando se o preenchimento é parcial (True) ou não (False)
     """
     # Abre a solução gerada pelo modelo como um DataFrame para cruzamento de dados.
     solucao = pd.read_excel(file_path_sol)
