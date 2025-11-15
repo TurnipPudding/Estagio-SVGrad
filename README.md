@@ -5,14 +5,19 @@ Aqui, é possível baixar os arquivos necessários e tutoriais para o uso da int
 
 ## Instalação
 
-### Via terminal:
+### Preparação do ambiente:
 1. Clone este repositório
+2. Navegue até o diretório onde se encontram os scripts de preparação, instalação e execução do aplicação:
+`<repositório>\Codigos_Necessários\Configs`
 
-2. Instale as dependencias em: 
+3. Execute o script batch **prepara.bat**, o qual instalará o Python 3.13 com suporte a TL/TK, criará um ambiente virtual chamado **.venv** um nível acima do diretório de execução do script de prepação (**<repositório>\Codigos_Necessários**) e instalará os módulo necessários para a aplicação
 
-### Via explorador de arquivos:
-1. Identifique qual modelo será utilizado.
+### Execução da aplicação:
+1. Identifique qual modelo será utilizado, seja Graduação ou Pós-Graduação, no diretório **<repositório>\Codigos_Necessários\Configs**
+2. Execute o script batch **Interface_Salas.bat**
 
-2. Instale as dependencias em:
+A aplicação deverá executar após os passos anteriores terem ocorridos sem erros.
 
 ## Estrutura do repositório:
+
+
