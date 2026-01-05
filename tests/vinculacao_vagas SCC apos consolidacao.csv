@@ -1,0 +1,181 @@
+Disciplina;Nome;Turma;Tipo;Oferece 2a avaliação?;Início;Fim;Carga teórica;Carga prática;Dia da semana;Entrada;Saída;Prof(a);Vagas obrigatórias;Inscritos;Vínculo;Vagas;Inscritos;Vagas eletivas;Inscritos;Vínculo;Vagas;Inscritos;Vagas optativas livres;Inscritos;Vínculo;Vagas;Inscritos;Vagas especiais;Inscritos;Vagas extras;Inscritos;Observação
+SCC0124;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;11;EESC - Engenharia Civil;60;11;0;0;;;;0;0;;;;0;0;0;0;Engenharia Civil - (EESC)
+SCC0124;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;11;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia Civil - (EESC)
+SCC0124;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;11;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia Civil - (EESC)
+SCC0124;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;EESC - Eng Elétrica - Ênf Sist Energia e Autom;60;4;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica - Automação - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0124;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica - Automação - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0124;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica - Automação - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0124;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;EESC - Engenharia de Produção;60;3;0;0;;;;0;0;;;;0;0;0;0;Eng. Produção
+SCC0124;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Produção
+SCC0124;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Produção
+SCC0124;Introdução à Programação para Engenharias;2025104;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;9;EESC - Engenharia de Materiais e Manufatura;60;9;0;0;;;;0;0;;;;0;0;0;0;Materiais e Manufatura - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0124;Introdução à Programação para Engenharias;2025104;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;9;;;;0;0;;;;0;0;;;;0;0;0;0;Materiais e Manufatura - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0124;Introdução à Programação para Engenharias;2025104;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;9;;;;0;0;;;;0;0;;;;0;0;0;0;Materiais e Manufatura - a ser ministrada pelo novo docente a ser contratado em dezembro
+SCC0200;Informação Profissional e Tutoria Acadêmica em Ciências da Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;5;3;ICMC - Ciências de Computação;5;3;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0200;Informação Profissional e Tutoria Acadêmica em Ciências da Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;5;3;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0200;Informação Profissional e Tutoria Acadêmica em Ciências da Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;5;3;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0204;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;ICMC - Bacharelado em Ciência de Dados;30;20;0;0;;;;0;0;;;;0;0;0;0;Matemática Aplicada / Ciência de Dados
+SCC0204;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;ICMC - Bach Mat Aplic Computação Cient;30;20;0;0;;;;0;0;;;;0;0;0;0;Matemática Aplicada / Ciência de Dados
+SCC0204;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;Matemática Aplicada / Ciência de Dados
+SCC0204;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;Matemática Aplicada / Ciência de Dados
+SCC0210;Laboratório de Algoritmos Avançados I;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;60;ICMC - Ciências de Computação;47;47;0;0;;;;0;0;0;0;BCC (laboratório Bloco ICMC-6)
+SCC0210;Laboratório de Algoritmos Avançados I;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;60;EESC e ICMC - Engenharia de Computação;13;13;0;0;;;;0;0;0;0;BCC (laboratório Bloco ICMC-6)
+SCC0210;Laboratório de Algoritmos Avançados I;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;60;;;;0;0;;;;0;0;0;0;BCC (laboratório Bloco ICMC-6)
+SCC0210;Laboratório de Algoritmos Avançados I;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;60;;;;0;0;;;;0;0;0;0;BCC (laboratório Bloco ICMC-6)
+SCC0215;Organização de Arquivos;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;40;ICMC - Ciências de Computação;60;40;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0215;Organização de Arquivos;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0215;Organização de Arquivos;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0215;Organização de Arquivos;2025102;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;58;ICMC - Ciências de Computação;60;58;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0215;Organização de Arquivos;2025102;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;58;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0215;Organização de Arquivos;2025102;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;60;58;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0216;Modelagem Computacional em Grafos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;38;37;ICMC - Ciências de Computação;38;37;10;2;EESC e ICMC - Engenharia de Computação;10;2;12;10;IFSC - Física Computacional;12;10;0;0;12;10;BCC
+EC
+IFSC - Física Computacional
+SCC0216;Modelagem Computacional em Grafos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;38;37;;;;10;2;;;;12;10;;;;0;0;12;10;BCC
+EC
+IFSC - Física Computacional
+SCC0216;Modelagem Computacional em Grafos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;38;37;;;;10;2;;;;12;10;;;;0;0;12;10;BCC
+EC
+IFSC - Física Computacional
+SCC0216;Modelagem Computacional em Grafos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;38;37;;;;10;2;;;;12;10;;;;0;0;12;10;BCC
+EC
+IFSC - Física Computacional
+SCC0216;Modelagem Computacional em Grafos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;57;ICMC - Ciências de Computação;60;57;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0216;Modelagem Computacional em Grafos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;57;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0216;Modelagem Computacional em Grafos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;57;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0217;Linguagens de Programação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;47;ICMC - Ciências de Computação;60;47;0;0;;;;0;0;;;;0;0;0;0;BCC-
+SCC0217;Linguagens de Programação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;47;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-
+SCC0217;Linguagens de Programação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;47;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-
+SCC0217;Linguagens de Programação e Compiladores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;37;ICMC - Ciências de Computação;60;37;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0217;Linguagens de Programação e Compiladores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;37;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0217;Linguagens de Programação e Compiladores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;37;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;59;ICMC - Ciências de Computação;60;59;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;59;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;59;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;16;ICMC - Ciências de Computação;60;16;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;16;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0219;Introdução ao Desenvolvimento Web;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;16;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0221;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;9;ICMC - Bacharelado em Ciência de Dados;10;2;0;0;;;;0;0;;;;0;0;0;0;BCC - BC Dados
+SCC0221;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;9;ICMC - Ciências de Computação;10;7;0;0;;;;0;0;;;;0;0;0;0;BCC - BC Dados
+SCC0221;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;9;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - BC Dados
+SCC0221;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;9;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - BC Dados
+SCC0221;Introdução à Ciência de Computação I;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;4;ICMC - Ciências de Computação;10;3;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDados
+SCC0221;Introdução à Ciência de Computação I;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;4;ICMC - Bacharelado em Ciência de Dados;10;1;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDados
+SCC0221;Introdução à Ciência de Computação I;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;4;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDados
+SCC0221;Introdução à Ciência de Computação I;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;4;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDados
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;1;ICMC - Ciências de Computação;2;1;0;0;;;;0;0;;;;0;0;0;0;BCC-A / BCDados
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;1;ICMC - Bacharelado em Ciência de Dados;1;0;0;0;;;;0;0;;;;0;0;0;0;BCC-A / BCDados
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A / BCDados
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A / BCDados
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;2;ICMC - Bacharelado em Ciência de Dados;1;1;0;0;;;;0;0;;;;0;0;0;0;BCC BC DADOS
+A
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;2;ICMC - Ciências de Computação;2;1;0;0;;;;0;0;;;;0;0;0;0;BCC BC DADOS
+A
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC BC DADOS
+A
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC BC DADOS
+A
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;ICMC - Bacharelado em Ciência de Dados;1;0;0;0;;;;0;0;;;;0;0;0;0;BCC-BC DADOS
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;ICMC - Ciências de Computação;2;0;0;0;;;;0;0;;;;0;0;0;0;BCC-BC DADOS
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BC DADOS
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BC DADOS
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;ICMC - Ciências de Computação;2;0;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDADOS 
+As inscrições na disciplina serão no período de retificação, devido ao espaço limitado do laboratório e por ter a demanda dos ingressantes.
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;ICMC - Bacharelado em Ciência de Dados;1;0;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDADOS 
+As inscrições na disciplina serão no período de retificação, devido ao espaço limitado do laboratório e por ter a demanda dos ingressantes.
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDADOS 
+As inscrições na disciplina serão no período de retificação, devido ao espaço limitado do laboratório e por ter a demanda dos ingressantes.
+SCC0222;Laboratório de Introdução à Ciência de Computação I;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;3;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-BCDADOS 
+As inscrições na disciplina serão no período de retificação, devido ao espaço limitado do laboratório e por ter a demanda dos ingressantes.
+SCC0224;Estruturas de dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;45;ICMC - Bacharelado em Ciência de Dados;30;17;0;0;;;;0;0;;;;0;0;0;0;BC DADOS - BMACC
+SCC0224;Estruturas de dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;45;ICMC - Bach Mat Aplic Computação Cient;30;28;0;0;;;;0;0;;;;0;0;0;0;BC DADOS - BMACC
+SCC0224;Estruturas de dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;45;;;;0;0;;;;0;0;;;;0;0;0;0;BC DADOS - BMACC
+SCC0224;Estruturas de dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;45;;;;0;0;;;;0;0;;;;0;0;0;0;BC DADOS - BMACC
+SCC0228;Seminários em Computação II;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;26;ICMC - Ciências de Computação;30;23;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0228;Seminários em Computação II;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;26;ICMC - Bacharelado em Ciência de Dados;30;3;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0228;Seminários em Computação II;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;26;;;;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0228;Seminários em Computação II;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;26;;;;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0240;Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;ICMC - Ciências de Computação;59;59;0;0;;;;6;6;IFSC -  para toda a Unidade;6;6;0;0;6;6;BCC - BCDADOS - IFSC
+SCC0240;Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;ICMC - Bacharelado em Ciência de Dados;1;1;0;0;;;;6;6;;;;0;0;6;6;BCC - BCDADOS - IFSC
+SCC0240;Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;6;6;;;;0;0;6;6;BCC - BCDADOS - IFSC
+SCC0240;Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;6;6;;;;0;0;6;6;BCC - BCDADOS - IFSC
+SCC0240;Bases de Dados;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;66;56;ICMC - Bacharelado em Ciência de Dados;23;19;0;0;;;;0;0;;;;0;0;0;0;BCC / BCDados
+SCC0240;Bases de Dados;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;66;56;ICMC - Ciências de Computação;43;37;0;0;;;;0;0;;;;0;0;0;0;BCC / BCDados
+SCC0240;Bases de Dados;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;66;56;;;;0;0;;;;0;0;;;;0;0;0;0;BCC / BCDados
+SCC0240;Bases de Dados;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;66;56;;;;0;0;;;;0;0;;;;0;0;0;0;BCC / BCDados
+SCC0241;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;0;0;;;;60;13;ICMC - Bacharelado em Ciência de Dados;30;1;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0241;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;0;0;;;;60;13;ICMC - Ciências de Computação;30;12;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0241;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;0;0;;;;60;13;;;;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0241;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;0;0;;;;60;13;;;;0;0;;;;0;0;0;0;BCC e BCDados
+SCC0243;Arquitetura de Sistemas Gerenciadores de Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;60;17;ICMC - Bacharelado em Ciência de Dados;30;2;0;0;;;;0;0;0;0;BCC E BCDADOS
+SCC0243;Arquitetura de Sistemas Gerenciadores de Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;60;17;ICMC - Ciências de Computação;30;15;0;0;;;;0;0;0;0;BCC E BCDADOS
+SCC0243;Arquitetura de Sistemas Gerenciadores de Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;60;17;;;;0;0;;;;0;0;0;0;BCC E BCDADOS
+SCC0243;Arquitetura de Sistemas Gerenciadores de Bases de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;60;17;;;;0;0;;;;0;0;0;0;BCC E BCDADOS
+SCC0245;Processamento Analítico de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;42;ICMC - Bacharelado em Ciência de Dados;15;4;0;0;;;;0;0;0;0;BCC- BCDados
+SCC0245;Processamento Analítico de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;42;ICMC - Ciências de Computação;45;38;0;0;;;;0;0;0;0;BCC- BCDados
+SCC0245;Processamento Analítico de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;42;;;;0;0;;;;0;0;0;0;BCC- BCDados
+SCC0245;Processamento Analítico de Dados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;42;;;;0;0;;;;0;0;0;0;BCC- BCDados
+SCC0250;Computação Gráfica;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;ICMC - Ciências de Computação;60;40;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0250;Computação Gráfica;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0250;Computação Gráfica;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;40;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0250;Computação Gráfica;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;24;ICMC - Ciências de Computação;60;24;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0250;Computação Gráfica;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;24;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0250;Computação Gráfica;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;24;;;;0;0;;;;0;0;;;;0;0;0;0;BCC
+SCC0251;Processamento de Imagens;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;72;70;ICMC -  para toda a Unidade;72;70;4;3;EESC e ICMC - Engenharia de Computação;4;3;0;0;4;3;BCC / EC / CURSOS DO CEE ROBOTICA
+SCC0251;Processamento de Imagens;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;72;70;;;;4;3;;;;0;0;4;3;BCC / EC / CURSOS DO CEE ROBOTICA
+SCC0251;Processamento de Imagens;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;72;70;;;;4;3;;;;0;0;4;3;BCC / EC / CURSOS DO CEE ROBOTICA
+SCC0251;Processamento de Imagens;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;72;70;;;;4;3;;;;0;0;4;3;BCC / EC / CURSOS DO CEE ROBOTICA
+SCC0261;Multimídia;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;64;61;ICMC - Ciências de Computação;64;61;0;0;;;;0;0;0;0;BCC
+SCC0261;Multimídia;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;64;61;;;;0;0;;;;0;0;0;0;BCC
+SCC0261;Multimídia;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;64;61;;;;0;0;;;;0;0;0;0;BCC
+SCC0270;Redes Neurais e Aprendizado Profundo;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;26;26;ICMC - Bacharelado em Ciência de Dados;26;26;72;72;ICMC -  para toda a Unidade;67;67;0;0;;;;0;0;0;0;BCDados  / EC /  CEE em Ciência de Dados (alocação provisória sala 4-001)
+SCC0270;Redes Neurais e Aprendizado Profundo;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;26;26;;;;72;72;EESC e ICMC - Engenharia de Computação;5;5;0;0;;;;0;0;0;0;BCDados  / EC /  CEE em Ciência de Dados (alocação provisória sala 4-001)
+SCC0270;Redes Neurais e Aprendizado Profundo;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;26;26;;;;72;72;;;;0;0;;;;0;0;0;0;BCDados  / EC /  CEE em Ciência de Dados (alocação provisória sala 4-001)
+SCC0270;Redes Neurais e Aprendizado Profundo;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;26;26;;;;72;72;;;;0;0;;;;0;0;0;0;BCDados  / EC /  CEE em Ciência de Dados (alocação provisória sala 4-001)
+SCC0276;Aprendizado de Máquina;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;19;19;ICMC - Bacharelado em Ciência de Dados;19;19;58;56;EESC e ICMC - Engenharia de Computação;3;2;0;0;;;;0;0;0;0;BCDados / EC  e CURSOS DO CEE em Ciência de Dados (alocação provisória sala 5-101)
+SCC0276;Aprendizado de Máquina;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;19;19;;;;58;56;ICMC -  para toda a Unidade;55;54;0;0;;;;0;0;0;0;BCDados / EC  e CURSOS DO CEE em Ciência de Dados (alocação provisória sala 5-101)
+SCC0276;Aprendizado de Máquina;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;19;19;;;;58;56;;;;0;0;;;;0;0;0;0;BCDados / EC  e CURSOS DO CEE em Ciência de Dados (alocação provisória sala 5-101)
+SCC0276;Aprendizado de Máquina;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;19;19;;;;58;56;;;;0;0;;;;0;0;0;0;BCDados / EC  e CURSOS DO CEE em Ciência de Dados (alocação provisória sala 5-101)
+SCC0289;Projeto em Intercâmbio I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0289;Projeto em Intercâmbio I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0290;Projeto em Intercâmbio II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0290;Projeto em Intercâmbio II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0291;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0291;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0292;Estágio Supervisionado II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0292;Estágio Supervisionado II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0293;Projeto de Graduação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0293;Projeto de Graduação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0294;Projeto de Graduação II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0294;Projeto de Graduação II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0300;Projeto Empreendedor I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0300;Projeto Empreendedor I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0302;Projeto Empreendedor II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0302;Projeto Empreendedor II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SCC0503;Algoritmos e Estruturas de Dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;ICMC - Bacharelado em Sistemas de Informação;60;60;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0503;Algoritmos e Estruturas de Dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0503;Algoritmos e Estruturas de Dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0504;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;55;ICMC - Bacharelado em Sistemas de Informação;60;55;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0504;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;55;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0504;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;55;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0530;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;ICMC - Bacharelado em Sistemas de Informação;60;53;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0530;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0530;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0541;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;52;ICMC - Bacharelado em Sistemas de Informação;60;52;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0541;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;52;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0541;Laboratório de Bases de Dados;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;52;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SCC0605;Teoria da Computação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;EESC e ICMC - Engenharia de Computação;60;39;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0605;Teoria da Computação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0605;Teoria da Computação e Compiladores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0606;Estrutura de Dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SCC0606;Estrutura de Dados II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SCC0630;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;28;EESC e ICMC - Engenharia de Computação;60;28;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0630;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;28;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0630;Inteligência Artificial;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;28;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SCC0633;Processamento de Linguagem Natural;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;19;ICMC - Bacharelado em Ciência de Dados;20;19;40;35;EESC e ICMC - Engenharia de Computação;5;4;0;0;;;;0;1;0;0;BCDados e BCC e EC
+SCC0633;Processamento de Linguagem Natural;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;19;;;;40;35;ICMC - Ciências de Computação;35;31;0;0;;;;0;1;0;0;BCDados e BCC e EC
+SCC0633;Processamento de Linguagem Natural;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;19;;;;40;35;;;;0;0;;;;0;1;0;0;BCDados e BCC e EC
+SCC0633;Processamento de Linguagem Natural;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;20;19;;;;40;35;;;;0;0;;;;0;1;0;0;BCDados e BCC e EC
+SCC0802;Prática em Ciência de Dados III;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;11;ICMC - Bacharelado em Ciência de Dados;60;11;0;0;;;;0;0;;;;0;0;0;0;BCDados
+SCC0802;Prática em Ciência de Dados III;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;11;;;;0;0;;;;0;0;;;;0;0;0;0;BCDados
+SCC0802;Prática em Ciência de Dados III;2025101;Prática;S;24/02/2025;07/07/2025;0;60;;;;;60;11;;;;0;0;;;;0;0;;;;0;0;0;0;BCDados

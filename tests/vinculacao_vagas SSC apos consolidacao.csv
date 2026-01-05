@@ -1,0 +1,250 @@
+Disciplina;Nome;Turma;Tipo;Oferece 2a avaliação?;Início;Fim;Carga teórica;Carga prática;Dia da semana;Entrada;Saída;Prof(a);Vagas obrigatórias;Inscritos;Vínculo;Vagas;Inscritos;Vagas eletivas;Inscritos;Vínculo;Vagas;Inscritos;Vagas optativas livres;Inscritos;Vínculo;Vagas;Inscritos;Vagas especiais;Inscritos;Vagas extras;Inscritos;Observação
+SSC0103;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;24;ICMC - Ciências de Computação;60;24;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0103;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;24;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0103;Programação Orientada a Objetos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;24;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0103;Programação Orientada a Objetos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;ICMC - Ciências de Computação;60;60;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0103;Programação Orientada a Objetos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0103;Programação Orientada a Objetos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0104;Evolução Histórica da Computação e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;ICMC - Ciências de Computação;60;1;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0104;Evolução Histórica da Computação e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0104;Evolução Histórica da Computação e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0104;Evolução Histórica da Computação e Aplicações;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;0;ICMC - Ciências de Computação;60;0;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0104;Evolução Histórica da Computação e Aplicações;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0104;Evolução Histórica da Computação e Aplicações;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0109;Prática em Lógica Digital;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;ICMC - Ciências de Computação;30;2;0;0;;;;0;0;;;;0;0;0;0;BCC - A1
+SSC0109;Prática em Lógica Digital;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A1
+SSC0109;Prática em Lógica Digital;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A1
+SSC0109;Prática em Lógica Digital;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;4;ICMC - Ciências de Computação;30;4;0;0;;;;0;0;;;;0;0;0;0;BCC-A2
+SSC0109;Prática em Lógica Digital;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;4;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A2
+SSC0109;Prática em Lógica Digital;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;4;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A2
+SSC0109;Prática em Lógica Digital;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;ICMC - Ciências de Computação;30;2;0;0;;;;0;0;;;;0;0;0;0;BCC-B1
+SSC0109;Prática em Lógica Digital;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B1
+SSC0109;Prática em Lógica Digital;2025103;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B1
+SSC0109;Prática em Lógica Digital;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;1;ICMC - Ciências de Computação;30;1;0;0;;;;0;0;;;;0;0;0;0;BCC-B2
+SSC0109;Prática em Lógica Digital;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B2
+SSC0109;Prática em Lógica Digital;2025104;Prática;S;24/02/2025;07/07/2025;0;30;;;;;30;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B2
+SSC0117;Introdução à Lógica Digital;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;8;ICMC - Ciências de Computação;60;8;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0117;Introdução à Lógica Digital;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;8;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0117;Introdução à Lógica Digital;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;8;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0117;Introdução à Lógica Digital;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;ICMC - Ciências de Computação;60;2;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0117;Introdução à Lógica Digital;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0117;Introdução à Lógica Digital;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0119;Prática em Organização de Computadores;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;0;0;;;;40;32;ICMC - Ciências de Computação;40;32;20;2;ICMC - Bacharelado em Ciência de Dados;20;2;0;0;20;2;BCC/ BCDados
+SSC0119;Prática em Organização de Computadores;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;0;0;;;;40;32;;;;20;2;;;;0;0;20;2;BCC/ BCDados
+SSC0119;Prática em Organização de Computadores;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;0;0;;;;40;32;;;;20;2;;;;0;0;20;2;BCC/ BCDados
+SSC0119;Prática em Organização de Computadores;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;0;0;;;;40;32;;;;20;2;;;;0;0;20;2;BCC/ BCDados
+SSC0120;Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;50;ICMC - Ciências de Computação;60;50;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0120;Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;50;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0120;Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;50;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0120;Sistemas de Informação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;41;ICMC - Ciências de Computação;60;41;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0120;Sistemas de Informação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;41;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0120;Sistemas de Informação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;41;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0130;Engenharia de Software;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;ICMC - Ciências de Computação;60;60;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0130;Engenharia de Software;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0130;Engenharia de Software;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - A
+SSC0130;Engenharia de Software;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;18;ICMC - Ciências de Computação;60;18;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0130;Engenharia de Software;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;18;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0130;Engenharia de Software;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;18;;;;0;0;;;;0;0;;;;0;0;0;0;BCC - B
+SSC0142;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;ICMC - Ciências de Computação;60;53;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0142;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0142;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;53;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0142;Redes de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;33;ICMC - Ciências de Computação;60;33;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0142;Redes de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;33;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0142;Redes de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;33;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;ICMC - Ciências de Computação;35;25;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;ICMC - Bacharelado em Sistemas de Informação;15;6;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;ICMC - Bacharelado em Ciência de Dados;5;0;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;EESC e ICMC - Engenharia de Computação;5;4;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;;;;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0158;Computação em Nuvem e Arquitetura Orientadas a Serviços;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;35;;;;0;0;;;;0;0;0;0;BSI/EC/BSI/BCDados
+SSC0180;Eletrônica para Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;ICMC - Ciências de Computação;60;2;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0180;Eletrônica para Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0180;Eletrônica para Computação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0180;Eletrônica para Computação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;ICMC - Ciências de Computação;60;1;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0180;Eletrônica para Computação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0180;Eletrônica para Computação;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;1;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0304;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;EESC - todos exceto Elétrica-Ênf Eletrônica;3;3;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica- Eletrônica
+SSC0304;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;EESC - Eng Elétrica - Ênf Eletrônica;57;0;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica- Eletrônica
+SSC0304;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica- Eletrônica
+SSC0304;Introdução à Programação para Engenharias;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;3;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Elétrica- Eletrônica
+SSC0304;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Mecânica
+SSC0304;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;EESC - Engenharia Mecânica;60;0;0;0;;;;0;0;;;;0;0;0;0;Eng. Mecânica
+SSC0304;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Mecânica
+SSC0304;Introdução à Programação para Engenharias;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Mecânica
+SSC0304;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;EESC - Engenharia Mecatrônica;60;0;0;0;;;;0;0;;;;0;0;0;0;Mecatrônica
+SSC0304;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;Mecatrônica
+SSC0304;Introdução à Programação para Engenharias;2025103;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;0;;;;0;0;;;;0;0;;;;0;0;0;0;Mecatrônica
+SSC0501;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;4;ICMC - Bacharelado em Sistemas de Informação;10;4;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0501;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;4;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0501;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;4;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0502;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;7;3;ICMC - Bacharelado em Sistemas de Informação;7;3;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0502;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;7;3;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0502;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;7;3;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0512;Elementos de Lógica Digital;2025101;Teórica Vinculada;S;24/02/2025;07/07/2025;30;0;;;;;7;1;ICMC - Bacharelado em Sistemas de Informação;7;1;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0512;Elementos de Lógica Digital;2025101;Teórica Vinculada;S;24/02/2025;07/07/2025;30;0;;;;;7;1;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0512;Elementos de Lógica Digital;2025101;Teórica Vinculada;S;24/02/2025;07/07/2025;30;0;;;;;7;1;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0528;Sistemas Colaborativos: Fundamentos e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;30;13;ICMC - Bacharelado em Sistemas de Informação;30;13;0;0;;;;0;0;0;0;BSI
+SSC0528;Sistemas Colaborativos: Fundamentos e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;30;13;;;;0;0;;;;0;0;0;0;BSI
+SSC0528;Sistemas Colaborativos: Fundamentos e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;30;13;;;;0;0;;;;0;0;0;0;BSI
+SSC0530;Introdução a Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;1;ICMC - Bacharelado em Sistemas de Informação;10;1;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0530;Introdução a Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;1;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0530;Introdução a Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;1;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0533;Requisitos de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;54;ICMC - Bacharelado em Sistemas de Informação;60;54;0;0;;;;0;0;;;;0;0;0;0;BSI  - sala 5-003 (Bloco 5 - ICMC)
+SSC0533;Requisitos de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;54;;;;0;0;;;;0;0;;;;0;0;0;0;BSI  - sala 5-003 (Bloco 5 - ICMC)
+SSC0533;Requisitos de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;54;;;;0;0;;;;0;0;;;;0;0;0;0;BSI  - sala 5-003 (Bloco 5 - ICMC)
+SSC0535;Gerência de Configuração, Manutenção e Evolução de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;61;61;ICMC - Bacharelado em Sistemas de Informação;61;61;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0535;Gerência de Configuração, Manutenção e Evolução de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;61;61;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0535;Gerência de Configuração, Manutenção e Evolução de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;61;61;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0540;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;46;ICMC - Bacharelado em Sistemas de Informação;60;46;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0540;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;46;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0540;Redes de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;46;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0541;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;56;ICMC - Bacharelado em Sistemas de Informação;60;56;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0541;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;56;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0541;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;56;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0571;Computação e Sociedade: Evolução Histórica e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;3;ICMC - Bacharelado em Sistemas de Informação;10;3;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0571;Computação e Sociedade: Evolução Histórica e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;3;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0571;Computação e Sociedade: Evolução Histórica e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;10;3;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0576;Seminários em Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;28;ICMC - Bacharelado em Sistemas de Informação;60;28;0;0;;;;0;0;0;0;BSI
+SSC0576;Seminários em Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;28;;;;0;0;;;;0;0;0;0;BSI
+SSC0576;Seminários em Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;60;28;;;;0;0;;;;0;0;0;0;BSI
+SSC0591;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI-Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0591;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI-Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0592;Estágio Supervisionado II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0592;Estágio Supervisionado II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0593;Projeto de Graduação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0593;Projeto de Graduação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0594;Projeto de Graduação II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0594;Projeto de Graduação II;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0595;Projeto Empreendedor I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BBSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0595;Projeto Empreendedor I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BBSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0597;Projeto em Intercâmbio I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0597;Projeto em Intercâmbio I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;BSI - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação.
+SSC0599;Informação Profissional em Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;10;10;ICMC - Bacharelado em Sistemas de Informação;10;10;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0599;Informação Profissional em Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;10;10;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0599;Informação Profissional em Sistemas de Informação;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;10;10;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0600;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;EESC e ICMC - Engenharia de Computação;60;4;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0600;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0600;Introdução à Ciência de Computação I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;4;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;3;EESC e ICMC - Engenharia de Computação;40;3;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;3;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025101;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;3;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;4;EESC e ICMC - Engenharia de Computação;40;4;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;4;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0601;Laboratório de Introdução à Ciência de Computação I;2025102;Prática;S;24/02/2025;07/07/2025;0;30;;;;;40;4;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0620;Engenharia de Software;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;29;;;;0;0;;;;0;0;;;;0;0;0;0;Eng Computação
+SSC0620;Engenharia de Software;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;29;;;;0;0;;;;0;0;;;;0;0;0;0;Eng Computação
+SSC0640;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;55;EESC e ICMC - Engenharia de Computação;60;55;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SSC0640;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;55;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SSC0640;Sistemas Operacionais I;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;55;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. Computação
+SSC0670;Projeto de Formatura I;2025101;Teórica;S;24/02/2025;07/07/2025;0;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. de Computação - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação
+SSC0670;Projeto de Formatura I;2025101;Teórica;S;24/02/2025;07/07/2025;0;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;Eng. de Computação - Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação
+SSC0672;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação- Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação
+SSC0672;Estágio Supervisionado I;2025101;Teórica;S;24/02/2025;07/07/2025;15;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação- Matrícula deve ser realizada no JupiterWeb no período de requerimento/retificação
+SSC0675;Projeto Empreendedor;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;EC. Matrícula deve ser feita no período de requerimento/retificação no Júpiter
+SSC0675;Projeto Empreendedor;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;EC. Matrícula deve ser feita no período de requerimento/retificação no Júpiter
+SSC0676;Estágio Empreendedor;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;EC. Matrícula deve ser feita no período de requerimento/retificação no Júpiter
+SSC0676;Estágio Empreendedor;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;0;0;;;;0;0;;;;0;0;;;;0;0;0;0;EC. Matrícula deve ser feita no período de requerimento/retificação no Júpiter
+SSC0712;Programação de Robôs Móveis;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;17;ICMC - Ciências de Computação;30;15;0;0;;;;0;0;0;0;Engenharia de Computação / BCC
+(CEE Robótica);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0712;Programação de Robôs Móveis;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;17;EESC e ICMC - Engenharia de Computação;30;2;0;0;;;;0;0;0;0;Engenharia de Computação / BCC
+(CEE Robótica);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0712;Programação de Robôs Móveis;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;17;;;;0;0;;;;0;0;0;0;Engenharia de Computação / BCC
+(CEE Robótica);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0712;Programação de Robôs Móveis;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;17;;;;0;0;;;;0;0;0;0;Engenharia de Computação / BCC
+(CEE Robótica);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0714;Robôs Móveis Autônomos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;18;EESC e ICMC - Engenharia de Computação;30;4;0;0;;;;0;0;0;0;Engenharia de Computação/BCC
+ (CEE Robótica) Espelho com SSC5888 (Pós-Graduação);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0714;Robôs Móveis Autônomos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;18;ICMC - Ciências de Computação;30;14;0;0;;;;0;0;0;0;Engenharia de Computação/BCC
+ (CEE Robótica) Espelho com SSC5888 (Pós-Graduação);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0714;Robôs Móveis Autônomos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;18;;;;0;0;;;;0;0;0;0;Engenharia de Computação/BCC
+ (CEE Robótica) Espelho com SSC5888 (Pós-Graduação);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0714;Robôs Móveis Autônomos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;18;;;;0;0;;;;0;0;0;0;Engenharia de Computação/BCC
+ (CEE Robótica) Espelho com SSC5888 (Pós-Graduação);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0725;Arquitetura de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;29;EESC e ICMC - Engenharia de Computação;30;9;0;0;;;;0;0;0;0;BSI/ EC
+SSC0725;Arquitetura de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;29;ICMC - Bacharelado em Sistemas de Informação;30;20;0;0;;;;0;0;0;0;BSI/ EC
+SSC0725;Arquitetura de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;29;;;;0;0;;;;0;0;0;0;BSI/ EC
+SSC0725;Arquitetura de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;29;;;;0;0;;;;0;0;0;0;BSI/ EC
+SSC0740;Sistemas Embarcados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;13;EESC e ICMC - Engenharia de Computação;30;2;0;0;;;;0;0;0;0;BCC/Eng. Computação
+(CEE Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0740;Sistemas Embarcados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;13;ICMC - Ciências de Computação;30;11;0;0;;;;0;0;0;0;BCC/Eng. Computação
+(CEE Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0740;Sistemas Embarcados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;13;;;;0;0;;;;0;0;0;0;BCC/Eng. Computação
+(CEE Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0740;Sistemas Embarcados;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;13;;;;0;0;;;;0;0;0;0;BCC/Eng. Computação
+(CEE Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0743;Sistemas Operacionais II;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;11;EESC e ICMC - Engenharia de Computação;60;11;0;0;;;;0;0;0;0;Engenharia Computação
+(CEE Sistemas Computacionais Avançados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0743;Sistemas Operacionais II;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;11;;;;0;0;;;;0;0;0;0;Engenharia Computação
+(CEE Sistemas Computacionais Avançados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0743;Sistemas Operacionais II;2025101;Teórica;S;24/02/2025;07/07/2025;45;0;;;;;0;0;;;;60;11;;;;0;0;;;;0;0;0;0;Engenharia Computação
+(CEE Sistemas Computacionais Avançados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0900;Engenharia de Segurança;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;ICMC - Ciências de Computação;60;44;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0900;Engenharia de Segurança;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0900;Engenharia de Segurança;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0900;Engenharia de Segurança;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;30;14;ICMC - Ciências de Computação;30;14;30;10;EESC e ICMC - Engenharia de Computação;30;10;0;0;;;;0;0;0;0;BCC-B/EC
+(CEE Sistemas Computacionais Avançados Eng. Comp.);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0900;Engenharia de Segurança;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;30;14;;;;30;10;;;;0;0;;;;0;0;0;0;BCC-B/EC
+(CEE Sistemas Computacionais Avançados Eng. Comp.);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0900;Engenharia de Segurança;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;30;14;;;;30;10;;;;0;0;;;;0;0;0;0;BCC-B/EC
+(CEE Sistemas Computacionais Avançados Eng. Comp.);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0902;Organização e Arquitetura de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;ICMC - Ciências de Computação;60;39;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0902;Organização e Arquitetura de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0902;Organização e Arquitetura de Computadores;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;39;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0902;Organização e Arquitetura de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;ICMC - Ciências de Computação;60;60;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0902;Organização e Arquitetura de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0902;Organização e Arquitetura de Computadores;2025102;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0903;Computação de Alto Desempenho;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;42;EESC e ICMC - Engenharia de Computação;60;42;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0903;Computação de Alto Desempenho;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;42;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0903;Computação de Alto Desempenho;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;60;42;;;;0;0;;;;0;0;;;;0;0;0;0;Engenharia de Computação
+SSC0904;Sistemas Computacionais Distribuídos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;35;ICMC - Ciências de Computação;60;35;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0904;Sistemas Computacionais Distribuídos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;35;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0904;Sistemas Computacionais Distribuídos;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;35;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-A
+SSC0904;Sistemas Computacionais Distribuídos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;22;ICMC - Ciências de Computação;60;22;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0904;Sistemas Computacionais Distribuídos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;22;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0904;Sistemas Computacionais Distribuídos;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;22;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0950;Projeto e Desenvolvimento de Software de Sistema;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;70;63;ICMC - Bacharelado em Sistemas de Informação;6;6;0;0;;;;0;0;0;0;BCC, BSI, Eng. Computação
+SSC0950;Projeto e Desenvolvimento de Software de Sistema;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;70;63;ICMC - Ciências de Computação;57;51;0;0;;;;0;0;0;0;BCC, BSI, Eng. Computação
+SSC0950;Projeto e Desenvolvimento de Software de Sistema;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;70;63;EESC e ICMC - Engenharia de Computação;7;6;0;0;;;;0;0;0;0;BCC, BSI, Eng. Computação
+SSC0950;Projeto e Desenvolvimento de Software de Sistema;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;70;63;;;;0;0;;;;0;0;0;0;BCC, BSI, Eng. Computação
+SSC0950;Projeto e Desenvolvimento de Software de Sistema;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;70;63;;;;0;0;;;;0;0;0;0;BCC, BSI, Eng. Computação
+SSC0955;Introdução a Sistemas Computacionais;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;2;ICMC - Bacharelado em Ciência de Dados;10;2;0;0;;;;0;0;;;;0;0;0;0;BCDados
+SSC0955;Introdução a Sistemas Computacionais;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCDados
+SSC0955;Introdução a Sistemas Computacionais;2025101;Teórica;S;24/02/2025;07/07/2025;60;0;;;;;10;2;;;;0;0;;;;0;0;;;;0;0;0;0;BCDados
+SSC0959;Teste e Inspeção de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;50;ICMC - Ciências de Computação;40;37;0;0;;;;0;0;0;0;BCC/Eng. Computação/BCdados
+(CEE Engenharia de Software e Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0959;Teste e Inspeção de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;50;EESC e ICMC - Engenharia de Computação;15;13;0;0;;;;0;0;0;0;BCC/Eng. Computação/BCdados
+(CEE Engenharia de Software e Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0959;Teste e Inspeção de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;50;ICMC - Bacharelado em Ciência de Dados;5;0;0;0;;;;0;0;0;0;BCC/Eng. Computação/BCdados
+(CEE Engenharia de Software e Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0959;Teste e Inspeção de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;50;;;;0;0;;;;0;0;0;0;BCC/Eng. Computação/BCdados
+(CEE Engenharia de Software e Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0959;Teste e Inspeção de Software;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;60;50;;;;0;0;;;;0;0;0;0;BCC/Eng. Computação/BCdados
+(CEE Engenharia de Software e Sistemas Embarcados);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0960;Programação Funcional;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;ICMC - Ciências de Computação;60;44;0;0;;;;0;0;;;;0;0;0;0;BCC- A
+SSC0960;Programação Funcional;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;;;;0;0;;;;0;0;;;;0;0;0;0;BCC- A
+SSC0960;Programação Funcional;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;44;;;;0;0;;;;0;0;;;;0;0;0;0;BCC- A
+SSC0960;Programação Funcional;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;ICMC - Ciências de Computação;60;60;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0960;Programação Funcional;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0960;Programação Funcional;2025102;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;60;;;;0;0;;;;0;0;;;;0;0;0;0;BCC-B
+SSC0960;Programação Funcional;2025103;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;56;ICMC - Bacharelado em Sistemas de Informação;60;56;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0960;Programação Funcional;2025103;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;56;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0960;Programação Funcional;2025103;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;60;56;;;;0;0;;;;0;0;;;;0;0;0;0;BSI
+SSC0961;Desenvolvimento Web e Mobile;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;58;58;ICMC - Bacharelado em Sistemas de Informação;58;58;2;2;EESC e ICMC - Engenharia de Computação;2;2;0;0;;;;0;0;0;0;BSI/Eng Comp.(CEE Engenharia de Software - Eng. Comp.)
+SSC0961;Desenvolvimento Web e Mobile;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;58;58;;;;2;2;;;;0;0;;;;0;0;0;0;BSI/Eng Comp.(CEE Engenharia de Software - Eng. Comp.)
+SSC0961;Desenvolvimento Web e Mobile;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;58;58;;;;2;2;;;;0;0;;;;0;0;0;0;BSI/Eng Comp.(CEE Engenharia de Software - Eng. Comp.)
+SSC0963;Indústria 4.0: Tecnologias e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;22;ICMC - Bacharelado em Sistemas de Informação;45;22;15;4;FEARP - Administração;15;4;0;0;15;4;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0963;Indústria 4.0: Tecnologias e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;22;;;;15;4;;;;0;0;15;4;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0963;Indústria 4.0: Tecnologias e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;22;;;;15;4;;;;0;0;15;4;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0963;Indústria 4.0: Tecnologias e Aplicações;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;22;;;;15;4;;;;0;0;15;4;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0964;Introdução à Computação no Mercado Financeiro;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;34;ICMC - Bacharelado em Sistemas de Informação;45;34;15;8;FEARP - Administração;15;8;0;0;15;8;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0964;Introdução à Computação no Mercado Financeiro;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;34;;;;15;8;;;;0;0;15;8;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0964;Introdução à Computação no Mercado Financeiro;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;34;;;;15;8;;;;0;0;15;8;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SSC0964;Introdução à Computação no Mercado Financeiro;2025101;Teórica;S;24/02/2025;07/07/2025;30;0;;;;;0;0;;;;45;34;;;;15;8;;;;0;0;15;8;BSI e ADM-FEARP
+(CEE Tecnologia da Informação e Negócios);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
