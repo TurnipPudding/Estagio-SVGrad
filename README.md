@@ -26,3 +26,12 @@ Antes de baixar os arquivos, instale um aplicativo como VSCode ou Jupyter Notebo
 A interface funciona utilizando planilhas com colunas pré-definidas e colunas específicas. Arquivos criados pela interface estarão em uma pasta no mesmo diretório onde os scripts foram baixados, chamada Saídas da Interface. Dentro dela, haverão outras duas pastas: Planilhas de Dados, onde os arquivos gerados somente pela interface serão salvos; e Saídas do Modelo, onde apenas arquivos gerados pela execução do modelo serão salvos.
 
 Se alguma função da interface não for executada, ou nada acontecer ao apertar um botão, a chance de ser um problema com os documentos sendo utilizados é maior do que ser um problema apenas da interface, então verifique bem os arquivos que estão sendo utilizados.
+
+## Manuais
+Como dito anteriormente, os manuais disponibilizados na pasta docs foram criados para auxiliar futuros desenvolvimentos da interface, assim como ensinar usuários a navegar por ela.
+- Relatório para a Interface: oferece um review geral da modelagem e dos scripts utilizados pelo modelo.
+- Manual de Instruções para a Interface: o principal manual do usuário, com descrições e detalhes de como usar a interface, mas não fala muito de seu funcionamento.
+- Documentação da Interface: principal arquivo com a documentação do arquivo interface_final.py.
+- Documentação do Modelo: principal arquivo com a documentação do arquivo Modelo Universal-Copy1.py.
+- Documentação da Verificação dos Dados: principal arquivo com a documentação do arquivo verificar_dados.py.
+- Documentação do JSM: principal arquivo com a documentação do arquivo jupiter sheet maker.py.
