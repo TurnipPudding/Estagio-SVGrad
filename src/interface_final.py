@@ -106,9 +106,19 @@ def padroniza_dataframe(file_name, header_row, ano):
     # Padronizo os valores da coluna 'Deve ser alocada no ICMC?' para evitar problemas de filtragem.
     for idx, row in df.iterrows():
         # Removo espaços e padronizo o valor 'x' para 'X'.
-        df.loc[idx, 'Deve ser alocada no ICMC?'] = str(df.loc[idx, 'Deve ser alocada no ICMC?']).replace(' ', '')
-        if df.loc[idx, 'Deve ser alocada no ICMC?'] == 'x':
-            df.loc[idx, 'Deve ser alocada no ICMC?'] = 'X'
+        try:
+            df.loc[idx, 'Deve ser alocada no ICMC?'] = str(df.loc[idx, 'Deve ser alocada no ICMC?']).replace(' ', '')
+            if df.loc[idx, 'Deve ser alocada no ICMC?'] == 'x':
+                df.loc[idx, 'Deve ser alocada no ICMC?'] = 'X'
+        except KeyError as e:
+            coluna_faltando = str(e).strip("'")
+            messagebox.showerror("Erro de Cabeçalho", 
+                                    (
+                                        f"A coluna '{coluna_faltando}' não foi encontrada no arquivo {file_name}. "
+                                        "Verifique o cabeçalho do arquivo de entrada."
+                                    )
+                                )
+            return None
     # Filtro o dataframe para fazer a edição apenas nas disciplinas que importam.
     # Isto é, eu passo a trabalhar apenas com as disciplinas marcadas com um 'X' que devem ser alocadas no ICMC.
     df = df[df['Deve ser alocada no ICMC?'] == 'X']
@@ -137,7 +147,17 @@ def padroniza_dataframe(file_name, header_row, ano):
 
     # Preencho os espaços vazios da coluna de uso de laboratórios com "Não". Dessa forma, o usuário só precisa indicar qual disciplina
     # requer um laboratório.
-    df['Utilizará laboratório? (sim ou não)'] = df['Utilizará laboratório? (sim ou não)'].fillna("Não")
+    try:
+        df['Utilizará laboratório? (sim ou não)'] = df['Utilizará laboratório? (sim ou não)'].fillna("Não")
+    except KeyError as e:
+        coluna_faltando = str(e).strip("'")
+        messagebox.showerror("Erro de Cabeçalho", 
+                                (
+                                    f"A coluna '{coluna_faltando}' não foi encontrada no arquivo {file_name}. "
+                                    "Verifique o cabeçalho do arquivo de entrada."
+                                )
+                            )
+        return None
     # print(df['Utilizará laboratório? (sim ou não)'])
 
     # Verifico se há disciplinas sem turma definida e alerto o usuário caso existam.
