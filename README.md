@@ -16,11 +16,17 @@ Baixe os arquivos na pasta data. Eles serão utilizados para criar as planilhas 
 Existem duas maneiras de instalar e utilizar a interface: via terminal e executáveis, e via jupyter notebook e scripts.
 
 ### 1. Via Terminal
-Dentro da pasta src deste diretório, baixe todos os arquivos disponíveis, com exceção de "interface_run.ipynb", incluindo a pasta "configs".
-Coloque os arquivos baixados em uma pasta, junto com a pasta "configs". Dentro da pasta configs, executa o arquivo "prepara.bat", e aceite as permissões requisitadas. Após dar permissão de administrador, a versão necessária do python será instalada. Após a instalação, feche a janela do terminal que não possui título. Na janela que restar, haverá uma pergunta 'Deseja finalizar o arquivo em lotes (S/N)?'. Responda com N, e deixe as dependências serem instaladas. Ao final de tudo, pressione qualquer tecla para fechar a janela. Com todas as dependências instaladas, basta executar o arquivo Interface.bat.
+- 1.1 Dentro da pasta src deste diretório, baixe e extraia o arquivo "Via Terminal.zip". Renomear a pasta é recomendável, mas não necessário. 
+- 1.2 Abra a pasta extraída
+- 1.3 Dentro da pasta configs, executa o arquivo "prepara.bat", aceitando as permissões requisitadas. Após dar permissão de administrador, a versão necessária do python será instalada.
+- 1.4 Após a instalação, feche a janela do terminal que não possui título. Na janela que restar, haverá uma pergunta 'Deseja finalizar o arquivo em lotes (S/N)?'. Responda com N, e deixe as dependências serem instaladas.
+- 1.5 Ao final de tudo, pressione qualquer tecla para fechar a janela.
+- 1.6 Com todas as dependências instaladas, basta executar o arquivo Interface.bat. É possível criar um atalho deste arquivo na área de trabalho.
 
 ### 2. Via Jupyter Notebook
-Antes de baixar os arquivos, instale um aplicativo como VSCode ou Jupyter Notebook para executar arquivos .ipynb. Com o aplicativo instalado, baixe os arquivos .py e .ipynb na pasta src. Não há necessidade de baixar a pasta configs ou o arquivo "Interface.bat". Com todos os arquivos salvos em uma pasta, abra o arquivo interface_run.ipynb usando o aplicativo instalado e execute as duas células.
+- 2.1 Antes de baixar os arquivos, instale um software como VS Code ou Jupyter Notebook para executar arquivos .ipynb.
+- 2.2 Com o software instalado, baixe e extraia o arquivo "Via Jupyter Notebook.zip". Renomear a pasta é recomendável, mas não é necessário.
+- 2.3 Para abrir a interface, basta abrir o software baixado, abrir o arquivo "interface_run.ipynb" utilizando o software, e executar as duas células presentes no arquivo.
 
 ## Funcionamento Geral
 A interface funciona utilizando planilhas com colunas pré-definidas e colunas específicas. Arquivos criados pela interface estarão em uma pasta no mesmo diretório onde os scripts foram baixados, chamada Saídas da Interface. Dentro dela, haverão outras duas pastas: Planilhas de Dados, onde os arquivos gerados somente pela interface serão salvos; e Saídas do Modelo, onde apenas arquivos gerados pela execução do modelo serão salvos.
