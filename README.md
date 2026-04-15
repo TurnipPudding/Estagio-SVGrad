@@ -15,7 +15,7 @@ Aqui, é possível baixar os arquivos necessários e tutoriais para o uso da int
 Baixe os arquivos na pasta data. Eles serão utilizados para criar as planilhas e documentos necessários para a interface.
 Existem duas maneiras de instalar e utilizar a interface: via terminal e executáveis, e via jupyter notebook e scripts.
 
-### 1. Via Terminal
+### 1. Via Terminal (Recomendado)
 - 1.1 Dentro da pasta src deste diretório, baixe e extraia o arquivo "Via Terminal.zip". Renomear a pasta é recomendável, mas não necessário. 
 - 1.2 Abra a pasta extraída
 - 1.3 Dentro da pasta configs, executa o arquivo "prepara.bat", aceitando as permissões requisitadas. Após dar permissão de administrador, a versão necessária do python será instalada.
