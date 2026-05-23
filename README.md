@@ -41,3 +41,4 @@ Como dito anteriormente, os manuais disponibilizados na pasta docs foram criados
 - Documentação do Modelo: principal arquivo com a documentação do arquivo Modelo Universal-Copy1.py.
 - Documentação da Verificação dos Dados: principal arquivo com a documentação do arquivo verificar_dados.py.
 - Documentação do JSM: principal arquivo com a documentação do arquivo jupiter sheet maker.py.
+- Link com a playlist de vídeos introdutórios no drive: https://drive.google.com/drive/folders/1_uPWM7-53HJT7z5LMLYCPs6ryRzR8rr-?usp=sharing 
